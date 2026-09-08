@@ -1,0 +1,6 @@
+# Permissions locales Claude Code — propres à cette machine, jamais partagées
+.claude/settings.local.json
+
+# Windows
+Thumbs.db
+desktop.ini
