@@ -120,6 +120,23 @@ l'architecture est jugée la plus proche de Pelagic.
 | 85 | Which Tiller Pilot for a Monitor Windvane? | Forum (SailNet) | https://www.sailnet.com/threads/which-tiller-pilot-for-a-monitor-windvane.63988/ | 2026-09-13 | Analysée |
 | 86 | Pilote automatique bateau : comparatif et installation 2026 (NKE, B&G, Pelagic, prix) | Article (marché) | https://cap-nautique.fr/equipement/pilote-automatique-bateau-comparatif-et-installation-2026/ | 2026-09-13 | Analysée |
 
+| 87 | Raymarine ST1000+/ST2000+ — manuel utilisateur | Référence mobilisée (déclarée) | https://www.olaje.com/documentos/ST1000Plus&2000PlusTillerPilot.pdf | 2026-09-13 | Mobilisée dans l’analyse actionneur — périmètre à vérifier |
+| 88 | Raymarine — guide de sélection d’organe de commande | Référence mobilisée (déclarée) | https://www.raymarine.com/en-us/learning/online-guides/selecting-your-raymarine-drive-unit | 2026-09-13 | Mobilisée dans l’analyse actionneur — périmètre à vérifier |
+| 89 | Hy-Pro ML+40 — actionneur électro-hydraulique linéaire | Référence mobilisée (déclarée) | https://www.hypro.co.uk/products/hydraulic-pumps-and-steering/linear-actuators/ml40-marine-autopilot-electro-hydraulic-linear-actuator/ | 2026-09-13 | Mobilisée dans l’analyse actionneur — périmètre à vérifier |
+| 90 | Hy-Pro ML+40-S — version compacte 200 mm | Référence mobilisée (déclarée) | https://www.hypro.co.uk/products/hydraulic-pumps-and-steering/linear-actuators/ml40-compact-marine-autopilot-electro-hydraulic-linear-actuator/ | 2026-09-13 | Mobilisée dans l’analyse actionneur — périmètre à vérifier |
+| 91 | Firgelli — vérin à retour de position | Référence mobilisée (déclarée) | https://www.firgelliauto.com/products/feedback-rod-actuator | 2026-09-13 | Mobilisée dans l’analyse actionneur — périmètre à vérifier |
+| 92 | Soupape de dérivation de vérin de pilote | Référence mobilisée (déclarée) | https://www.sailrace.com/marine-autopilot-secondary-steering-cylinder-unloader-valve/ | 2026-09-13 | Mobilisée dans l’analyse actionneur — périmètre à vérifier |
+| 93 | Hy-Pro — gamme des actionneurs linéaires hydrauliques | Piste de recherche | https://www.hypro.co.uk/products/hydraulic-pumps-and-steering/linear-actuators/ | 2026-09-13 | Repérée, non exploitée |
+| 94 | Hy-Pro — annonce ML40 compact 200 mm | Piste de recherche | https://www.hypro.co.uk/blog/hypro-news/new-200-mm-ml40-linear-actuator-hy-prodrive/ | 2026-09-13 | Repérée, non exploitée |
+| 95 | Raymarine — vérins hydrauliques Type 3 | Piste de recherche | https://www.raymarine.com/en-us/our-products/boat-autopilots/autopilot-drive-units/type-3-hydraulic-linear-drives | 2026-09-13 | Repérée, non exploitée |
+| 96 | Attainable Adventure Cruising — choix organe de commande | Piste de recherche | https://www.morganscloud.com/2007/05/19/which-marine-autopilot-drive/ | 2026-09-13 | Repérée, non exploitée |
+| 97 | Yachting Monthly — guide d’achat pilote automatique | Piste de recherche | https://www.yachtingmonthly.com/gear/autopilot-buyers-guide-for-sailing-yachts-80927 | 2026-09-13 | Repérée, non exploitée |
+| 98 | West Marine — Selecting an Autopilot | Piste de recherche | https://www.westmarine.com/west-advisor/Selecting-an-Autopilot.html | 2026-09-13 | Repérée, non exploitée |
+| 99 | Firgelli — collection vérins à retour de position | Piste de recherche | https://www.firgelliauto.com/collections/feedback-actuators | 2026-09-13 | Repérée, non exploitée |
+| 100 | Firgelli — collection vérins IP66 | Piste de recherche | https://www.firgelliauto.com/collections/ip66-linear-actuators | 2026-09-13 | Repérée, non exploitée |
+| 101 | Actuonix — vérins à retour de position | Piste de recherche | https://www.actuonix.com/feedback-actuators | 2026-09-13 | Repérée, non exploitée |
+| 102 | Phoenix’s Flight — pyPilot sur direction hydraulique | Piste de recherche | http://phoenixketch.blogspot.com/2019/01/pypilot-open-source-marine-autopilot.html | 2026-09-13 | Repérée, non exploitée |
+
 ## Conventions
 
 - Une ligne par source déposée, dans l'ordre d'arrivée.
@@ -196,3 +213,6 @@ la plus dense du site (cotes mi-course de toutes les marques, capteur de positio
 interne, contacts de fin de course).
 
 Fiche de synthèse issue de ce lot : `pilotes-barre-franche-externes-etat-de-l-art.md`.
+
+
+**Lot actionneur — références et pistes transmises par Mathieu** : n° 87 à 92, déclarées mobilisées dans l’analyse actionneur ; n° 93 à 102, uniquement repérées, sans donnée extraite pour cette analyse. L’enregistrement ne constitue ni une consultation ni une validation du contenu. Les titres et URLs sont conservés comme données de collecte. Les six premières figuraient déjà dans la file locale « Sources à enregistrer », mais pas dans ce registre.
