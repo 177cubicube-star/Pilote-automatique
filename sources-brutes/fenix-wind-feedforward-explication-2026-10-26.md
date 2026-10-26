@@ -185,7 +185,23 @@ plus avancé que le PID de base décrit dans les notes du 2026-09-08. Le commit 
 la saturation de l'actionneur, la calibration IMU, `IF_NMEA.cpp`, `Fenix_config.h`, et ajoute
 `libraries_ext/FrequencyTimer.*`.
 
+### Le Handbook officiel ne couvre pas cette fonction
+
+**Vérifié par lecture partielle le 2026-10-26** (clone superficiel de
+https://github.com/spascual90/Fenix-User-Handbook.git, dernier commit `6bbc52a`, 2025-12-28).
+Lecture des passages contenant « wind », « feedforward » ou « FF » dans les 5 fichiers concernés ;
+les fichiers n'ont pas été lus en entier.
+
+- Aucun fichier ne décrit le feedforward vent. `introduction/overview.md` mentionne seulement le mode vent
+  (tenir un angle de vent).
+- `using-fenix-tiller-pilot/untitled.md` classe « Windvane and calculations » sous *« not available in V2.x »*,
+  alors que le dépôt du code a des modes AWA/TWD depuis 2026-02-23.
+- Le `untitled.md` de la racine (non listé dans `SUMMARY.md`) donne la section « Wind » comme « TBD ».
+- Deux autres fichiers ne contiennent que « Windows » (faux positifs).
+
+Conclusion : pour ce firmware, le code fait foi et le Handbook est en retard. Le dépôt du Handbook n'a pas de
+numéro dans le registre (il recoupe le GitBook, sources n° 2, 9, 10 et 11) ; décision d'enregistrement laissée à Mathieu.
+
 ## 6. Pour aller plus loin (non fait)
 
-- Lire la documentation GitBook (sources n° 2, 9) pour voir si le feedforward vent y est décrit.
 - Décider si le projet veut un capteur de vent (décision de Mathieu, pas une exigence acceptée).
