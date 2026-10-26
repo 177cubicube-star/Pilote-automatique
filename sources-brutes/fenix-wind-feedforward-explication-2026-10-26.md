@@ -199,8 +199,8 @@ les fichiers n'ont pas été lus en entier.
 - Le `untitled.md` de la racine (non listé dans `SUMMARY.md`) donne la section « Wind » comme « TBD ».
 - Deux autres fichiers ne contiennent que « Windows » (faux positifs).
 
-Conclusion : pour ce firmware, le code fait foi et le Handbook est en retard. Le dépôt du Handbook n'a pas de
-numéro dans le registre (il recoupe le GitBook, sources n° 2, 9, 10 et 11) ; décision d'enregistrement laissée à Mathieu.
+Conclusion : pour ce firmware, le code fait foi et le Handbook est en retard. Le dépôt du Handbook est enregistré
+sous le **n° 208** (il recoupe le GitBook, sources n° 2, 9, 10 et 11).
 
 ## 6. Pour aller plus loin (non fait)
 
