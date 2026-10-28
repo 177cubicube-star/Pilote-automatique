@@ -27,11 +27,17 @@ retrouver l'information (specs de composants, câblage, formules, procédures).
 | 6 | Convertisseur DC-DC | M2596, sortie 8.5-12V (recommandé: 9V) | Pour alimenter l'Arduino |
 | 7 | Fenix Shield PCB | PCB personnalisé | Voir repo GitHub pour fichiers |
 
+
+> **Annotation du 2026-10-28** (texte d'origine ci-dessus inchangé) — les lignes 4a (BNO055) et 4b (MinIMU9v5) correspondent à une génération antérieure : le firmware v4.x lu ne gère que l'ICM20948 (SparkFun). La ligne 2 (BTS7960) est à confronter à l'interface PWM + DIR du firmware (le driver recommandé dans le code est un Cytron MD10C). Voir [`fenix-imu-actionneur-lecture-2026-10-28.md`](fenix-imu-actionneur-lecture-2026-10-28.md).
+
 ## Firmware (releases GitHub)
 
 - `FenixVxxBNO055_Ext.hex` : pour IMU BNO055 (algorithme externe, recommandé)
 - `FenixVxxMinIMU9V5.hex` : pour IMU Pololu MinIMU9v5
 - `SIMULATOR.hex` : mode simulation (test sans bateau)
+
+
+> **Annotation du 2026-10-28** (texte d'origine ci-dessus inchangé) — les noms `…BNO055_Ext.hex` et `…MinIMU9V5.hex` relèvent d'une génération antérieure ; pour la v4.x, l'IMU géré est l'ICM20948. Nom du fichier `.hex` correspondant non relevé. Voir [`fenix-imu-actionneur-lecture-2026-10-28.md`](fenix-imu-actionneur-lecture-2026-10-28.md).
 
 ## Application Android (Virtuino)
 
@@ -56,12 +62,18 @@ retrouver l'information (specs de composants, câblage, formules, procédures).
 | GND | GND |
 | 12V externe | VMS (moteur) |
 
+
+> **Annotation du 2026-10-28** (texte d'origine ci-dessus inchangé) — ce câblage suppose deux entrées PWM et deux entrées d'activation. Le firmware lu envoie un PWM sur D6 et un sens sur D7 (interface PWM + DIR). Branchement direct d'un BTS7960 : incompatibilité probable (hypothèse, non vérifiée). Voir [`fenix-imu-actionneur-lecture-2026-10-28.md`](fenix-imu-actionneur-lecture-2026-10-28.md).
+
 ## Calibration et essais
 
 **Calibration IMU (compas)**
 - Procédure : dessiner des « 8 » avec le bateau/IMU
 - Status 3 = capteur entièrement calibré
 - Sauvegarder les offsets dans l'EEPROM
+
+
+> **Annotation du 2026-10-28** (texte d'origine ci-dessus inchangé) — cette procédure (« 8 », Status 3) décrit le BNO055. Pour l'ICM20948, la calibration passe par l'outil externe `Fenix_ICM_20948_Cal` (source n° 209) ; les matrices sont enregistrées en EEPROM. Voir [`fenix-imu-actionneur-lecture-2026-10-28.md`](fenix-imu-actionneur-lecture-2026-10-28.md).
 
 **Calibration vérin linéaire**
 - Étendre complètement → noter valeur ADC max
@@ -73,6 +85,9 @@ retrouver l'information (specs de composants, câblage, formules, procédures).
 - Centered Tiller Position : position ADC de la barre centrée
 - Maximum rudder angle : angle max de barre (ex: 40°)
 - Installation Side : Starboard (S) ou Portboard (P)
+
+
+> **Annotation du 2026-10-28** (texte d'origine ci-dessus inchangé) — dans le code lu, le côté d'installation est marqué `TODO: Installation side always STARBOARD` (`ActuatorManager.h`). Application réelle du paramètre à vérifier. Voir [`fenix-imu-actionneur-lecture-2026-10-28.md`](fenix-imu-actionneur-lecture-2026-10-28.md).
 - Rudder Damping : amortissement (ex: 3)
 - Magnetic Variation : déclinaison magnétique locale
 - Heading Alignment : alignement avec compas externe
@@ -118,4 +133,6 @@ Ces éléments ont été cités dans le dépôt d'origine mais sans URL directe 
 fiable à indexer ; à retrouver au besoin depuis leurs sources parentes.
 
 - **PCB Fenix (fichiers de production)** — mentionné comme « GitHub - PCB-for-Fenix », dépôt distinct probable du même auteur (`spascual90`), URL non fournie
+
+> **Annotation du 2026-10-28** (texte d'origine ci-dessus inchangé) — dépôt retrouvé : https://github.com/spascual90/PCB-for-Fenix, indexé sous le n° 210 du registre. Voir [`fenix-imu-actionneur-lecture-2026-10-28.md`](fenix-imu-actionneur-lecture-2026-10-28.md).
 - **Vidéos de démonstration** — section « Videos » du site officiel https://fenix-autopilot.com/, page précise non fournie
