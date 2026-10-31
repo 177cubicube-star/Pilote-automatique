@@ -1,0 +1,23 @@
+PS C:\Users\mat_g\Documents\sailsim-test> (Get-Content configs\autopilots\pypilot.toml) + "pypilot_servo_layer = true" | Set-Content configs\autopilots\pypilot_servo.toml
+PS C:\Users\mat_g\Documents\sailsim-test> docker restart pp
+pp
+PS C:\Users\mat_g\Documents\sailsim-test> Start-Sleep 5
+PS C:\Users\mat_g\Documents\sailsim-test> .venv\Scripts\python -m sailsim --scenario pypilot_heading_hold --yacht default --autopilot pypilot_servo --output e2e_docker_servo.csv
+Scenario: unnamed
+  Yacht: default
+  Autopilot: pypilot @ localhost:23322 [pypilot_servo]
+  Duration: 60.0s, dt: 0.05s
+  Wind: 5.0 m/s @ 60°
+  Target heading: 0°
+
+Running simulation...
+Completed: 1201 steps recorded
+
+Telemetry saved to: e2e_docker_servo.csv
+
+Quality Gate Result: PASS
+----------------------------------------
+  [OK] mean_heading_error_deg: 1.35 (limit: 15.00)
+  [OK] max_heading_deviation_deg: 2.76 (limit: 30.00)
+  [OK] max_rudder_rate_deg_per_s: 10.00 (limit: 80.00)
+  [OK] settling_time_s: 0.00 (limit: 55.00)

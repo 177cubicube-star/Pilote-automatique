@@ -164,7 +164,22 @@ Fichiers : `q1gh/` (scripts `q1h_run.py`, `q1h_un.sh`, `verif_calib.py` ; trajec
 - Adresse d'écoute UDP des deux patchs : variable d'environnement `SIM_UDP_BIND`, défaut `127.0.0.1` (installation locale) ; le Dockerfile la règle à `0.0.0.0`. Le journal de pypilot affiche maintenant l'adresse réelle (`sim imu: listening on udp ('0.0.0.0', 20230)`).
 - Dockerfile : pypilot **fixé** sur `fdff88f` (`ARG PYPILOT_COMMIT`), au lieu de la dernière version. Le fork RTIMULib2 n'est pas fixé (commit non connu).
 - Validation : 322 tests réussis, `ruff check` réussi ; non-régression sans Docker, défaut `127.0.0.1` : vérin idéal 0,78° (Q1-F : 0,77–0,78°), couche servo cap final +2,3°, 11 inversions, commandes −1 / 0 / +1.
-- **Non vérifié** : la reconstruction de l'image avec v5 et l'essai de bout en bout sous Docker (à faire sur le poste de Mathieu).
+- ~~Non vérifié~~ : image reconstruite avec v5 et essai de bout en bout sous Docker faits par Mathieu le même jour, voir ci-dessous.
+
+### Essai de bout en bout sous Docker (poste de Mathieu, Windows, Docker Desktop, 2026-10-31)
+
+Conteneur `sailsim-pypilot:test` construit avec v5 : pypilot `fdff88f`, écoute UDP `('0.0.0.0', 20230)` et `('0.0.0.0', 20231)` confirmée dans `docker logs`, aucune erreur Python. SailSim lancé sous Windows (Python 3.14.5 ; mes essais : 3.13), scénario `pypilot_heading_hold`, profil `default`, une exécution par mode, conteneur redémarré avant chaque essai.
+
+| Indicateur (évaluateur SailSim, mesuré après 10 s) | Docker, vérin idéal | Sans Docker, vérin idéal | Docker, couche servo | Sans Docker, couche servo (5 exécutions) |
+|---|---|---|---|---|
+| `mean_heading_error_deg` | 0,24 | 0,24 | 1,35 | 1,31–1,47 |
+| `max_heading_deviation_deg` | 1,18 | 1,18 | 2,76 | 2,49–3,54 |
+| `max_rudder_rate_deg_per_s` | 0,72 | 0,73 | 10,00 | 10,00 |
+| Portes | PASS | PASS | PASS | — |
+
+Les chiffres « couche servo, sans Docker » sont recalculés par la même méthode que l'évaluateur sur `q1gh/h1s_1…5.csv`, sauf la vitesse de barre max : les angles du CSV sont arrondis, ce qui fausse légèrement ce calcul (0,80 recalculé au lieu de 0,73 pour l'essai idéal) ; seul 10,00 (impulsions pleine vitesse) est robuste.
+
+**Lecture prudente :** l'image Docker reproduit les résultats natifs dans les deux modes ; le Dockerfile est maintenant **vérifié** pour ce scénario. La vitesse de barre de 10 °/s (vitesse du vérin modélisé) montre que la couche servo tourne dans le conteneur, ce qui exige que l'angle de barre arrive en UDP. Le défaut d'écoute `127.0.0.1` de v4 n'a pas été rejoué sous Docker : il reste démontré par l'essai analogue sans Docker. Une seule exécution par mode sous Docker. Fichiers de l'essai, traces et configuration : `bout-en-bout-docker/`.
 
 ### Reste à faire dans Q1 (au 2026-10-31)
 

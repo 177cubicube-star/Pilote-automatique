@@ -1,0 +1,80 @@
+
+PS C:\Users\mat_g\Documents\sailsim-test> docker rm -f pp
+PS C:\Users\mat_g\Documents\sailsim-test> docker build -t sailsim-pypilot:test docker\pypilot
+[+] Building 16.4s (22/22) FINISHED                                                                docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                               0.0s
+ => => transferring dockerfile: 2.04kB                                                                             0.0s
+ => [internal] load metadata for docker.io/library/python:3.11-slim                                                0.5s
+ => [auth] library/python:pull token for registry-1.docker.io                                                      0.0s
+ => [internal] load .dockerignore                                                                                  0.0s
+ => => transferring context: 2B                                                                                    0.0s
+ => [ 1/16] FROM docker.io/library/python:3.11-slim@sha256:673719e071ecf27434fd2635bbd8d00f49f4fdd81f243143438a42  0.0s
+ => => resolve docker.io/library/python:3.11-slim@sha256:673719e071ecf27434fd2635bbd8d00f49f4fdd81f243143438a42ce  0.0s
+ => [internal] load build context                                                                                  0.0s
+ => => transferring context: 9.90kB                                                                                0.0s
+ => CACHED [ 2/16] RUN apt-get update &&     apt-get install -y --no-install-recommends         git build-essenti  0.0s
+ => CACHED [ 3/16] RUN pip install --no-cache-dir     numpy scipy pywavefront gevent flask ujson pyserial pillow   0.0s
+ => CACHED [ 4/16] RUN git clone --depth=1 https://github.com/seandepagnier/RTIMULib2.git /tmp/rtimu &&     cd /t  0.0s
+ => [ 5/16] RUN git clone https://github.com/pypilot/pypilot.git /opt/pypilot &&     git -C /opt/pypilot checkout  1.5s
+ => [ 6/16] WORKDIR /opt/pypilot                                                                                   0.0s
+ => [ 7/16] RUN mkdir -p deps && python3 setup.py install                                                         11.1s
+ => [ 8/16] RUN rm -rf /opt/pypilot/pypilot                                                                        0.3s
+ => [ 9/16] COPY apply_patch.py /tmp/apply_patch.py                                                                0.0s
+ => [10/16] RUN python3 /tmp/apply_patch.py && rm /tmp/apply_patch.py                                              0.2s
+ => [11/16] COPY sim_imu_patch.py /tmp/sim_imu_patch.py                                                            0.0s
+ => [12/16] RUN python3 /tmp/sim_imu_patch.py && rm /tmp/sim_imu_patch.py                                          0.3s
+ => [13/16] COPY sim_servo_patch.py /tmp/sim_servo_patch.py                                                        0.0s
+ => [14/16] RUN python3 /tmp/sim_servo_patch.py && rm /tmp/sim_servo_patch.py                                      0.3s
+ => [15/16] COPY pypilot_sim.conf /root/.pypilot/pypilot.conf                                                      0.0s
+ => [16/16] WORKDIR /root                                                                                          0.0s
+ => exporting to image                                                                                             1.7s
+ => => exporting layers                                                                                            1.0s
+ => => exporting manifest sha256:9320ba197876a6fb97a3d89fb46c855451c0099d8612ad5aa60b9646e72dbc74                  0.0s
+ => => exporting config sha256:28b9de73a819302508ea84bc58353b2e8a822b3f737ba17808cffd0ad97232b4                    0.0s
+ => => exporting attestation manifest sha256:75b1da7cbe637cc419b1c6b8055a7f52618d658581de4cabcfdb1cd07faf7578      0.0s
+ => => exporting manifest list sha256:fdf86125ba871a7706dc45e96670a6c49e8cda4b3e2c89507108cf68eeb53901             0.0s
+ => => naming to docker.io/library/sailsim-pypilot:test                                                            0.0s
+ => => unpacking to docker.io/library/sailsim-pypilot:test                                                         0.6s
+PS C:\Users\mat_g\Documents\sailsim-test> docker run -d --name pp -p 23322:23322 -p 20220:20220 -p 20230:20230/udp -p 20231:20231/udp sailsim-pypilot:test
+7350bb05193dab904026379fda0f48cefe0e946d294eb7674c0d48489c50c371
+PS C:\Users\mat_g\Documents\sailsim-test> Start-Sleep 5
+PS C:\Users\mat_g\Documents\sailsim-test> docker logs pp
+autopilot start 25.377129317
+loading translations: terminal encoding: utf-8
+pilot append <class 'pilots.absolute.AbsolutePilot'>
+pilot append <class 'pilots.basic.BasicPilot'>
+pilot append <class 'pilots.wind.WindPilot'>
+world magnetic model not available
+WARNING: running autopilot as root!!
+warning, failed to make calibration process other
+warning, failed to make calibration process idle, trying renice
+sim imu process 9
+sim imu: listening on udp ('0.0.0.0', 20230)
+7 (process ID) old priority 0, new priority 19
+nmea process 13
+listening on port 20220 for nmea connections
+signalk process 15
+gps process 16
+loading servo calibration /root/.pypilot/servocalibration
+WARNING: using default servo calibration!!
+sim servo: listening on udp ('0.0.0.0', 20231)
+Available Pilots: ['absolute', 'basic', 'wind']
+server process start 25.48090101
+warning: failed to make autopilot process realtime
+pypilotServer process 18
+server init 25.483592883
+pypilotinit complete 25.483790076
+load file /root/.pypilot/pypilot.conf
+store_file /root/.pypilot/pypilot.conf.bak 25.484 False
+server listening 25.488890254
+server setup has 6 pipes
+gps filter process 17
+pypilot client connected
+pypilot client connected
+pypilot client connected
+pypilot client connected
+gpsd failed to connect
+calibration fit backend: scipy.odr
+calibration loaded, starting 7
+pypilot client connected
+PS C:\Users\mat_g\Documents\sailsim-test>

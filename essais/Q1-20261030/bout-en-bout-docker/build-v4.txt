@@ -1,0 +1,42 @@
+[+] Building 144.8s (21/21) FINISHED                                                               docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                               0.4s
+ => => transferring dockerfile: 1.60kB                                                                             0.2s
+ => [internal] load metadata for docker.io/library/python:3.11-slim                                                1.5s
+ => [internal] load .dockerignore                                                                                  0.1s
+ => => transferring context: 2B                                                                                    0.0s
+ => [ 1/16] FROM docker.io/library/python:3.11-slim@sha256:673719e071ecf27434fd2635bbd8d00f49f4fdd81f243143438a42  8.0s
+ => => resolve docker.io/library/python:3.11-slim@sha256:673719e071ecf27434fd2635bbd8d00f49f4fdd81f243143438a42ce  0.1s
+ => => sha256:361db81715472ecba5e656c314c299bd945309020483159596a8d123c2b1d580 251B / 251B                         0.2s
+ => => sha256:24ff04c921070df4f4dc987278926d5dabde59d57b55ae3665439331f79af932 14.46MB / 14.46MB                   2.2s
+ => => sha256:ee5aaeba9945927662bea2702989dfd74d9273796415b896363e6a9c44d9a8ce 1.29MB / 1.29MB                     0.4s
+ => => sha256:6fc242d221a673263eabd14a9ad9584d3177c96e5cb504c891497338e2f912f5 29.86MB / 29.86MB                   3.9s
+ => => extracting sha256:6fc242d221a673263eabd14a9ad9584d3177c96e5cb504c891497338e2f912f5                          1.6s
+ => => extracting sha256:ee5aaeba9945927662bea2702989dfd74d9273796415b896363e6a9c44d9a8ce                          0.3s
+ => => extracting sha256:24ff04c921070df4f4dc987278926d5dabde59d57b55ae3665439331f79af932                          1.2s
+ => => extracting sha256:361db81715472ecba5e656c314c299bd945309020483159596a8d123c2b1d580                          0.1s
+ => [internal] load build context                                                                                  0.4s
+ => => transferring context: 11.36kB                                                                               0.0s
+ => [ 2/16] RUN apt-get update &&     apt-get install -y --no-install-recommends         git build-essential swi  50.8s
+ => [ 3/16] RUN pip install --no-cache-dir     numpy scipy pywavefront gevent flask ujson pyserial pillow         17.2s
+ => [ 4/16] RUN git clone --depth=1 https://github.com/seandepagnier/RTIMULib2.git /tmp/rtimu &&     cd /tmp/rtim  9.1s
+ => [ 5/16] RUN git clone --depth=1 https://github.com/pypilot/pypilot.git /opt/pypilot                            0.9s
+ => [ 6/16] WORKDIR /opt/pypilot                                                                                   0.1s
+ => [ 7/16] RUN mkdir -p deps && python3 setup.py install                                                         13.1s
+ => [ 8/16] RUN rm -rf /opt/pypilot/pypilot                                                                        0.3s
+ => [ 9/16] COPY apply_patch.py /tmp/apply_patch.py                                                                0.1s
+ => [10/16] RUN python3 /tmp/apply_patch.py && rm /tmp/apply_patch.py                                              0.3s
+ => [11/16] COPY sim_imu_patch.py /tmp/sim_imu_patch.py                                                            0.1s
+ => [12/16] RUN python3 /tmp/sim_imu_patch.py && rm /tmp/sim_imu_patch.py                                          0.3s
+ => [13/16] COPY sim_servo_patch.py /tmp/sim_servo_patch.py                                                        0.1s
+ => [14/16] RUN python3 /tmp/sim_servo_patch.py && rm /tmp/sim_servo_patch.py                                      0.3s
+ => [15/16] COPY pypilot_sim.conf /root/.pypilot/pypilot.conf                                                      0.1s
+ => [16/16] WORKDIR /root                                                                                          0.1s
+ => exporting to image                                                                                            41.7s
+ => => exporting layers                                                                                           27.9s
+ => => exporting manifest sha256:59f847e7ec837b6637af87377627ec89ebc0450d60517c36915b47d376a648b8                  0.0s
+ => => exporting config sha256:93be5ee7b111ccb9822333f85ddca406b412086112a400c6d9e312885a725780                    0.0s
+ => => exporting attestation manifest sha256:cc109f4a3480711e915e05d106a312b33f63c15cb5344f284c77599f5245a455      0.0s
+ => => exporting manifest list sha256:370595b44daca3d1259c90b0460824a5ec86d5d28778863e686d9306e1db0cde             0.0s
+ => => naming to docker.io/library/sailsim-pypilot:test                                                            0.0s
+ => => unpacking to docker.io/library/sailsim-pypilot:test                                                        13.6s
+PS C:\Users\mat_g\Documents\sailsim-test>

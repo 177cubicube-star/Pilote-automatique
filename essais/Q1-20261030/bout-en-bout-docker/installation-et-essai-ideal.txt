@@ -1,0 +1,71 @@
+
+PS C:\Users\mat_g> cd C:\Users\mat_g\Documents\sailsim-test
+PS C:\Users\mat_g\Documents\sailsim-test> python --version
+Python 3.14.5
+PS C:\Users\mat_g\Documents\sailsim-test> python -m venv .venv
+PS C:\Users\mat_g\Documents\sailsim-test> .venv\Scripts\python -m pip install -e .
+WARNING: Cache entry deserialization failed, entry ignored
+Obtaining file:///C:/Users/mat_g/Documents/sailsim-test
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Preparing editable metadata (pyproject.toml) ... done
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting numpy>=1.24 (from sailsim==0.1.0)
+  Downloading numpy-2.5.4-cp314-cp314-win_amd64.whl.metadata (6.6 kB)
+WARNING: Cache entry deserialization failed, entry ignored
+Collecting scipy>=1.10 (from sailsim==0.1.0)
+  Downloading scipy-1.18.1-cp314-cp314-win_amd64.whl.metadata (61 kB)
+Collecting pydantic>=2.0 (from sailsim==0.1.0)
+  Downloading pydantic-2.14.2-py3-none-any.whl.metadata (137 kB)
+Collecting annotated-types>=0.6.0 (from pydantic>=2.0->sailsim==0.1.0)
+  Using cached annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.50.2 (from pydantic>=2.0->sailsim==0.1.0)
+  Downloading pydantic_core-2.50.2-cp314-cp314-win_amd64.whl.metadata (6.7 kB)
+Collecting typing-extensions>=4.16.0 (from pydantic>=2.0->sailsim==0.1.0)
+  Using cached typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+Collecting typing-inspection>=0.4.4 (from pydantic>=2.0->sailsim==0.1.0)
+  Using cached typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+Downloading numpy-2.5.4-cp314-cp314-win_amd64.whl (12.7 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.7/12.7 MB 43.0 MB/s  0:00:00
+Downloading pydantic-2.14.2-py3-none-any.whl (490 kB)
+Downloading pydantic_core-2.50.2-cp314-cp314-win_amd64.whl (2.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 57.6 MB/s  0:00:00
+Using cached annotated_types-0.8.0-py3-none-any.whl (13 kB)
+Downloading scipy-1.18.1-cp314-cp314-win_amd64.whl (37.4 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 37.4/37.4 MB 92.1 MB/s  0:00:00
+Using cached typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+Using cached typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+Building wheels for collected packages: sailsim
+  Building editable for sailsim (pyproject.toml) ... done
+  Created wheel for sailsim: filename=sailsim-0.1.0-0.editable-py3-none-any.whl size=1623 sha256=2abae2d33576d19d732540ebc2b32237a47dd883346713d68be98fc8d34fa03a
+  Stored in directory: C:\Users\mat_g\AppData\Local\Temp\pip-ephem-wheel-cache-go4j_55r\wheels\a3\6f\42\927a180243027df83833e3e40cb355fbbc1bd3e72a3ffa8c88
+Successfully built sailsim
+Installing collected packages: typing-extensions, numpy, annotated-types, typing-inspection, scipy, pydantic-core, pydantic, sailsim
+Successfully installed annotated-types-0.8.0 numpy-2.5.4 pydantic-2.14.2 pydantic-core-2.50.2 sailsim-0.1.0 scipy-1.18.1 typing-extensions-4.16.0 typing-inspection-0.4.4
+
+[notice] A new release of pip is available: 26.1.1 -> 26.2.2
+[notice] To update, run: C:\Users\mat_g\Documents\sailsim-test\.venv\Scripts\python.exe -m pip install --upgrade pip
+PS C:\Users\mat_g\Documents\sailsim-test> docker restart pp
+pp
+PS C:\Users\mat_g\Documents\sailsim-test> Start-Sleep 5
+PS C:\Users\mat_g\Documents\sailsim-test> .venv\Scripts\python -m sailsim --scenario pypilot_heading_hold --yacht default --autopilot pypilot --output e2e_docker_ideal.csv
+Scenario: unnamed
+  Yacht: default
+  Autopilot: pypilot @ localhost:23322 [pypilot]
+  Duration: 60.0s, dt: 0.05s
+  Wind: 5.0 m/s @ 60°
+  Target heading: 0°
+
+Running simulation...
+Completed: 1201 steps recorded
+
+Telemetry saved to: e2e_docker_ideal.csv
+
+Quality Gate Result: PASS
+----------------------------------------
+  [OK] mean_heading_error_deg: 0.24 (limit: 15.00)
+  [OK] max_heading_deviation_deg: 1.18 (limit: 30.00)
+  [OK] max_rudder_rate_deg_per_s: 0.72 (limit: 80.00)
+  [OK] settling_time_s: 0.00 (limit: 55.00)
+PS C:\Users\mat_g\Documents\sailsim-test>
