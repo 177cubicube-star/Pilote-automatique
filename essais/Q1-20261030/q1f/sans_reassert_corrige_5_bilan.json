@@ -1,0 +1,16 @@
+{
+ "label": "corrige_5",
+ "steps": 1201,
+ "sim_s": 59.99999999999873,
+ "wall_s": 61.84,
+ "dt_mur_moy_ms": 51.54,
+ "dt_mur_ecart_type_ms": 0.55,
+ "dt_mur_max_ms": 64.8,
+ "erreur_moy": 33.98,
+ "ecart_max": 69.81,
+ "cap_moy_t30": -52.45,
+ "cap_t60": -69.81,
+ "cap_max_10s": 5.79,
+ "barre_max": 1.56,
+ "servo_msgs": 1232
+}

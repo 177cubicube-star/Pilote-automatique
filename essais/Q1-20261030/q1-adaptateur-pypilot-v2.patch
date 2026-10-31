@@ -1,0 +1,559 @@
+diff --git a/docker/docker-compose.yml b/docker/docker-compose.yml
+index 857ac94..160a3a8 100644
+--- a/docker/docker-compose.yml
++++ b/docker/docker-compose.yml
+@@ -4,6 +4,7 @@ services:
+     ports:
+       - "23322:23322"
+       - "20220:20220"
++      - "20230:20230/udp"
+     healthcheck:
+       test: python3 -c "import socket; s=socket.create_connection(('localhost',23322),2); s.close()"
+       interval: 5s
+diff --git a/docker/pypilot/Dockerfile b/docker/pypilot/Dockerfile
+index 7a563ee..981f84f 100644
+--- a/docker/pypilot/Dockerfile
++++ b/docker/pypilot/Dockerfile
+@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir \
+     numpy scipy pywavefront gevent flask ujson pyserial pillow
+ 
+ # Build and install RTIMULib (required for pypilot's IMU module)
+-RUN git clone --depth=1 https://github.com/RTIMULib/RTIMULib2.git /tmp/rtimu && \
++RUN git clone --depth=1 https://github.com/seandepagnier/RTIMULib2.git /tmp/rtimu && \
+     cd /tmp/rtimu/Linux/python && \
+     python3 setup.py install && \
+     rm -rf /tmp/rtimu
+@@ -26,9 +26,13 @@ RUN rm -rf /opt/pypilot/pypilot
+ COPY apply_patch.py /tmp/apply_patch.py
+ RUN python3 /tmp/apply_patch.py && rm /tmp/apply_patch.py
+ 
++# Simulation patch: virtual IMU fed by the simulator over UDP (port 20230)
++COPY sim_imu_patch.py /tmp/sim_imu_patch.py
++RUN python3 /tmp/sim_imu_patch.py && rm /tmp/sim_imu_patch.py
++
+ # Copy simulation config
+ COPY pypilot_sim.conf /root/.pypilot/pypilot.conf
+ 
+ WORKDIR /root
+-EXPOSE 23322 20220
++EXPOSE 23322 20220 20230/udp
+ CMD ["pypilot"]
+diff --git a/docker/pypilot/sim_imu_patch.py b/docker/pypilot/sim_imu_patch.py
+new file mode 100644
+index 0000000..03313bd
+--- /dev/null
++++ b/docker/pypilot/sim_imu_patch.py
+@@ -0,0 +1,114 @@
++"""Apply the simulated-IMU patch to pypilot's boatimu.py (Q1-C/D).
++
++Replaces pypilot's hardware IMU process with a virtual IMU fed by the
++simulator over UDP (default port 20230). Each datagram is a JSON object:
++
++    {"heading": deg, "headingrate": deg/s, "roll": deg, "pitch": deg}
++
++The virtual IMU turns it into the same data an RTIMULib chip would deliver
++(fusionQPose quaternion, body gyro, accel, timestamp). pypilot's BoatIMU then
++computes heading, headingrate, headingraterate and their low-pass values
++exactly as it does with real hardware, so the `basic` pilot gets real
++D and DD inputs instead of False.
++
++If no datagram arrives for 1 s, the virtual IMU reports no data (False), as a
++failed chip would, and pypilot invalidates its IMU values.
++
++The reported heading equals the simulated heading only with
++imu.heading_offset = 0 (pypilot's default is 90 deg, which also turns roll
++into pitch). The SailSim adapter sets it over JSON-TCP when it connects;
++a line in pypilot.conf is NOT enough (checked 2026-10-31, value stayed 90).
++
++Usage: python3 sim_imu_patch.py [path/to/pypilot/boatimu.py]
++Without argument, boatimu.py is searched in site-packages.
++"""
++
++import glob
++import sys
++
++if len(sys.argv) > 1:
++    targets = [sys.argv[1]]
++else:
++    targets = glob.glob("/usr/local/lib/python3.*/site-packages/pypilot/boatimu.py")
++
++if not targets:
++    print("ERROR: Could not find pypilot/boatimu.py", file=sys.stderr)
++    sys.exit(1)
++
++PATCH = """
++
++# --- Simulation patch: virtual IMU fed by the simulator over UDP ---
++SIM_IMU_PORT = 20230
++SIM_IMU_TIMEOUT = 1.0
++
++
++def _sim_q_from_euler(roll, pitch, heading):
++    qz = quaternion.angvec2quat(math.radians(heading), [0, 0, 1])
++    qy = quaternion.angvec2quat(math.radians(pitch), [0, 1, 0])
++    qx = quaternion.angvec2quat(math.radians(roll), [1, 0, 0])
++    return quaternion.multiply(quaternion.multiply(qz, qy), qx)
++
++
++def _sim_setup(self):
++    import json, socket
++    self._sim_json = json
++    self._sim_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
++    self._sim_sock.bind(("127.0.0.1", SIM_IMU_PORT))
++    self._sim_sock.setblocking(False)
++    self._sim_state = None
++    self._sim_last = 0.0
++    self.rate = 20
++    print("sim imu: listening on udp", SIM_IMU_PORT)
++
++
++def _sim_read(self):
++    while True:
++        try:
++            pkt, _ = self._sim_sock.recvfrom(4096)
++        except (BlockingIOError, OSError):
++            break
++        try:
++            self._sim_state = self._sim_json.loads(pkt.decode())
++            self._sim_last = time.monotonic()
++        except ValueError:
++            pass
++    t0 = time.monotonic()
++    if self._sim_state is None or t0 - self._sim_last > SIM_IMU_TIMEOUT:
++        return False
++    s = self._sim_state
++    q = _sim_q_from_euler(s.get("roll", 0.0), s.get("pitch", 0.0), s["heading"])
++    gyro = quaternion.rotvecquat([0, 0, math.radians(s.get("headingrate", 0.0))],
++                                 quaternion.conjugate(q))
++    accel = quaternion.rotvecquat([0, 0, 1], quaternion.conjugate(q))
++    return {"fusionQPose": q, "gyro": list(gyro), "accel": list(accel),
++            "compass": [1.0, 0.0, 0.0], "accel.residuals": [0.0, 0.0, 0.0],
++            "timestamp": t0}
++
++
++def _sim_process(self, pipe):
++    print("sim imu process", os.getpid())
++    self.setup()
++    period = 1 / self.rate
++    while True:
++        t0 = time.monotonic()
++        data = self.read()
++        pipe.send(data, not data)
++        try:
++            self.client.receive()
++        except Exception:
++            pass
++        t = period - (time.monotonic() - t0)
++        if 0 < t < period:
++            time.sleep(t)
++
++
++IMU.setup = _sim_setup
++IMU.read = _sim_read
++IMU.process = _sim_process
++IMU.poll = lambda self: None
++"""
++
++for target in targets:
++    with open(target, "a") as f:
++        f.write(PATCH)
++    print(f"Patched {target}")
+diff --git a/src/sailsim/autopilot/factory.py b/src/sailsim/autopilot/factory.py
+index a6e818a..031558b 100644
+--- a/src/sailsim/autopilot/factory.py
++++ b/src/sailsim/autopilot/factory.py
+@@ -48,8 +48,11 @@ def create_autopilot(
+             json_port=config.pypilot_json_port,
+             nmea_port=config.pypilot_nmea_port,
+             rudder_max=np.radians(config.pypilot_rudder_max_deg),
++            rudder_rate_max=np.radians(config.pypilot_rudder_rate_max_deg_s),
+             mode=config.pypilot_mode,
+             sim_sleep_ms=config.pypilot_sim_sleep_ms,
++            comm_timeout=config.pypilot_comm_timeout_s,
++            imu_port=config.pypilot_imu_port,
+         )
+     elif config.type == "signalk_rs":
+         from sailsim.autopilot.signalk_rs import SignalKRsAutopilot
+diff --git a/src/sailsim/autopilot/pypilot.py b/src/sailsim/autopilot/pypilot.py
+index 6094044..3f73cd2 100644
+--- a/src/sailsim/autopilot/pypilot.py
++++ b/src/sailsim/autopilot/pypilot.py
+@@ -14,6 +14,7 @@ Uses stdlib only: socket, select, math, logging.
+ from __future__ import annotations
+ 
+ import contextlib
++import json
+ import logging
+ import math
+ import select
+@@ -57,7 +58,27 @@ class PypilotAutopilot:
+ 
+     Each simulation step:
+     1. Push sensor data as NMEA sentences (heading, wind, speed)
+-    2. Read ``servo.command`` (-1..1) from JSON-TCP and map to rudder angle
++    2. Read ``servo.command`` (-1..1) from JSON-TCP and integrate it as a
++       motor speed demand (actuator model, see ``compute``)
++
++    ``servo.command`` is a normalized motor SPEED demand in pypilot
++    (``servo.py``: ``send_command`` -> ``do_command(speed)``), not a rudder
++    position. The rudder therefore moves at ``-cmd * rudder_rate_max`` and is
++    limited to ``rudder_max``. pypilot's own servo layer (period / windup
++    pulses, calibration) is NOT reproduced here: this is a controller-level
++    SIL, with an ideal velocity actuator.
++
++    Virtual IMU (Q1-C/D): each step also sends heading, yaw rate and roll as a
++    JSON datagram to ``imu_port`` (UDP, localhost). With the simulated-IMU
++    patch (``docker/pypilot/sim_imu_patch.py``), pypilot builds its own
++    heading, headingrate and headingraterate from it, so the ``basic`` pilot
++    gets real D / DD inputs instead of the GPS-track fallback.
++    Disabled when ``imu_port`` is None (class default); SailSim's
++    configuration enables it (``pypilot_imu_port``, default 20230).
++
++    Communication safety: once connected, if pypilot stays unreachable for
++    ``comm_timeout`` seconds of simulated time, the speed demand is forced to
++    zero and ``fault`` is latched until ``reset_fault()`` is called.
+     """
+ 
+     def __init__(
+@@ -70,6 +91,8 @@ class PypilotAutopilot:
+         mode: str = "compass",
+         timeout: float = 0.5,
+         sim_sleep_ms: float = 0.0,
++        comm_timeout: float = 1.0,
++        imu_port: int | None = None,
+     ) -> None:
+         self.host = host
+         self.json_port = json_port
+@@ -79,6 +102,11 @@ class PypilotAutopilot:
+         self.mode = mode
+         self.timeout = timeout
+         self._sim_sleep_s = sim_sleep_ms / 1000.0
++        self.comm_timeout = comm_timeout
++        self.imu_port = imu_port
++        self._imu_sock: socket.socket | None = None
++        self.fault = False
++        self._comm_lost_s = 0.0
+ 
+         self._target_heading = 0.0
+         self._rudder_angle = 0.0
+@@ -104,30 +132,51 @@ class PypilotAutopilot:
+         try:
+             self._ensure_connected()
+             self._push_sensors_nmea(sensors)
++            self._push_imu(sensors)
+             if self._sim_sleep_s > 0:
+                 time.sleep(self._sim_sleep_s)
+             servo_cmd = self._read_servo_command()
+             self._last_servo_command = servo_cmd
+             self._connected = True
++            self._comm_lost_s = 0.0
+         except OSError as exc:
+             if not self._connected:
+                 raise ConnectionError(
+                     f"Cannot reach pypilot at {self.host}:{self.json_port}: {exc}"
+                 ) from exc
+-            logger.warning(
+-                "pypilot unreachable, using last servo command %.3f",
+-                self._last_servo_command,
+-            )
++            self._comm_lost_s += dt
++            if self._comm_lost_s >= self.comm_timeout and not self.fault:
++                self.fault = True
++                logger.error(
++                    "pypilot unreachable for %.2f s: actuator stopped, fault latched",
++                    self._comm_lost_s,
++                )
++            else:
++                logger.warning(
++                    "pypilot unreachable, using last servo command %.3f",
++                    self._last_servo_command,
++                )
+             servo_cmd = self._last_servo_command
+             # Reset sockets so _ensure_connected will reconnect next call
+             self._close_sockets()
+ 
+-        # Map servo command directly to rudder angle (position mode).
++        if self.fault:
++            servo_cmd = 0.0  # latched safe state: actuator stopped
++
++        # Actuator model: servo.command is a speed demand, integrated over dt.
+         # Negate: pypilot positive = port, simulator positive rudder = starboard.
+-        self._rudder_angle = -servo_cmd * self.rudder_max
++        servo_cmd = max(-1.0, min(1.0, servo_cmd))
++        rate = -servo_cmd * self.rudder_rate_max
++        new_angle = self._rudder_angle + rate * dt
++        self._rudder_angle = max(-self.rudder_max, min(self.rudder_max, new_angle))
+ 
+         return ControlCommand(rudder_angle=self._rudder_angle, sail_trim=0.5)
+ 
++    def reset_fault(self) -> None:
++        """Clear a latched communication fault (explicit re-arm)."""
++        self.fault = False
++        self._comm_lost_s = 0.0
++
+     # -- connection management --
+ 
+     def _ensure_connected(self) -> None:
+@@ -148,6 +197,11 @@ class PypilotAutopilot:
+         nmea_sock.connect((self.host, self.nmea_port))
+         self._nmea_sock = nmea_sock
+ 
++        # Virtual IMU: no mounting offset, so pypilot's heading equals the
++        # simulated heading (pypilot's default imu.heading_offset is 90 deg).
++        if self.imu_port is not None:
++            self._json_send("imu.heading_offset=0\n")
++
+         # Enable autopilot and set mode via JSON-TCP
+         self._json_send("ap.enabled=true\n")
+         self._json_send(f'ap.mode="{self.mode}"\n')
+@@ -194,6 +248,20 @@ class PypilotAutopilot:
+ 
+         self._nmea_sock.sendall(b"".join(sentences))
+ 
++    def _push_imu(self, sensors: SensorData) -> None:
++        """Send the virtual IMU datagram (heading, yaw rate, roll) to pypilot."""
++        if self.imu_port is None:
++            return
++        if self._imu_sock is None:
++            self._imu_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
++        payload = {
++            "heading": math.degrees(sensors.heading) % 360.0,
++            "headingrate": math.degrees(sensors.yaw_rate),
++            "roll": math.degrees(sensors.roll),
++            "pitch": 0.0,
++        }
++        self._imu_sock.sendto(json.dumps(payload).encode(), (self.host, self.imu_port))
++
+     # -- JSON-TCP servo readback --
+ 
+     def _read_servo_command(self) -> float:
+diff --git a/src/sailsim/core/config.py b/src/sailsim/core/config.py
+index 024ed8c..77d61f3 100644
+--- a/src/sailsim/core/config.py
++++ b/src/sailsim/core/config.py
+@@ -121,6 +121,9 @@ class AutopilotConfig(BaseModel):
+     pypilot_json_port: int = 23322
+     pypilot_nmea_port: int = 20220
+     pypilot_rudder_max_deg: float = 30.0
++    pypilot_rudder_rate_max_deg_s: float = 10.0  # actuator speed at |servo.command| = 1
++    pypilot_comm_timeout_s: float = 1.0  # stop actuator after this long without pypilot
++    pypilot_imu_port: int = 20230  # UDP port of the virtual IMU (sim_imu_patch.py)
+     pypilot_mode: str = "compass"
+     pypilot_sim_sleep_ms: float = 0.0  # ms to sleep per compute step (pacing for real-time)
+ 
+diff --git a/tests/unit/test_pypilot.py b/tests/unit/test_pypilot.py
+index 45375b5..75112ce 100644
+--- a/tests/unit/test_pypilot.py
++++ b/tests/unit/test_pypilot.py
+@@ -2,6 +2,7 @@
+ 
+ from __future__ import annotations
+ 
++import json
+ import math
+ from unittest.mock import MagicMock, patch
+ 
+@@ -148,71 +149,107 @@ class TestCompute:
+ 
+     @patch("sailsim.autopilot.pypilot.socket.socket")
+     @patch("sailsim.autopilot.pypilot.select.select")
+-    def test_compute_maps_servo_to_rudder_position(self, mock_select, mock_socket_cls, sensors):
+-        """servo.command is mapped (negated) to rudder position: angle = -cmd * rudder_max."""
++    def test_constant_command_moves_rudder_progressively(
++        self, mock_select, mock_socket_cls, sensors
++    ):
++        """Q1-A: servo.command is a speed demand; 0.5 moves the rudder at 0.5 * rate, no jump."""
+         json_sock = _make_mock_socket(b"servo.command=0.5\n")
+         nmea_sock = _make_mock_socket()
+         mock_socket_cls.side_effect = [json_sock, nmea_sock]
+         mock_select.return_value = ([json_sock], [], [])
+ 
+-        rudder_max = math.radians(30.0)
+-        ap = PypilotAutopilot(
+-            host="test",
+-            json_port=23322,
+-            nmea_port=20220,
+-            rudder_max=rudder_max,
+-        )
++        rate = math.radians(10.0)
++        ap = PypilotAutopilot(host="test", rudder_max=math.radians(30.0), rudder_rate_max=rate)
+ 
+-        cmd = ap.compute(sensors, dt=0.05)
++        a1 = ap.compute(sensors, dt=0.05).rudder_angle
++        mock_select.return_value = ([], [], [])  # no new data: same command kept
++        a2 = ap.compute(sensors, dt=0.05).rudder_angle
+         # Negated: pypilot positive = port, sim positive = starboard
+-        expected_angle = -0.5 * rudder_max
+-        assert cmd.rudder_angle == pytest.approx(expected_angle)
++        assert a1 == pytest.approx(-0.5 * rate * 0.05)
++        assert a2 == pytest.approx(-0.5 * rate * 0.10)
+ 
+     @patch("sailsim.autopilot.pypilot.socket.socket")
+     @patch("sailsim.autopilot.pypilot.select.select")
+-    def test_compute_full_servo_gives_full_rudder(self, mock_select, mock_socket_cls, sensors):
+-        """servo.command=1.0 maps to -rudder_max (full port)."""
++    def test_zero_command_holds_rudder(self, mock_select, mock_socket_cls, sensors):
++        """Q1-B: a zero speed demand keeps the rudder where it is (no recentring)."""
+         json_sock = _make_mock_socket(b"servo.command=1.0\n")
+         nmea_sock = _make_mock_socket()
+         mock_socket_cls.side_effect = [json_sock, nmea_sock]
+         mock_select.return_value = ([json_sock], [], [])
+ 
+-        rudder_max = math.radians(30.0)
+         ap = PypilotAutopilot(
+-            host="test",
+-            json_port=23322,
+-            nmea_port=20220,
+-            rudder_max=rudder_max,
++            host="test", rudder_max=math.radians(30.0), rudder_rate_max=math.radians(10.0)
+         )
++        held = ap.compute(sensors, dt=0.5).rudder_angle
++        json_sock.recv.return_value = b"servo.command=0.0\n"
++        for _ in range(10):
++            angle = ap.compute(sensors, dt=0.5).rudder_angle
++        assert held == pytest.approx(-math.radians(5.0))
++        assert angle == pytest.approx(held)
+ 
+-        cmd = ap.compute(sensors, dt=1.0)
++    @patch("sailsim.autopilot.pypilot.socket.socket")
++    @patch("sailsim.autopilot.pypilot.select.select")
++    def test_full_command_stops_at_rudder_limit(self, mock_select, mock_socket_cls, sensors):
++        """The integrated rudder angle never exceeds rudder_max."""
++        json_sock = _make_mock_socket(b"servo.command=1.0\n")
++        nmea_sock = _make_mock_socket()
++        mock_socket_cls.side_effect = [json_sock, nmea_sock]
++        mock_select.return_value = ([json_sock], [], [])
++
++        rudder_max = math.radians(30.0)
++        ap = PypilotAutopilot(
++            host="test", rudder_max=rudder_max, rudder_rate_max=math.radians(10.0)
++        )
++        for _ in range(10):
++            cmd = ap.compute(sensors, dt=1.0)
+         assert cmd.rudder_angle == pytest.approx(-rudder_max)
+ 
+     @patch("sailsim.autopilot.pypilot.socket.socket")
+     @patch("sailsim.autopilot.pypilot.select.select")
+-    def test_compute_updates_rudder_each_step(self, mock_select, mock_socket_cls, sensors):
+-        """Rudder angle updates (not accumulates) each compute() call."""
++    def test_comm_loss_beyond_timeout_stops_actuator_and_latches(
++        self, mock_select, mock_socket_cls, sensors
++    ):
++        """Q1-E: after comm_timeout without pypilot, the actuator stops and a fault is latched."""
+         json_sock = _make_mock_socket(b"servo.command=0.5\n")
+         nmea_sock = _make_mock_socket()
+-        mock_socket_cls.side_effect = [json_sock, nmea_sock]
++        mock_socket_cls.side_effect = [json_sock, nmea_sock] + [OSError("down")] * 50
+         mock_select.return_value = ([json_sock], [], [])
+ 
+-        rudder_max = math.radians(30.0)
+         ap = PypilotAutopilot(
+             host="test",
+-            json_port=23322,
+-            nmea_port=20220,
+-            rudder_max=rudder_max,
++            rudder_max=math.radians(30.0),
++            rudder_rate_max=math.radians(10.0),
++            comm_timeout=1.0,
+         )
++        a0 = ap.compute(sensors, dt=0.5).rudder_angle
++        nmea_sock.sendall.side_effect = OSError("connection lost")
++        moving = ap.compute(sensors, dt=0.5).rudder_angle  # 0.5 s lost: still last command
++        assert not ap.fault
++        assert moving == pytest.approx(a0 - 0.5 * math.radians(10.0) * 0.5)
++        stopped = ap.compute(sensors, dt=0.5).rudder_angle  # 1.0 s lost: timeout reached
++        assert ap.fault
++        assert stopped == pytest.approx(moving)  # actuator no longer moves
++        later = ap.compute(sensors, dt=0.5).rudder_angle
++        assert later == pytest.approx(stopped)
+ 
+-        ap.compute(sensors, dt=0.05)
+-
+-        # Second call with same servo.command — rudder should be same, not accumulated
+-        json_sock.recv.return_value = b"servo.command=0.5\n"
+-        cmd2 = ap.compute(sensors, dt=0.05)
++    @patch("sailsim.autopilot.pypilot.socket.socket")
++    @patch("sailsim.autopilot.pypilot.select.select")
++    def test_fault_stays_latched_after_reconnection(self, mock_select, mock_socket_cls, sensors):
++        """Q1-E: a latched fault keeps the actuator stopped until reset_fault()."""
++        json_sock = _make_mock_socket(b"servo.command=0.5\n")
++        nmea_sock = _make_mock_socket()
++        mock_socket_cls.side_effect = [json_sock, nmea_sock]
++        mock_select.return_value = ([json_sock], [], [])
+ 
+-        expected = -0.5 * rudder_max
+-        assert cmd2.rudder_angle == pytest.approx(expected)
++        ap = PypilotAutopilot(host="test", rudder_rate_max=math.radians(10.0))
++        ap.compute(sensors, dt=0.05)
++        ap.fault = True
++        a1 = ap.compute(sensors, dt=0.5).rudder_angle
++        a2 = ap.compute(sensors, dt=0.5).rudder_angle
++        assert a2 == pytest.approx(a1)
++        ap.reset_fault()
++        a3 = ap.compute(sensors, dt=0.5).rudder_angle
++        assert a3 != pytest.approx(a2)
+ 
+     @patch("sailsim.autopilot.pypilot.socket.socket")
+     @patch("sailsim.autopilot.pypilot.select.select")
+@@ -370,3 +407,61 @@ class TestProtocol:
+         json_sock.connect.assert_called_once_with(("test", 23322))
+         # NMEA connects to nmea_port
+         nmea_sock.connect.assert_called_once_with(("test", 20220))
++
++
++class TestVirtualImu:
++    """Q1-C/D: virtual IMU datagram sent to pypilot's simulated IMU."""
++
++    @patch("sailsim.autopilot.pypilot.socket.socket")
++    @patch("sailsim.autopilot.pypilot.select.select")
++    def test_imu_datagram_carries_heading_rate_and_roll(
++        self, mock_select, mock_socket_cls, sensors
++    ):
++        """Each compute() sends heading (deg, 0-360), yaw rate (deg/s) and roll (deg) over UDP."""
++        json_sock = _make_mock_socket(b"servo.command=0.0\n")
++        nmea_sock = _make_mock_socket()
++        udp_sock = _make_mock_socket()
++        mock_socket_cls.side_effect = [json_sock, nmea_sock, udp_sock]
++        mock_select.return_value = ([json_sock], [], [])
++
++        ap = PypilotAutopilot(host="test", imu_port=20230)
++        ap.compute(sensors, dt=0.05)
++
++        payload, addr = udp_sock.sendto.call_args[0]
++        data = json.loads(payload.decode())
++        assert addr == ("test", 20230)
++        assert data["heading"] == pytest.approx(180.0)
++        assert data["headingrate"] == pytest.approx(math.degrees(0.02))
++        assert data["roll"] == pytest.approx(5.0)
++
++    @patch("sailsim.autopilot.pypilot.socket.socket")
++    @patch("sailsim.autopilot.pypilot.select.select")
++    def test_connect_sets_zero_heading_offset(self, mock_select, mock_socket_cls, sensors):
++        """With the virtual IMU, the adapter sets imu.heading_offset=0 when it connects."""
++        json_sock = _make_mock_socket(b"servo.command=0.0\n")
++        nmea_sock = _make_mock_socket()
++        udp_sock = _make_mock_socket()
++        mock_socket_cls.side_effect = [json_sock, nmea_sock, udp_sock]
++        mock_select.return_value = ([json_sock], [], [])
++
++        ap = PypilotAutopilot(host="test", imu_port=20230)
++        ap.compute(sensors, dt=0.05)
++
++        sent = b"".join(c[0][0] for c in json_sock.sendall.call_args_list)
++        assert b"imu.heading_offset=0\n" in sent
++
++    @patch("sailsim.autopilot.pypilot.socket.socket")
++    @patch("sailsim.autopilot.pypilot.select.select")
++    def test_no_imu_traffic_when_disabled(self, mock_select, mock_socket_cls, sensors):
++        """imu_port=None (default): no UDP socket and no heading-offset message."""
++        json_sock = _make_mock_socket(b"servo.command=0.0\n")
++        nmea_sock = _make_mock_socket()
++        mock_socket_cls.side_effect = [json_sock, nmea_sock]
++        mock_select.return_value = ([json_sock], [], [])
++
++        ap = PypilotAutopilot(host="test")
++        ap.compute(sensors, dt=0.05)
++
++        assert mock_socket_cls.call_count == 2
++        sent = b"".join(c[0][0] for c in json_sock.sendall.call_args_list)
++        assert b"imu.heading_offset" not in sent

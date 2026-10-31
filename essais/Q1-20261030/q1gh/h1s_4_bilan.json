@@ -1,0 +1,37 @@
+{
+ "label": "h1s_4",
+ "couche_servo": true,
+ "reglages": [],
+ "steps": 1201,
+ "wall_s": 62.4,
+ "dt_mur_moy_ms": 51.59,
+ "dt_mur_max_ms": 80.2,
+ "cap_initial": 5.73,
+ "cap_final": -3.52,
+ "cap_min": -3.54,
+ "cap_max": 5.81,
+ "barre_min": -1.0,
+ "barre_max": 3.5,
+ "raw_msgs": 1249,
+ "raw_valeurs_distinctes": [
+  -1.0,
+  0.0,
+  1.0
+ ],
+ "inversions": 10,
+ "inversion_min_s": 2.71,
+ "drapeaux_vus": [
+  "DRIVER_TIMEOUT",
+  "ENGAGED",
+  "SYNC"
+ ],
+ "premier_saturated_s": null,
+ "premiere_butee_s": null,
+ "angle_pypilot_min": -3.5,
+ "angle_pypilot_max": 1.0,
+ "servo_command_min": -0.207,
+ "servo_command_max": 0.179,
+ "consigne_pypilot": [
+  0.0
+ ]
+}

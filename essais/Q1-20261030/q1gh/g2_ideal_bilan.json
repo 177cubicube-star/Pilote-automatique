@@ -1,0 +1,36 @@
+{
+ "label": "g2_ideal",
+ "couche_servo": false,
+ "reglages": [],
+ "steps": 801,
+ "wall_s": 41.8,
+ "dt_mur_moy_ms": 51.62,
+ "dt_mur_max_ms": 58.0,
+ "cap_initial": 1.0,
+ "cap_final": -1.05,
+ "cap_min": -2.71,
+ "cap_max": 1.07,
+ "barre_min": -0.23,
+ "barre_max": 3.01,
+ "raw_msgs": 837,
+ "raw_valeurs_distinctes": [
+  -1.0,
+  0.0
+ ],
+ "inversions": 0,
+ "inversion_min_s": null,
+ "drapeaux_vus": [
+  "ENGAGED",
+  "SYNC"
+ ],
+ "premier_saturated_s": null,
+ "premiere_butee_s": null,
+ "angle_pypilot_min": 0,
+ "angle_pypilot_max": 0,
+ "servo_command_min": -0.07,
+ "servo_command_max": 0.037,
+ "consigne_pypilot": [
+  0.0,
+  359.0
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "label": "h5b_butee_inverse",
+ "couche_servo": true,
+ "reglages": [
+  "servo.gain=-1"
+ ],
+ "steps": 601,
+ "wall_s": 31.5,
+ "dt_mur_moy_ms": 51.66,
+ "dt_mur_max_ms": 83.0,
+ "cap_initial": 5.73,
+ "cap_final": -88.49,
+ "cap_min": -88.49,
+ "cap_max": 5.81,
+ "barre_min": -20.5,
+ "barre_max": 0.0,
+ "raw_msgs": 632,
+ "raw_valeurs_distinctes": [
+  0.0,
+  1.0
+ ],
+ "inversions": 0,
+ "inversion_min_s": null,
+ "drapeaux_vus": [
+  "DRIVER_TIMEOUT",
+  "ENGAGED",
+  "MAX_RUDDER_FAULT",
+  "SYNC"
+ ],
+ "premier_saturated_s": null,
+ "premiere_butee_s": 12.71,
+ "angle_pypilot_min": 1.0,
+ "angle_pypilot_max": 20.5,
+ "servo_command_min": -0.599,
+ "servo_command_max": 0.044,
+ "consigne_pypilot": [
+  0.0
+ ]
+}

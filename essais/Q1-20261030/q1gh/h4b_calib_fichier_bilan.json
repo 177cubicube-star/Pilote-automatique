@@ -1,0 +1,49 @@
+{
+ "label": "h4b_calib_fichier",
+ "couche_servo": true,
+ "reglages": [
+  "servo.speed.min=30"
+ ],
+ "steps": 801,
+ "wall_s": 41.92,
+ "dt_mur_moy_ms": 51.77,
+ "dt_mur_max_ms": 110.9,
+ "cap_initial": 5.73,
+ "cap_final": 19.57,
+ "cap_min": 3.12,
+ "cap_max": 19.73,
+ "barre_min": -1.37,
+ "barre_max": 9.73,
+ "raw_msgs": 839,
+ "raw_valeurs_distinctes": [
+  -1.0,
+  -0.9692,
+  -0.9127,
+  -0.8611,
+  -0.8141,
+  -0.7712,
+  -0.7318,
+  -0.6957,
+  -0.6626,
+  -0.6322,
+  -0.6041,
+  -0.5782
+ ],
+ "inversions": 5,
+ "inversion_min_s": 0.653,
+ "drapeaux_vus": [
+  "DRIVER_TIMEOUT",
+  "ENGAGED",
+  "SYNC"
+ ],
+ "premier_saturated_s": null,
+ "premiere_butee_s": null,
+ "angle_pypilot_min": -9.73,
+ "angle_pypilot_max": 1.37,
+ "servo_command_min": -1.368,
+ "servo_command_max": 0.251,
+ "consigne_pypilot": [
+  0.0,
+  20.0
+ ]
+}

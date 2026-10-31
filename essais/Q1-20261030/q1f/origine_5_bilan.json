@@ -1,0 +1,16 @@
+{
+ "label": "origine_5",
+ "steps": 1201,
+ "sim_s": 59.99999999999873,
+ "wall_s": 61.87,
+ "dt_mur_moy_ms": 51.55,
+ "dt_mur_ecart_type_ms": 0.67,
+ "dt_mur_max_ms": 59.9,
+ "erreur_moy": 8.92,
+ "ecart_max": 13.75,
+ "cap_moy_t30": -9.41,
+ "cap_t60": -8.82,
+ "cap_max_10s": 5.78,
+ "barre_max": 2.04,
+ "servo_msgs": 516
+}
