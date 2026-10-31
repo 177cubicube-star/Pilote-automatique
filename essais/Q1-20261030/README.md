@@ -153,6 +153,19 @@ Type de banc (note de portée du plan) : **SIL contrôleur + couche servo pypilo
 
 Fichiers : `q1gh/` (scripts `q1h_run.py`, `q1h_un.sh`, `verif_calib.py` ; trajectoires, journaux pypilot et bilans JSON).
 
+## Image Docker construite et correctif v5 (2026-10-31)
+
+**Constat de Mathieu (sur son poste, Docker Desktop)** : l'image `sailsim-pypilot:test` se construit au complet avec le Dockerfile v4 (16 étapes, dont le fork `seandepagnier/RTIMULib2` et les trois patchs). Version de pypilot clonée dans l'image : `fdff88ffe59c9014cead2a70451d0beca97dbeb1`, la même que celle des essais Q1. **Pas encore exécuté** : conteneur démarré et essai de bout en bout sous Docker.
+
+**Défaut trouvé à la relecture et corrigé en v5** : les deux patchs écoutaient en UDP sur `127.0.0.1`. Docker relaie les ports publiés vers l'adresse réseau du conteneur, pas vers sa boucle locale : l'IMU virtuelle et l'angle de barre n'auraient jamais été reçus. Vérifié par analogie sans Docker (`q1gh/sonde_bind.py`) : avec une écoute `127.0.0.1`, un paquet envoyé à l'adresse réseau de la machine n'est pas reçu (`imu.heading = false`) ; avec `0.0.0.0`, il l'est (123,4° envoyés, 123,4° lus).
+
+**Correctif v5** : `q1-adaptateur-pypilot-v5.patch` (8 fichiers, +743 / −50 lignes ; inclut et remplace v4, conservé). Vérifié applicable sur un clone propre de `ef1e293`. SHA-256 : `26f9f54366a5ccf76fb1f1bd4f57c0389df24fefa98e908fc9e77db5057b2ff2`.
+
+- Adresse d'écoute UDP des deux patchs : variable d'environnement `SIM_UDP_BIND`, défaut `127.0.0.1` (installation locale) ; le Dockerfile la règle à `0.0.0.0`. Le journal de pypilot affiche maintenant l'adresse réelle (`sim imu: listening on udp ('0.0.0.0', 20230)`).
+- Dockerfile : pypilot **fixé** sur `fdff88f` (`ARG PYPILOT_COMMIT`), au lieu de la dernière version. Le fork RTIMULib2 n'est pas fixé (commit non connu).
+- Validation : 322 tests réussis, `ruff check` réussi ; non-régression sans Docker, défaut `127.0.0.1` : vérin idéal 0,78° (Q1-F : 0,77–0,78°), couche servo cap final +2,3°, 11 inversions, commandes −1 / 0 / +1.
+- **Non vérifié** : la reconstruction de l'image avec v5 et l'essai de bout en bout sous Docker (à faire sur le poste de Mathieu).
+
 ### Reste à faire dans Q1 (au 2026-10-31)
 
 - ~~Q1-F~~ et ~~transitoire de départ~~ : faits le 2026-10-31 (section Q1-F).
