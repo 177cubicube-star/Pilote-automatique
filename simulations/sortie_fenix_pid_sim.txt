@@ -1,0 +1,44 @@
+=== S0 : validation du banc (PD pur, sans bande morte ni bruit, vérin idéal) ===
+Théorie : T s² + (1 + K·kd) s + K·kp = 0 ; kp = 0,35 deg/deg ; kd réel = 0,06 (filtre tel que codé) ou 0,30 (filtre corrigé)
+  f=0.4 filtre codé   : ζ théorique = 1.30 (suramorti) | dépassement simulé = 0.00 % | |cap|<0,5° à 79 s
+  f=0.4 filtre corrigé : ζ théorique = 1.32 (suramorti) | dépassement simulé = 0.00 % | |cap|<0,5° à 81 s
+  f=1.0 filtre codé   : ζ théorique = 1.30 (suramorti) | dépassement simulé = 0.00 % | |cap|<0,5° à 32 s
+  f=1.0 filtre corrigé : ζ théorique = 1.36 (suramorti) | dépassement simulé = 0.00 % | |cap|<0,5° à 34 s
+
+=== S1 : écart de 5° à la mise en route, gains par défaut (Kp 3,5 / Ki 0,1 / Kd 3) ===
+  (vérin sans bande morte : on isole l'effet de la loi de commande)
+  modes : fenix = tel que codé | none = pas de facteur de vitesse | inverse = hypothèse (gains ÷ f²)
+   f | mode     | f_ctl Kp_eff | dépass.% <1° à (s) barre°/min
+ 0.4 | fenix    |  0.40   0.56 |     67.9      >600       52.1
+ 0.4 | none     |  1.00   3.50 |     45.5       154       64.4
+ 0.4 | inverse  |  2.50  21.88 |     32.3        38      238.4
+ 0.6 | fenix    |  0.60   1.26 |     50.8       395       30.9
+ 0.6 | none     |  1.00   3.50 |     38.0       121       63.6
+ 0.6 | inverse  |  1.67   9.72 |     28.2        59      138.4
+ 0.8 | fenix    |  0.80   2.24 |     38.0       136       51.4
+ 0.8 | none     |  1.00   3.50 |     33.6       102       63.6
+ 0.8 | inverse  |  1.25   5.47 |     29.4        73       86.1
+ 1.0 | fenix    |  1.00   3.50 |     30.6        88       63.5
+ 1.0 | none     |  1.00   3.50 |     30.6        88       63.5
+ 1.0 | inverse  |  1.00   3.50 |     30.6        88       63.5
+ 1.6 | fenix    |  1.00   3.50 |     24.9        63       63.6
+ 1.6 | none     |  1.00   3.50 |     24.9        63       63.6
+ 1.6 | inverse  |  0.62   1.37 |     33.6       123       46.2
+
+=== S2 : balayage de Kp configuré, f = 1,0, embardée de 20° ===
+  Kp | plafond f_ctl Kp_eff Kd_eff lim.barre | barre max dépass.%
+ 2.0 |    1.75  1.00   2.00   30.0     35.0° |      3.9°     48.5
+ 3.5 |    1.00  1.00   3.50   30.0     35.0° |      6.3°     26.6
+ 5.0 |    0.70  0.70   2.45   42.9     17.1° |      4.2°     26.9
+ 7.0 |    0.50  0.50   1.75   60.0      8.8° |      3.2°     27.0
+10.0 |    0.35  0.35   1.22   85.7      4.3° |      2.1°     29.4
+
+=== S3 : filtre dérivé codé vs corrigé (f = 1,0, bruit de cap 0,2°) ===
+variante   | RMS cap° barre°/min
+codé       |     1.24        0.6
+corrigé    |     1.30        0.6
+
+=== S4 : bande morte « décalée » (écart initial 0,3°, PD seul, vérin idéal) ===
+  bande morte 0.5° -> cap final après 300 s : +0.50°
+  bande morte 0.0° -> cap final après 300 s : +0.00°
+

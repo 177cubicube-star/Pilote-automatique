@@ -1,0 +1,44 @@
+=== S0 : validation (servo idéal, sans filtre ni bruit ni terme racine) ===
+  f=0.4 pôles=[-0.023+0.039j -0.023-0.039j -0.137+0.j   ]
+      cap à t=20/60/120 s  théorie : ['+4.20', '+0.18', '-0.32'] | simulé : ['+4.19', '+0.17', '-0.32']
+  f=1.0 pôles=[-0.069+0.019j -0.069-0.019j -0.35 +0.j   ]
+      cap à t=20/60/120 s  théorie : ['+3.25', '+0.37', '+0.00'] | simulé : ['+3.24', '+0.37', '+0.00']
+
+=== S1 : écart initial de 5° (gains par défaut de `basic`), servo réel vs idéal ===
+   f | servo  | dépass.% <1° à (s)  RMS° barre°/min quantum° impuls./min
+ 0.4 | ideal  |     38.0       114  0.21        5.7     0.01       565.8
+ 0.4 | real   |     46.1       542  0.76        3.8     2.95         1.4
+ 0.6 | ideal  |     22.7        57  0.04        5.6     0.01       580.8
+ 0.6 | real   |     35.2       516  0.79        7.6     2.94         2.2
+ 1.0 | ideal  |      9.1        25  0.05        5.6     0.01       596.0
+ 1.0 | real   |     29.7       594  0.56       20.4     3.00         5.7
+ 1.6 | ideal  |      2.8        23  0.04        5.6     0.01       601.9
+ 1.6 | real   |     30.2       549  1.03       25.8     3.03         4.2
+
+=== S2 : sensibilité à la vitesse du vérin V (f = 1,0, servo idéal puis réel) ===
+ V°/s | servo  | pôle le + lent dépass.% <1° à (s)  RMS°
+    3 | ideal  |  -0.025+0.035j     26.3        71  0.04
+    3 | real   |  -0.025+0.035j     22.0       587  0.79
+    7 | ideal  |  -0.069+0.019j      9.1        25  0.05
+    7 | real   |  -0.069+0.019j     29.7       594  0.56
+   12 | ideal  |  -0.043+0.000j      2.3        23  0.05
+   12 | real   |  -0.043+0.000j     54.8      >600  0.92
+   20 | ideal  |  -0.039+0.000j      2.5        22  0.05
+   20 | real   |  -0.039+0.000j     73.8       595  0.93
+
+=== S3 : mécanisme de période du servo (barre de compensation 3°, f = 1,0, V = 7°/s) ===
+période speed.min | quantum° impuls./min RMS cap° barre°/min
+    0.1      100% |     1.01        31.1     0.21       22.3
+    0.1       30% |     0.27        13.4     0.07        2.3
+    0.2      100% |     1.64         7.7     0.29       10.9
+    0.2       30% |     0.47         7.0     0.11        3.8
+    0.4      100% |     3.02         3.4     0.56       22.3
+    0.4       30% |     0.89         6.0     0.20        5.4
+    1.0      100% |     7.00         5.2     1.74       37.6
+    1.0       30% |     2.10         5.0     0.57       11.3
+
+=== S4 : changement de consigne de +20° (f = 1,0, servo réel) ===
+  FF | dépass.% <1° à (s)
+ 0.6 |      6.3       545
+ 0.0 |     11.4      >600
+

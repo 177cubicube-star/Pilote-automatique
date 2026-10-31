@@ -1,0 +1,64 @@
+=== V0 : validation du banc commun contre les deux scripts d'origine ===
+(bruit et houle coupés, mêmes réglages, écart maximal de cap entre ancien et nouveau code)
+  pypilot ideal : écart max de cap = 0.00e+00 °
+  pypilot real  : écart max de cap = 0.00e+00 °
+  Fenix  idéal  : écart max de cap = 0.00e+00 °
+  (un écart de l'ordre de 1e-9 à 1e-6 signifie : même logique de commande)
+
+Moyenne sur 5 graines (même bruit et mêmes perturbations pour tous les algorithmes).
+* servo idéal : référence théorique, pas un vérin réel ; ses « activations » ne sont pas comparables.
+Wh/h : 12 V × (1 A à 10 A) × rapport PWM moyen — ordre de grandeur, électronique de commande exclue.
+
+=== E0 : écart initial de 5°, sans perturbation (RMS sur t > 400 s) ===
+algorithme                 | établ.±0,5° dépass.°  RMS° max|e|° | activ./min marche% barre°/min | Wh/h bas–haut | sat.% cible écr.%
+Fenix codé (10 Hz)         |        >600     0.00  5.00    5.00 |        0.0     0.0        0.0 |  0.00– 0.00 |   0.0         0.0
+Fenix codé (100 Hz)        |        >600     2.92  1.62    2.81 |        1.0     0.7        0.9 |  0.02– 0.24 |   0.0         0.0
+Fenix codé 100Hz arrêt0,6  |        >600     0.00  5.00    5.00 |        0.0     0.0        0.0 |  0.00– 0.00 |   0.0         0.0
+Fenix piste A (100 Hz)     |        >600     2.90  1.60    2.73 |        1.0     0.9        0.9 |  0.02– 0.24 |   0.0         0.0
+pypilot défaut             |        >600     1.49  0.77    1.36 |        3.6     2.6       11.5 |  0.31– 3.10 |   0.0         0.0
+pypilot réglé 0,1 s/30%    |          34     0.49  0.08    0.18 |       24.5     5.7        7.6 |  0.21– 2.05 |   0.0         0.0
+pypilot servo idéal*       |          34     0.49  0.05    0.12 |        0.1   100.0        6.0 |  0.16– 1.63 |   0.0         0.0
+
+=== P1 : variation de vent (échelon +2° à 100 s, rampe vers −1°, retour à 0) (RMS sur t > 60 s) ===
+algorithme                 | établ.±0,5° dépass.°  RMS° max|e|° | activ./min marche% barre°/min | Wh/h bas–haut | sat.% cible écr.%
+Fenix codé (10 Hz)         |           —        — 54.48   97.96 |        0.0     0.0        0.0 |  0.00– 0.00 |   0.0        37.3
+Fenix codé (100 Hz)        |           —        —  3.33    7.70 |        1.8     1.2        1.5 |  0.04– 0.40 |   0.0         0.0
+Fenix codé 100Hz arrêt0,6  |           —        —  8.42   13.24 |        0.6     0.8        1.1 |  0.03– 0.29 |   0.0         0.0
+Fenix piste A (100 Hz)     |           —        —  3.34    7.66 |        1.7     1.4        1.4 |  0.04– 0.37 |   0.0         0.0
+pypilot défaut             |           —        —  0.93    3.42 |        4.0     2.8       12.6 |  0.34– 3.40 |   0.0         0.0
+pypilot réglé 0,1 s/30%    |           —        —  0.72    3.24 |       20.0     4.5        6.0 |  0.16– 1.63 |   0.0         0.0
+pypilot servo idéal*       |           —        —  0.70    3.19 |        0.1   100.0        6.4 |  0.17– 1.72 |   0.0         0.0
+
+=== P2 : houle (lacet direct ±2,5° environ, périodes 4 à 9 s) (RMS sur t > 60 s) ===
+algorithme                 | établ.±0,5° dépass.°  RMS° max|e|° | activ./min marche% barre°/min | Wh/h bas–haut | sat.% cible écr.%
+Fenix codé (10 Hz)         |           —        —  1.08    2.34 |        0.0     0.0        0.0 |  0.00– 0.00 |   0.0         0.0
+Fenix codé (100 Hz)        |           —        —  1.08    2.34 |        0.0     0.0        0.0 |  0.00– 0.00 |   0.0         0.0
+Fenix codé 100Hz arrêt0,6  |           —        —  1.08    2.34 |        0.0     0.0        0.0 |  0.00– 0.00 |   0.0         0.0
+Fenix piste A (100 Hz)     |           —        —  1.08    2.34 |        0.0     0.0        0.0 |  0.00– 0.00 |   0.0         0.0
+pypilot défaut             |           —        —  1.22    3.30 |       11.4     8.1       36.0 |  0.97– 9.73 |   0.0         0.0
+pypilot réglé 0,1 s/30%    |           —        —  1.14    2.58 |      130.6    40.5       54.2 |  1.46–14.65 |   0.0         0.0
+pypilot servo idéal*       |           —        —  1.14    2.57 |        0.1   100.0       54.4 |  1.47–14.70 |   0.0         0.0
+
+=== P3 : changement de vitesse du bateau (f : 1,0 → 0,5 → 1,0), avec barre de compensation de 2° dès 100 s (RMS sur t > 60 s) ===
+algorithme                 | établ.±0,5° dépass.°  RMS° max|e|° | activ./min marche% barre°/min | Wh/h bas–haut | sat.% cible écr.%
+Fenix codé (10 Hz)         |           —        — 80.72  151.19 |        0.0     0.0        0.0 |  0.00– 0.00 |   0.0        27.4
+Fenix codé (100 Hz)        |           —        —  2.74    6.00 |        0.9     0.6        0.8 |  0.02– 0.21 |   0.0         0.0
+Fenix codé 100Hz arrêt0,6  |           —        —  7.96   11.86 |        0.4     0.5        0.7 |  0.02– 0.19 |   0.0         0.0
+Fenix piste A (100 Hz)     |           —        —  2.82    6.06 |        0.9     0.8        0.7 |  0.02– 0.20 |   0.0         0.0
+pypilot défaut             |           —        —  0.74    2.51 |        3.4     2.4       10.7 |  0.29– 2.90 |   0.0         0.0
+pypilot réglé 0,1 s/30%    |           —        —  0.39    2.13 |       16.5     3.8        5.0 |  0.14– 1.36 |   0.0         0.0
+pypilot servo idéal*       |           —        —  0.37    2.07 |        0.1   100.0        6.1 |  0.16– 1.65 |   0.0         0.0
+
+=== P4 : combinaison P1 + P2 + P3 (RMS sur t > 60 s) ===
+algorithme                 | établ.±0,5° dépass.°  RMS° max|e|° | activ./min marche% barre°/min | Wh/h bas–haut | sat.% cible écr.%
+Fenix codé (10 Hz)         |           —        — 53.71  101.01 |        0.0     0.0        0.0 |  0.00– 0.00 |   0.0        18.8
+Fenix codé (100 Hz)        |           —        —  7.21   18.31 |        2.4     2.0        2.5 |  0.07– 0.69 |   0.0         0.0
+Fenix codé 100Hz arrêt0,6  |           —        —  9.46   23.46 |        0.9     1.4        1.9 |  0.05– 0.53 |   0.0         0.0
+Fenix piste A (100 Hz)     |           —        —  6.99   17.21 |        2.3     2.4        2.3 |  0.06– 0.63 |   0.0         0.0
+pypilot défaut             |           —        —  1.47    5.90 |       12.4     8.8       39.2 |  1.06–10.60 |   0.0         0.0
+pypilot réglé 0,1 s/30%    |           —        —  1.36    5.28 |      129.6    40.1       53.7 |  1.45–14.50 |   0.0         0.0
+pypilot servo idéal*       |           —        —  1.35    5.26 |        0.1   100.0       53.9 |  1.46–14.56 |   0.0         0.0
+
+Lecture : aucun classement n'est tiré ici. Les compromis précision / usure / énergie
+se jugent avec des seuils que Mathieu doit fixer (plan de tests § 10.6).
+
