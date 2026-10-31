@@ -1,0 +1,10 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.18, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/sailsim_audit/herostrat_sailsim
+configfile: pyproject.toml
+plugins: cov-7.1.0
+collected 16 items
+
+tests/integration/test_simulator_physics.py ................             [100%]
+
+============================== 16 passed in 3.76s ==============================

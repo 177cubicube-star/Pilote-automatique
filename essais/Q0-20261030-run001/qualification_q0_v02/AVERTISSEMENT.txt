@@ -1,0 +1,4 @@
+Ce script lance Q0, mais ne certifie pas les performances d'un autopilote.
+Un code retour 1 du CLI SailSim peut signifier une porte qualité échouée,
+non un plantage. Consulter tous les logs. Les tests Q0-05 (convergence
+dt) et Q0-06/Q0-07 (scénarios physiques additionnels) restent à réaliser.

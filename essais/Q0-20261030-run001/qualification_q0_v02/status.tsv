@@ -1,0 +1,6 @@
+test	code_retour	observation
+pytest_sans_docker	0	tests_a_examiner
+physique_statique	0	tests_a_examiner
+j24_a	1	execution_et_qualite_a_examiner
+j24_b	1	execution_et_qualite_a_examiner
+comparaison_csv	0	identiques_octet_pour_octet

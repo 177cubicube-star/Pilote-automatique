@@ -1,0 +1,18 @@
+Scenario: calm_heading_hold
+  Yacht: j24
+  Autopilot: nomoto (omega_n=0.4, zeta=0.8) [nomoto]
+  Duration: 120.0s, dt: 0.05s
+  Wind: 5.0 m/s @ 60°
+  Target heading: 0°
+
+Running simulation...
+Completed: 2401 steps recorded
+
+Telemetry saved to: /tmp/sailsim_audit/herostrat_sailsim/resultats/qualification_q0_v02/j24_a.csv
+
+Quality Gate Result: FAIL
+----------------------------------------
+  [FAIL] mean_heading_error_deg: 38.58 (limit: 3.00)
+  [FAIL] max_heading_deviation_deg: 41.09 (limit: 10.00)
+  [OK] max_rudder_rate_deg_per_s: 5.00 (limit: 40.00)
+  [FAIL] settling_time_s: 120.00 (limit: 30.00)

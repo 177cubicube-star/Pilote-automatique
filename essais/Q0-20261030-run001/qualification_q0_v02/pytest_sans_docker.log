@@ -1,0 +1,46 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.18, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/sailsim_audit/herostrat_sailsim
+configfile: pyproject.toml
+plugins: cov-7.1.0
+collected 306 items
+
+tests/unit/test_aerodynamics.py ...............                          [  4%]
+tests/unit/test_analysis_empirical.py ................                   [ 10%]
+tests/unit/test_analysis_linear.py .....................                 [ 16%]
+tests/unit/test_autopilot_factory.py ......                              [ 18%]
+tests/unit/test_config.py ....................                           [ 25%]
+tests/unit/test_current_models.py ............                           [ 29%]
+tests/unit/test_desired_track.py ....                                    [ 30%]
+tests/unit/test_dynamics.py ........                                     [ 33%]
+tests/unit/test_dynamics_6dof.py ............                            [ 37%]
+tests/unit/test_force_data.py ........                                   [ 39%]
+tests/unit/test_hydrostatics.py ........                                 [ 42%]
+tests/unit/test_integration.py ....                                      [ 43%]
+tests/unit/test_json_recording.py ........                               [ 46%]
+tests/unit/test_maneuver_analysis.py .....                               [ 48%]
+tests/unit/test_nomoto.py ..............                                 [ 52%]
+tests/unit/test_pypilot.py ....................                          [ 59%]
+tests/unit/test_sail_trim.py ..............                              [ 63%]
+tests/unit/test_signalk.py .........                                     [ 66%]
+tests/unit/test_signalk_rs.py ..............                             [ 71%]
+tests/unit/test_steering_effort.py .....                                 [ 72%]
+tests/unit/test_viewer.py ..........                                     [ 76%]
+tests/unit/test_wave_forces.py .....                                     [ 77%]
+tests/unit/test_wave_models.py ..............                            [ 82%]
+tests/unit/test_waypoint_config.py ...                                   [ 83%]
+tests/unit/test_waypoint_guidance.py .......                             [ 85%]
+tests/unit/test_wind_models.py ................                          [ 90%]
+tests/integration/test_6dof_physics.py ......                            [ 92%]
+tests/integration/test_current_physics.py ....                           [ 94%]
+tests/integration/test_recording.py ..                                   [ 94%]
+tests/integration/test_simulator_physics.py ................             [100%]
+
+=============================== warnings summary ===============================
+tests/unit/test_viewer.py::test_viewer_target_lines
+tests/unit/test_viewer.py::test_viewer_torque_axes_visibility_on_page_switch
+  /tmp/sailsim_audit/herostrat_sailsim/.venv/lib/python3.13/site-packages/matplotlib/animation.py:920: UserWarning: Animation was deleted without rendering anything. This is most likely not intended. To prevent deletion, assign the Animation to a variable, e.g. `anim`, that exists until you output the Animation using `plt.show()` or `anim.save()`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 306 passed, 2 warnings in 14.84s =======================

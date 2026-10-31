@@ -1,0 +1,20 @@
+{
+  "run_id": "Q0-20261030-run001",
+  "statut": "Proposition - resultats executes, decision PENDING",
+  "execution_utc": "2026-10-31T00:52:07Z",
+  "machine": "conteneur Linux de la session Claude (cloud)",
+  "sources": {
+    "sailsim": {"repo": "herostrat/sailsim", "sha": "ef1e2930c85423b4f276ff6dabc5ec4ae3ca67c0", "clone": "depth 1"},
+    "pypilot_lu_pour_audit": {"repo": "pypilot/pypilot", "sha": "fdff88ffe59c9014cead2a70451d0beca97dbeb1"},
+    "fenix_lu_pour_audit": {"repo": "spascual90/Fenix", "sha": "b8410e50fa19bbad649b0d765cecf8aec2a25bc4"}
+  },
+  "environnement": {"python": "3.13.18", "numpy": "2.5.4", "scipy": "1.18.1", "pydantic": "2.14.2", "pytest": "9.2.0"},
+  "scripts": {
+    "qualifier_sailsim_v0-2.sh": "sha256 aac7e8be839c95bf03010679d2f3d587e5a8a176a55bb8e6eeec78eedaccdc9c (non modifie)",
+    "q0_barre_fixe.py": "Q0-06, ecrit pour ce run",
+    "q0_convergence_dt.py": "Q0-05, ecrit pour ce run"
+  },
+  "scenario_principal": {"nom": "calm_heading_hold", "yacht": "j24", "autopilot": "nomoto", "dt_s": 0.05, "duree_s": 120.0, "graine": "aucune (scenario sans vent rafale ni houle)"},
+  "empreintes": {"j24_a.csv": "e23f1d2bc32a344fde8cd37c7edb03fbea8bbd5c82d0497d65dff4f29bce5ed3", "j24_b.csv": "e23f1d2bc32a344fde8cd37c7edb03fbea8bbd5c82d0497d65dff4f29bce5ed3"},
+  "conventions": "cap en degres dans les CSV (heading_deg), barre en degres (rudder_deg), temps simule t en s ; barre positive = cap croissant (verifie Q0-06, profil default)"
+}

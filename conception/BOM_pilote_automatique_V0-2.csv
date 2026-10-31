@@ -1,0 +1,27 @@
+﻿ID,Groupe,Article,Quantite_scenario,Unite,Budget_unitaire_min_CAD_historique,Budget_unitaire_max_CAD_historique,Priorite_fonctionnelle,Statut_choix,Decision,Porte,Provenance,Risques_et_validation
+E01A,Calcul,ESP32-S3 carte de développement,0,unité,35,70,Candidat alternatif,À décider,D-01,G3/G4,BOM V0.1,"Alternative à Arduino Mega; prototype, pas équipement marin validé"
+E01B,Calcul,Arduino Mega 2560 compatible Fenix,1,unité,,,Candidat alternatif,À décider,D-01,G3/G4,Fenix README / audit,Prix à obtenir; quantité scénario uniquement
+E02A,Capteurs,IMU BNO085 breakout,0,unité,45,75,Candidat alternatif,À décider,D-04,G3/G5,BOM V0.1,"Validation magnétique, fusion et interface nécessaires"
+E02B,Capteurs,IMU ICM-20948 compatible firmware Fenix,1,unité,,,Candidat alternatif,À décider,D-04,G3/G5,Fenix README / audit,"Compatibilité exacte module, prix et calibration à confirmer"
+E03,Capteurs,Référence de cap indépendante / GNSS,0,unité,60,180,Option de validation,À vérifier,D-04,G5,BOM V0.1,COG GPS ≠ cap; ne remplace pas IMU par défaut
+E04A,Puissance,Pont H Pololu G2 24v21,0,unité,80,120,Candidat alternatif,À décider,D-06,G1,BOM V0.1,"Thermique, tensions, protections, capacité moteur à vérifier"
+E04B,Puissance,Driver Cytron MD10C ou équivalent,1,unité,,,Candidat alternatif,À décider,D-06,G1,Architecture audit source,Dimensionnement et capacités thermiques à prouver avant achat
+E04C,Puissance,Carte moteur inspirée PyPilot (schéma à auditer),0,unité,,,Candidat alternatif,À vérifier,D-06,G1/G3,pypilot_schematics,Non chiffré; conception/assemblage et sécurité à valider
+E05,Mesures,Shunt et mesure de courant bidirectionnelle,1,jeu,25,65,Fonction nécessaire,À vérifier,D-06,G1,BOM V0.1,"Compatible transitoires, tension et cadence de mesure"
+E06,Alimentation,DC/DC 12 V vers tension logique filtré,1,unité,35,90,Fonction nécessaire,À vérifier,D-01,G1,BOM V0.1,Version marine non confirmée
+E07,Protection,"Fusibles, porte-fusibles, TVS et câblage protégé",1,lot,50,120,Fonction nécessaire,À vérifier,D-06,G1,BOM V0.1,Calibre déterminé à partir des conducteurs et transitoires
+E08,Protection,Contacteur de coupure moteur à repos sûr,1,unité,45,110,Fonction nécessaire,À vérifier,D-06,G1,BOM V0.1,"Fonction autonome, redémarrage inactif, arrêt physique"
+E09,Interface sécurité,STOP et veille/auto matériel au cockpit,1,lot,35,90,Fonction nécessaire,À vérifier,D-10,G1/G5,BOM V0.1,Priorité absolue et accès en effort
+E10,Protection,Limites de course supplémentaires indépendantes,1,jeu,40,130,Fonction nécessaire,À vérifier,D-05,G1,"BOM V0.1, clarification V0.2",Dissocié du capteur de position O03; ne pas doubler budget capteur
+E11,Interface,Afficheur et touches robustes,0,unité,45,130,Option,À décider,D-10,G5,BOM V0.1,Non requis pour banc logiciel
+E12,Boîtier,"Boîtier IP67 et connectique, presse-étoupes",1,lot,100,240,Fonction nécessaire,À vérifier,D-06,G5,BOM V0.1,Indice IP réel après assemblage à confirmer
+E13,Câblage,"Fils étamés, cosses, gaines et supports",1,lot,80,180,Fonction nécessaire,À vérifier,D-06,G1/G5,BOM V0.1,Connectique et détrompage marine
+M01A,Mécanique,Vérin 12 V réversible compatible service pilote,1,unité,350,1100,Candidat générique,À décider,D-05,G1,BOM V0.1,Montant hypothétique générique; choix réel après validation thermique
+M01B,Mécanique,Firgelli FA-HF-100-12-XX (variante exacte à préciser),0,unité,,,Candidat alternatif,À vérifier,D-05,G1,Firgelli fiche fabricant,Duty 20% annoncé; source de risque; prix non fourni; ne pas cumuler avec M01A
+M02,Mécanique,"Support de pont, fixation barre et rotules inox",1,lot,80,220,Fonction nécessaire,À vérifier,D-05,G1,BOM V0.1,Dimensionnement géométrique Capri 22 avant sélection
+T01,Essais,"Multimètre, pince ampèremétrique, moyens de charge",1,lot,0,250,Outillage selon acquis,À vérifier,D-05,G1,BOM V0.1,Budget seulement si non possédé; essai de charge sécurisé
+T02,Essais,Mesure de température / capteur et journalisation,0,lot,,,Banc recommandé,À vérifier,D-05,G1,Ajout V0.2,Coût à obtenir; mesurer température externe ≠ enroulements
+O01,Interfaces,Interface NMEA 0183 isolée,0,unité,45,110,Option V2,À décider,D-10,G5,BOM V0.1,Inutile pour première qualification SIL
+O02,Interfaces,CAN / NMEA 2000 isolé,0,unité,90,250,Option V2,À décider,D-10,G5,BOM V0.1,Certification/integration à étudier
+O03,Capteurs,Capteur étanche de position de barre,1,unité,80,240,Fonction prioritaire,À vérifier,D-02,G1,BOM V0.1 reclassée,Mesure angle du safran et incohérences; distinct des butées
+SW01,Simulation,SailSim et banc d’intégration SIL,0,lot,,,Travail logiciel,À qualifier,D-09,G2/G3,herostrat/sailsim,Coût de main-d’œuvre non chiffré; logiciel libre sous réserve licences

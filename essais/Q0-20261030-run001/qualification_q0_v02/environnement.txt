@@ -1,0 +1,4 @@
+date_utc=2026-10-31T00:52:07Z
+git_sha=ef1e2930c85423b4f276ff6dabc5ec4ae3ca67c0
+?? resultats/
+Python 3.13.18
