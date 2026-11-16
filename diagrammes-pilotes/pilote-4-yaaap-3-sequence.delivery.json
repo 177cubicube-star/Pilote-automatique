@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "c85edd59-0215-40f9-b59e-1ba02bc534ab",
+  "status": "current",
+  "command": "deliver",
+  "type": "sequence",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-4-yaaap-3-sequence.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-4-yaaap-3-sequence.html",
+  "specification": {
+    "sha256": "1b98e8e58a0eb0129b232b1ab63064954715d9565e37480c87124a9efb8e25bc",
+    "bytes": 32844
+  },
+  "artifact": {
+    "sha256": "7260edb224d467bf781a587440318240030c477bf24457c867a52cf5360da44e",
+    "bytes": 763862
+  }
+}

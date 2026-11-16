@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "9bd5290a-ae23-4a95-b5e8-3b81eb081d84",
+  "status": "current",
+  "command": "deliver",
+  "type": "dataflow",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-2-fenix-2-dataflow.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-2-fenix-2-dataflow.html",
+  "specification": {
+    "sha256": "05638125ed0b4fa21ece9e32859dab3eb7667f881d5adaa8c1a5ecee6d77c11a",
+    "bytes": 33586
+  },
+  "artifact": {
+    "sha256": "27e3af98f38b57ce7587789150c71707736f2e8ffd2efbf39c006cac9e5dc48d",
+    "bytes": 765649
+  }
+}

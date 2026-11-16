@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "dataflow",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-5-jackedwards-2-dataflow.json",
+    "sha256": "95256abc3c0531fbe87490d94040ef833548a5062ffa02d2334b2774f270033a",
+    "bytes": 33452
+  },
+  "artifact": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-5-jackedwards-2-dataflow.html",
+    "sha256": "96d2697cf444b1d9a8edf434f00f4437ce6405c363ff53c03aa4bc18a708bfbf",
+    "bytes": 765395
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p5-2-dataflow\\pilote-5-jackedwards-2-dataflow.finalize.json",
+    "summaryReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p5-2-dataflow\\pilote-5-jackedwards-2-dataflow.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p5-2-dataflow\\pilote-5-jackedwards-2-dataflow.browser-check.json"
+  },
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "disabled"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 4929
+}

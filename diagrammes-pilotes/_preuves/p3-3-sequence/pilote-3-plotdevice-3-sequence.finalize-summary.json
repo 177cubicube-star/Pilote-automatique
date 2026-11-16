@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "sequence",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-3-plotdevice-3-sequence.json",
+    "sha256": "cb6488b723e2812107de1d8f853bdc297e0a58e7e1e1a48abbce1bddca5d655c",
+    "bytes": 32945
+  },
+  "artifact": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-3-plotdevice-3-sequence.html",
+    "sha256": "ceff4d059e9392fe3d3547148694cc91bbc81cf02ab4c078df994b6f835a45df",
+    "bytes": 764160
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p3-3-sequence\\pilote-3-plotdevice-3-sequence.finalize.json",
+    "summaryReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p3-3-sequence\\pilote-3-plotdevice-3-sequence.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p3-3-sequence\\pilote-3-plotdevice-3-sequence.browser-check.json"
+  },
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "disabled"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 6444
+}

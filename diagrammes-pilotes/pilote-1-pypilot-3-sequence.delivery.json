@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "2c5cbb83-37ef-497f-b521-37f7497cdb74",
+  "status": "current",
+  "command": "deliver",
+  "type": "sequence",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-1-pypilot-3-sequence.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-1-pypilot-3-sequence.html",
+  "specification": {
+    "sha256": "7f30f9a8d85e734ed4d7880dee70ba9b033016ef470dac95ead5b441073a0780",
+    "bytes": 33393
+  },
+  "artifact": {
+    "sha256": "98009834c8b95fffa4dd70c521e919464048ef9a87ba166f73ce9d968f5c296e",
+    "bytes": 765611
+  }
+}

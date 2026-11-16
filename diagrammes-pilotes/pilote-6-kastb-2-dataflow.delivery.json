@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "6b026cc4-120f-4215-b0fe-de1dd20cbc2a",
+  "status": "current",
+  "command": "deliver",
+  "type": "dataflow",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-6-kastb-2-dataflow.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-6-kastb-2-dataflow.html",
+  "specification": {
+    "sha256": "751fdca300040027ea9d7c5fbb7b81ceb383b17a9e6c824466d8f4ad2090c445",
+    "bytes": 33203
+  },
+  "artifact": {
+    "sha256": "8ca2e831531d092fbd561a95309352e1b120752508af9c76725edb65f805e8dc",
+    "bytes": 764229
+  }
+}

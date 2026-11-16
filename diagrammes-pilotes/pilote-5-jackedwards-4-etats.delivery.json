@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "2acff9f2-c9fc-49a9-bd38-dbf6054eef84",
+  "status": "current",
+  "command": "deliver",
+  "type": "lifecycle",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-5-jackedwards-4-etats.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-5-jackedwards-4-etats.html",
+  "specification": {
+    "sha256": "bdc6ee535da3fa5c2cc60d27cb3cab6e857716a460a6a9e0322f3997a996d2a3",
+    "bytes": 32334
+  },
+  "artifact": {
+    "sha256": "3e089ac1f10f313d5ed741aa84785919a0c8e1e78a3ba1df520af57759f88d21",
+    "bytes": 763046
+  }
+}

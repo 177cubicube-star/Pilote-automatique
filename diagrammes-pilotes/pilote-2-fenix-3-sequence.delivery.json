@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "42673caf-601c-44b7-8655-726579611374",
+  "status": "current",
+  "command": "deliver",
+  "type": "sequence",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-2-fenix-3-sequence.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-2-fenix-3-sequence.html",
+  "specification": {
+    "sha256": "0dae2837660758f84b497e26321efbe72ac1d9ced92c9194f3d47bf59c0be318",
+    "bytes": 32928
+  },
+  "artifact": {
+    "sha256": "ba6251c8b0ac355657a28d5b206e5ee40880731c79a6c96331afdbd48226f1ae",
+    "bytes": 764030
+  }
+}

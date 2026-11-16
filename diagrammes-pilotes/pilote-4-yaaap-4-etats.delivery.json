@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "20b7e842-0a4e-4559-bbc2-692e3f25d38c",
+  "status": "current",
+  "command": "deliver",
+  "type": "lifecycle",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-4-yaaap-4-etats.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-4-yaaap-4-etats.html",
+  "specification": {
+    "sha256": "e37e29765213f49e5cddd778158ddd37c9fa7db6ff48be79a3d9d6d1f65cf748",
+    "bytes": 31807
+  },
+  "artifact": {
+    "sha256": "2b273aecd5c6c6a7f676af25f3288fe6b287203d7a6a3148d846a509bf13c638",
+    "bytes": 758572
+  }
+}

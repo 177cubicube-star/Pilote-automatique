@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "dataflow",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-4-yaaap-2-dataflow.json",
+    "sha256": "bfd44a31e0e489a624254813d4e6e8fd7ec079f818784c46769160e9e6e27d13",
+    "bytes": 32847
+  },
+  "artifact": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-4-yaaap-2-dataflow.html",
+    "sha256": "9403507a91b98140aa7f0da06b8c0a40ff9cd5c74a17e35322d754ecfac5bcc8",
+    "bytes": 762063
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p4-2-dataflow\\pilote-4-yaaap-2-dataflow.finalize.json",
+    "summaryReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p4-2-dataflow\\pilote-4-yaaap-2-dataflow.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p4-2-dataflow\\pilote-4-yaaap-2-dataflow.browser-check.json"
+  },
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "disabled"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 5641
+}

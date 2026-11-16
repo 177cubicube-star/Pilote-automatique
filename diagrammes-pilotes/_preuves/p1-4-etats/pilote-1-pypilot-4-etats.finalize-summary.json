@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "lifecycle",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-1-pypilot-4-etats.json",
+    "sha256": "82fd0ee65abdc1b813e6cca10a5288034a3820907107c95c15b07c4df48bf066",
+    "bytes": 33004
+  },
+  "artifact": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-1-pypilot-4-etats.html",
+    "sha256": "358fb2ebbebc7295f19de900632e53431006129d1c5b77c4f1bf7e321381a855",
+    "bytes": 766357
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p1-4-etats\\pilote-1-pypilot-4-etats.finalize.json",
+    "summaryReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p1-4-etats\\pilote-1-pypilot-4-etats.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p1-4-etats\\pilote-1-pypilot-4-etats.browser-check.json"
+  },
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "disabled"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 5144
+}

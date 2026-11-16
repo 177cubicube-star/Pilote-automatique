@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "5119009b-06dc-4323-95dc-d5f1a685e96b",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-1-pypilot-1-architecture.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-1-pypilot-1-architecture.html",
+  "specification": {
+    "sha256": "e182ba3de163bc21140c2c322b585dd6015644aa6adc937a39e70f4d6438656e",
+    "bytes": 37482
+  },
+  "artifact": {
+    "sha256": "a39bd47f4f55652c48051a56758f2c23ecd30494f223a75028761eff0b13c527",
+    "bytes": 787127
+  }
+}

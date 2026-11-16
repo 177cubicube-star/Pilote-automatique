@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "lifecycle",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-3-plotdevice-4-etats.json",
+    "sha256": "0bfb6210e15795b00903bb339437893679a4377b90f718874173684cf95eb733",
+    "bytes": 32055
+  },
+  "artifact": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-3-plotdevice-4-etats.html",
+    "sha256": "96f53eea8718c96123f61b1ce736c9ea84921ae28378bbb2ed1abdc5b09a9649",
+    "bytes": 761270
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p3-4-etats\\pilote-3-plotdevice-4-etats.finalize.json",
+    "summaryReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p3-4-etats\\pilote-3-plotdevice-4-etats.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p3-4-etats\\pilote-3-plotdevice-4-etats.browser-check.json"
+  },
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "disabled"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 5953,
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "resolvedCrossovers": 1,
+      "routesOverSuggestedBends": 2,
+      "routesOverSuggestedStretch": 2
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [
+        {
+          "left": {
+            "id": "t2",
+            "from": "veille",
+            "to": "ouvert",
+            "label": "sans capteur",
+            "collectionIndex": 1,
+            "artifactIndex": 2
+          },
+          "right": {
+            "id": "t5",
+            "from": "ferme",
+            "to": "butee",
+            "label": "barre &gt; 40°",
+            "collectionIndex": 4,
+            "artifactIndex": 5
+          },
+          "point": [
+            390,
+            156
+          ]
+        }
+      ],
+      "detours": [
+        {
+          "relationship": {
+            "id": "t5",
+            "from": "ferme",
+            "to": "butee",
+            "label": "barre &gt; 40°",
+            "collectionIndex": 4,
+            "artifactIndex": 5
+          },
+          "bends": 4,
+          "stretch": 1.855,
+          "directCorridorBlockers": [
+            {
+              "id": "code",
+              "label": "Réglages du code",
+              "box": [
+                320,
+                240,
+                140,
+                64
+              ]
+            }
+          ]
+        },
+        {
+          "relationship": {
+            "id": "t6",
+            "from": "ouvert",
+            "to": "fincourse",
+            "label": "bout de course",
+            "collectionIndex": 5,
+            "artifactIndex": 6
+          },
+          "bends": 4,
+          "stretch": 1.545,
+          "directCorridorBlockers": [
+            {
+              "id": "web",
+              "label": "Réglages Web",
+              "box": [
+                580,
+                240,
+                140,
+                64
+              ]
+            }
+          ]
+        }
+      ],
+      "truncated": false
+    },
+    "hints": [
+      "veille → ouvert crosses ferme → butee: move the node of whichever is a branch, return, or second entrance to the other side of the main path, so that relationship runs through an empty corridor."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

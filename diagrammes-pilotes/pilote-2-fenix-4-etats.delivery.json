@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "9940aff0-daf3-41d4-b0de-ec78f84639db",
+  "status": "current",
+  "command": "deliver",
+  "type": "lifecycle",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-2-fenix-4-etats.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-2-fenix-4-etats.html",
+  "specification": {
+    "sha256": "c00d635785e5eec5af515dd06a27e1a6fff125a68ab6052ace180c88acab04bf",
+    "bytes": 32501
+  },
+  "artifact": {
+    "sha256": "10ff481c2cd77633f7175e15c1f8e812a84515532517798da986fcf34e2a3124",
+    "bytes": 763958
+  }
+}

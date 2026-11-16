@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "b79c773a-7c93-4701-ba9e-f3ce7c8b1d71",
+  "status": "current",
+  "command": "deliver",
+  "type": "dataflow",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-4-yaaap-2-dataflow.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-4-yaaap-2-dataflow.html",
+  "specification": {
+    "sha256": "bfd44a31e0e489a624254813d4e6e8fd7ec079f818784c46769160e9e6e27d13",
+    "bytes": 32847
+  },
+  "artifact": {
+    "sha256": "9403507a91b98140aa7f0da06b8c0a40ff9cd5c74a17e35322d754ecfac5bcc8",
+    "bytes": 762063
+  }
+}

@@ -1,6 +1,6 @@
 # Décisions, souhaits et dispositions de conception — session d'exploration du 2026-11-01 au 2026-11-02
 
-Rédigé le 2026-11-02. **Statut : PROPOSITION. Aucune décision n'est VALIDÉE dans ce dépôt.** Ce document consigne ce que Mathieu a **énoncé** pendant la session (DP-01 à DP-03), ses souhaits, et les **dispositions de conception proposées par Claude** (DISP-01 à DISP-16, **non validées par Mathieu**). Il fait autorité sur ces points pour les concepts du même jour ; il ne modifie pas `conception/architecture-pilote-proposition-2026-10-28.md`. Rapprochement avec les règles existantes du vault (L-12, D-05, D-10/G5, reprise manuelle, chien de garde) : proposé, **non fusionné**.
+Rédigé le 2026-11-02, complété le 2026-11-07 (ajout de DP-04). **Statut : PROPOSITION. Aucune décision n'est VALIDÉE dans ce dépôt.** Ce document consigne ce que Mathieu a **énoncé** pendant la session (DP-01 à DP-04), ses souhaits, et les **dispositions de conception proposées par Claude** (DISP-01 à DISP-16, **non validées par Mathieu**). Il fait autorité sur ces points pour les concepts du même jour ; il ne modifie pas `conception/architecture-pilote-proposition-2026-10-28.md`. Rapprochement avec les règles existantes du vault (L-12, D-05, D-10/G5, reprise manuelle, chien de garde) : proposé, **non fusionné**.
 
 **Non exécuté :** aucune décision n'a été testée ; les dispositions sont des exigences à vérifier, pas des fonctions existantes.
 
@@ -16,6 +16,7 @@ Légende : **CONFIRMÉ** = lu dans le code ou la documentation · **INFÉRENCE**
 | DP-01 | Le vérin linéaire est la partie commune du projet ; **Milo sera un projet distinct** si Mathieu décide de le pousser | 2026-11-01 | PROPOSÉE (énoncée par Mathieu) |
 | DP-02 | **Prévoir dès la conception** l'évitement automatique de zones (niveau 3) en plus du suivi d'itinéraire OpenCPN ; implantation = chantier ultérieur ; **essais à terre mis de côté** | 2026-11-02 | PROPOSÉE (énoncée par Mathieu) |
 | DP-03 | **Prévoir un mode vent** et la réception du NMEA d'une girouette-anémomètre **électronique** (donnée de plus pour la gestion de la barre) ; pas de girouette mécanique ; aucun capteur choisi | 2026-11-02 | PROPOSÉE (énoncée par Mathieu) |
+| DP-04 | **Node-RED** est l'outil de la phase de montage et de prototype ; ne décide ni la plateforme finale ni l'architecture | 2026-11-07 | PROPOSÉE (énoncée par Mathieu) |
 | DISP-01 à DISP-10 | Dispositions pour l'évitement de zones (détail en DP-02) | 2026-11-02 | PROPOSÉE par Claude, **à décider** par Mathieu |
 | DISP-11 à DISP-16 | Dispositions pour le vent (détail en DP-03) | 2026-11-02 | PROPOSÉE par Claude, **à décider** par Mathieu |
 
@@ -114,11 +115,32 @@ Statut dans ce dépôt : **PROPOSÉE** (énoncée par Mathieu en session d'explo
 #### Reste à décider
 Choix d'un capteur de vent (sortie NMEA 0183, alimentation, fixation en tête de mât, coût) ; un ou deux ports NMEA 0183 sur le pilote (traceur et girouette) ; si l'anticipation par le vent agit en mode compas.
 
-## 6. À décider (non tranché)
+## 6. DP-04 — Node-RED, outil de montage et de prototype
+
+#### Contexte
+Mathieu a indiqué le 2026-11-07 l'outil qu'il utilisera pendant le montage et le prototype du pilote : Node-RED (https://github.com/node-red/node-red), programmation « low-code » par flux pour applications pilotées par événements, sous licence Apache-2.0 (OpenJS Foundation) d'après la page du dépôt. Développement : `conception/outil-prototype-node-red-2026-11-07.md`.
+
+#### Décision (énoncée par Mathieu, 2026-11-07)
+- **Node-RED est l'outil retenu pour la phase de montage et de prototype.**
+
+Statut dans ce dépôt : **PROPOSÉE** (énoncée par Mathieu en session ; elle n'a pas été formalisée comme décision acceptée, ce qui lui revient).
+
+#### Ce que cela ne décide pas
+Ni la plateforme du pilote final, ni l'architecture. Ni si Node-RED reste dans le système après le prototype. Ni son rôle précis : banc d'essai, passerelle NMEA/Signal K, journal d'essais, tableau de bord, prototype du gardien en mode fantôme sont des propositions de Claude, non validées par Mathieu. Ni la machine hôte (ordinateur Windows ou Raspberry Pi).
+
+#### Liens
+- `conception/outil-prototype-node-red-2026-11-07.md` (faits lus dans la documentation, rôles proposés, principes de sécurité, plan de prise en main).
+- DP-02 (gardien en mode fantôme, essais à terre reportés) et DP-03 (girouette NMEA, rôle de passerelle). Les principes de sécurité proposés dans la note prolongent DISP-02, DISP-03 et DISP-07 ; ils ne les remplacent pas.
+
+#### Reste à décider
+Rôle précis de Node-RED pendant le prototype ; machine qui l'héberge ; sort de l'outil après le prototype (abandonné, conservé comme outil d'essai, ou intégré).
+
+## 7. À décider (non tranché)
 
 - Plateforme et architecture du pilote final (Arduino ou Raspberry Pi).
 - Type de vérin et dimensionnement (longueur de barre, déplacement du bateau, type de safran à fournir).
 - Interface de commande (tête physique, joystick ; téléphone refusé comme interface principale d'après les notes antérieures).
 - Ordre de réalisation des niveaux de réaction aux zones ; limites de la manœuvre automatique ; source des zones (plugin OpenCPN, Signal K, fichier).
 - Capteur de vent (sortie NMEA 0183, alimentation, fixation en tête de mât, coût) ; un ou deux ports NMEA 0183 sur le pilote.
-- Acceptation formelle de DP-01 à DP-03 (statut `proposee` dans le vault).
+- Rôle précis de Node-RED pendant le prototype, machine hôte et sort de l'outil après le prototype (voir DP-04).
+- Acceptation formelle de DP-01 à DP-04 (statut `proposee` dans le vault).

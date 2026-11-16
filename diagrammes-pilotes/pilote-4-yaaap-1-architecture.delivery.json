@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "af1e72cb-56f0-4787-b4ac-a2726ef8f5d8",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-4-yaaap-1-architecture.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-4-yaaap-1-architecture.html",
+  "specification": {
+    "sha256": "6011eb0a9128aa9f9c0811496ede76069236d1404a056b4dca6ebb568360e6da",
+    "bytes": 34202
+  },
+  "artifact": {
+    "sha256": "6c05a209343fa848c2b873e9ccd56096e0d6484b4f271bf8e45472e855bcf2dc",
+    "bytes": 767817
+  }
+}

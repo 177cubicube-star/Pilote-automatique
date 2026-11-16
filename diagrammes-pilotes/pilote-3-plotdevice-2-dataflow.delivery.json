@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "6375c6bf-d676-49d7-bd7b-b52282ca30fa",
+  "status": "current",
+  "command": "deliver",
+  "type": "dataflow",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-3-plotdevice-2-dataflow.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-3-plotdevice-2-dataflow.html",
+  "specification": {
+    "sha256": "a9834347d8879b4d1e3d492247e0e09e6a67697eeee9c2090def6c28763d8304",
+    "bytes": 32876
+  },
+  "artifact": {
+    "sha256": "36239cb0d89a59b3ac42a98c2de4f2474b7c14b75dfbc0f74acdbdc9e5856640",
+    "bytes": 762208
+  }
+}

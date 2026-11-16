@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "3b44851b-3cfb-49a6-ab15-5fe4aa790d22",
+  "status": "current",
+  "command": "deliver",
+  "type": "sequence",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-5-jackedwards-3-sequence.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-5-jackedwards-3-sequence.html",
+  "specification": {
+    "sha256": "357a3ac82cc90c35c98e921dca0f720991a8f5fcc394a332147889292bb7a636",
+    "bytes": 32704
+  },
+  "artifact": {
+    "sha256": "b42375cb7c798d5d912bc6cce17e58d002a6d4fecce97b0cd3aa3df94c5ad875",
+    "bytes": 762909
+  }
+}

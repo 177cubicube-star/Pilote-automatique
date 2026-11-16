@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "09958965-1613-4f0e-a38b-ee1ee523b519",
+  "status": "current",
+  "command": "deliver",
+  "type": "sequence",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-3-plotdevice-3-sequence.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-3-plotdevice-3-sequence.html",
+  "specification": {
+    "sha256": "cb6488b723e2812107de1d8f853bdc297e0a58e7e1e1a48abbce1bddca5d655c",
+    "bytes": 32945
+  },
+  "artifact": {
+    "sha256": "ceff4d059e9392fe3d3547148694cc91bbc81cf02ab4c078df994b6f835a45df",
+    "bytes": 764160
+  }
+}

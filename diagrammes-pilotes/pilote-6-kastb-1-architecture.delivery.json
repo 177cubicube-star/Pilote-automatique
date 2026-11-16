@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "7601a5e8-dc43-49b0-8d86-fe92f618dccd",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-6-kastb-1-architecture.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-6-kastb-1-architecture.html",
+  "specification": {
+    "sha256": "5ea309f1edb1d0e6c9c122407ec4581b9f91c8c6c2656da42bb9b5b76b96add0",
+    "bytes": 36383
+  },
+  "artifact": {
+    "sha256": "ff761c813655e03920a73974d79236f4a64bbb9f785fca8f92732e3755bef073",
+    "bytes": 781699
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "dataflow",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-1-pypilot-2-dataflow.json",
+    "sha256": "fdd2f6a02aa5cbc58966747be114fa5b6fdcb09045d5e977e072fea9b73b6915",
+    "bytes": 33235
+  },
+  "artifact": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-1-pypilot-2-dataflow.html",
+    "sha256": "214bf4d32488d9da17df8fed2cd1885e095ca4b7849f089da68f7ab452f78d5a",
+    "bytes": 764691
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p1-2-dataflow\\pilote-1-pypilot-2-dataflow.finalize.json",
+    "summaryReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p1-2-dataflow\\pilote-1-pypilot-2-dataflow.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p1-2-dataflow\\pilote-1-pypilot-2-dataflow.browser-check.json"
+  },
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "disabled"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 5415,
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "routesOverSuggestedStretch": 1
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [],
+      "detours": [
+        {
+          "relationship": {
+            "id": "bateau-imu",
+            "from": "bateau",
+            "to": "imu",
+            "label": "rotation du bateau",
+            "collectionIndex": 8,
+            "artifactIndex": 9
+          },
+          "bends": 2,
+          "stretch": 1.492,
+          "directCorridorBlockers": [
+            {
+              "id": "fusion",
+              "label": "Fusion",
+              "box": [
+                259,
+                242,
+                112,
+                58
+              ]
+            },
+            {
+              "id": "regul",
+              "label": "Régulateur",
+              "box": [
+                474,
+                242,
+                112,
+                58
+              ]
+            },
+            {
+              "id": "ctrl",
+              "label": "Contrôleur",
+              "box": [
+                689,
+                242,
+                112,
+                58
+              ]
+            }
+          ]
+        }
+      ],
+      "truncated": false
+    },
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

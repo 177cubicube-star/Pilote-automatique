@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-2-fenix-1-architecture.json",
+    "sha256": "7f13ba4683dd6df30815211b7dc8486fe616a58101eed37ab1cb31626b743125",
+    "bytes": 36342
+  },
+  "artifact": {
+    "path": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-2-fenix-1-architecture.html",
+    "sha256": "a64da3c3a7b033bbb991f119bc229d79e29264c562e1adecd0c077a9d379db00",
+    "bytes": 780814
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p2-1-architecture\\pilote-2-fenix-1-architecture.finalize.json",
+    "summaryReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p2-1-architecture\\pilote-2-fenix-1-architecture.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_preuves\\p2-1-architecture\\pilote-2-fenix-1-architecture.browser-check.json"
+  },
+  "update": {
+    "status": "unavailable",
+    "installedVersion": null,
+    "availableVersion": null,
+    "releaseNotes": null,
+    "checkedAt": null,
+    "source": null,
+    "noticeRequired": false,
+    "noticeText": null,
+    "reason": "disabled"
+  },
+  "visualReview": "not-requested",
+  "durationMs": 7239,
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "resolvedCrossovers": 3
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [
+        {
+          "left": {
+            "id": "fshield-mega",
+            "from": "fshield",
+            "to": "mega",
+            "label": "",
+            "collectionIndex": 6,
+            "artifactIndex": 7
+          },
+          "right": {
+            "id": "vent-mega",
+            "from": "vent",
+            "to": "mega",
+            "label": "NMEA n.d.",
+            "collectionIndex": 8,
+            "artifactIndex": 9
+          },
+          "point": [
+            565,
+            128
+          ],
+          "sharedNode": "mega"
+        },
+        {
+          "left": {
+            "id": "traceur-mega",
+            "from": "traceur",
+            "to": "mega",
+            "label": "NMEA n.d.",
+            "collectionIndex": 7,
+            "artifactIndex": 8
+          },
+          "right": {
+            "id": "vent-mega",
+            "from": "vent",
+            "to": "mega",
+            "label": "NMEA n.d.",
+            "collectionIndex": 8,
+            "artifactIndex": 9
+          },
+          "point": [
+            775,
+            128
+          ],
+          "sharedNode": "mega"
+        },
+        {
+          "left": {
+            "id": "pot-mega",
+            "from": "pot",
+            "to": "mega",
+            "label": "analogique n.d.",
+            "collectionIndex": 9,
+            "artifactIndex": 10
+          },
+          "right": {
+            "id": "courant-mega",
+            "from": "courant",
+            "to": "mega",
+            "label": "chaîne non démontrée",
+            "collectionIndex": 10,
+            "artifactIndex": 11
+          },
+          "point": [
+            347,
+            333
+          ],
+          "sharedNode": "mega"
+        }
+      ],
+      "detours": [],
+      "truncated": false
+    },
+    "hints": [
+      "fshield → mega and vent → mega cross next to mega: move node fshield or vent so the two reach mega from different sides (for example one level with it, one directly above or below it).",
+      "traceur → mega and vent → mega cross next to mega: move node traceur or vent so the two reach mega from different sides (for example one level with it, one directly above or below it).",
+      "pot → mega and courant → mega cross next to mega: move node pot or courant so the two reach mega from different sides (for example one level with it, one directly above or below it)."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

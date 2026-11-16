@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "ccee9a23-eb40-4226-817e-edbd77d088ef",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-3-plotdevice-1-architecture.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-3-plotdevice-1-architecture.html",
+  "specification": {
+    "sha256": "786d9713287aa70de78002782bb8062a6146b364613f9ab60c39871b637c59a0",
+    "bytes": 35518
+  },
+  "artifact": {
+    "sha256": "d45e4eceaa2f266175b02dc7b17bd5d448683b1fc3fd21c8cb0cbca49ca49630",
+    "bytes": 775722
+  }
+}

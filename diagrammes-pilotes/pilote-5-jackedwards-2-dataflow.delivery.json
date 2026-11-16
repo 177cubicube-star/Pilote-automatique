@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "ab335ec0-6654-456b-a0cb-f20b4e45bdee",
+  "status": "current",
+  "command": "deliver",
+  "type": "dataflow",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-5-jackedwards-2-dataflow.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-5-jackedwards-2-dataflow.html",
+  "specification": {
+    "sha256": "95256abc3c0531fbe87490d94040ef833548a5062ffa02d2334b2774f270033a",
+    "bytes": 33452
+  },
+  "artifact": {
+    "sha256": "96d2697cf444b1d9a8edf434f00f4437ce6405c363ff53c03aa4bc18a708bfbf",
+    "bytes": 765395
+  }
+}

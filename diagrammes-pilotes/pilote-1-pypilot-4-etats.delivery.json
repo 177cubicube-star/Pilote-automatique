@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "ed202733-0c3d-4668-bf3c-8f54557c24d7",
+  "status": "current",
+  "command": "deliver",
+  "type": "lifecycle",
+  "input": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\_sources\\pilote-1-pypilot-4-etats.json",
+  "output": "C:\\Users\\mat_g\\Documents\\Claude\\Projects\\Pilote automatique\\diagrammes-pilotes\\pilote-1-pypilot-4-etats.html",
+  "specification": {
+    "sha256": "6e25097fb4f27207ac457be2f77658da9f62468d4d1d9604fbbd5e88014331ef",
+    "bytes": 33001
+  },
+  "artifact": {
+    "sha256": "e8c43c15585bf6a269a1386fc10f5ee295f2b2745fedad79e29237e94679f56d",
+    "bytes": 766730
+  }
+}
