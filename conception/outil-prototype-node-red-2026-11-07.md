@@ -1,5 +1,7 @@
 # Concept : Node-RED comme outil de montage et de prototype
 
+> **⚠️ Document dépassé — mise à jour du 2026-11-16.** La décision DP-04 (Node-RED comme outil de prototype) est **acceptée** par Mathieu (DEC-006 du vault, 2026-11-16). C'est Node-RED intégré au serveur Signal K, sans décider s'il reste dans le système final. Référence actuelle : `conception/cahier-des-besoins-et-decisions-2026-11-16.md`. Le contenu ci-dessous est conservé tel quel.
+
 Rédigé le 2026-11-07. **Statut : CONCEPT EXPLORATOIRE — PROPOSITION. Aucune décision de conception n'est validée** ; la décision de Mathieu sur l'outil (DP-04, proposée) est consignée dans `conception/decisions-et-dispositions-2026-11-02.md`, qui fait autorité. Cette note la développe sans la modifier.
 
 **Non exécuté :** Node-RED n'est ni installé ni essayé. Les faits viennent de la documentation officielle et de pages de paquets et de forums, lues le 2026-11-07.

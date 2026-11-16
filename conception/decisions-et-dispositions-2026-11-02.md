@@ -1,5 +1,12 @@
 # Décisions, souhaits et dispositions de conception — session d'exploration du 2026-11-01 au 2026-11-02
 
+> **⚠️ Document dépassé — mise à jour du 2026-11-16.** Les mentions « PROPOSITION » et « aucune décision VALIDÉE » ci-dessous ne sont plus à jour. Mathieu a **accepté** DP-01 à DP-03 le 2026-11-16 : ce sont DEC-003, DEC-004 et DEC-005 dans le vault, toutes acceptées. Il a aussi accepté **DISP-01 à DISP-16** avec DEC-004 et DEC-005, avec trois précisions :
+> - DP-01 est acceptée pour le vérin linéaire seulement ; la ligne sur Milo n'est pas reprise.
+> - Zones, OpenCPN et évitement sont des **options** actives seulement si le matériel est installé.
+> - DISP-15 se lit ainsi : jamais de virement ni d'empannage déclenché par le pilote lui-même.
+>
+> DP-04 (Node-RED) est acceptée dans DEC-006. Référence actuelle : `conception/cahier-des-besoins-et-decisions-2026-11-16.md`. Le contenu ci-dessous est conservé tel quel, comme historique.
+
 Rédigé le 2026-11-02, complété le 2026-11-07 (ajout de DP-04). **Statut : PROPOSITION. Aucune décision n'est VALIDÉE dans ce dépôt.** Ce document consigne ce que Mathieu a **énoncé** pendant la session (DP-01 à DP-04), ses souhaits, et les **dispositions de conception proposées par Claude** (DISP-01 à DISP-16, **non validées par Mathieu**). Il fait autorité sur ces points pour les concepts du même jour ; il ne modifie pas `conception/architecture-pilote-proposition-2026-10-28.md`. Rapprochement avec les règles existantes du vault (L-12, D-05, D-10/G5, reprise manuelle, chien de garde) : proposé, **non fusionné**.
 
 **Non exécuté :** aucune décision n'a été testée ; les dispositions sont des exigences à vérifier, pas des fonctions existantes.

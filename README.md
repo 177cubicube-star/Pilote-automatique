@@ -1,55 +1,62 @@
 # Pilote automatique de voilier
 
 Dépôt du projet complet : concevoir et construire un **pilote automatique de
-barre pour voilier** — de la recherche jusqu'au prototype fonctionnel.
+barre franche à vérin linéaire**, pour voiliers jusqu'à 9 m. Le bateau d'essai
+est un Catalina Capri 22. Le projet va de la recherche jusqu'au prototype
+fonctionnel.
 
 Ce dépôt a vocation à porter **tout** le projet : sources et documentation,
 concepts et techniques de conception, schémas électriques, code embarqué,
-prototypes et essais.
+prototypes et essais. Le **raisonnement et les décisions** vivent dans un vault
+Obsidian, qui fait autorité. Ce dépôt en garde des **copies datées** dans
+`conception/`.
 
-> 🟡 **Phase actuelle : collecte de sources.**
-> Le dépôt ne contient encore ni code, ni schéma, ni décision technique
-> arrêtée. Ce qui suit décrit une trajectoire, pas un état.
+> 🟡 **Phase actuelle (mise à jour du 2026-11-16) : conception.**
+> Le cahier des besoins est établi. Onze décisions sont acceptées (DEC-003 à
+> DEC-013) : périmètre fonctionnel, capteurs, vérin, ordre de réalisation,
+> précision de cap. L'architecture du calculateur n'est **pas** décidée. Aucun
+> matériel n'est acheté, aucun code embarqué n'est écrit.
+> Référence : [`conception/cahier-des-besoins-et-decisions-2026-11-16.md`](conception/cahier-des-besoins-et-decisions-2026-11-16.md).
 
 ## L'objectif
 
-Bâtir un pilote de barre du type Fenix — **Arduino Mega + vérin linéaire +
-IMU** — en visant une conception comparable à un produit commercial existant.
+Un pilote de barre franche à **vérin linéaire seulement** (course d'au moins
+300 mm, force d'au moins 100 lbf), avec :
+- au socle : cap compas, barre bloquée, follow-up et non-follow-up ; virement et
+  empannage par séquences programmables ; homme à la mer ; alarmes ; boutons,
+  écran tactile, veille physique et réglage depuis une tablette ;
+- en extension : vent apparent et vent réel, suivi de route OpenCPN, anticipation
+  de la barre par le vent ;
+- capteurs : GPS, IMU ICM-20948, accéléromètre LIS3DH ; liaisons NMEA 2000, et
+  NMEA 0183 en entrée et en sortie.
 
 | Rôle | Projet | Pourquoi il est ici |
 |---|---|---|
-| Référence **commerciale** | [Pelagic Autopilot](https://pelagicautopilot.com/) | Le produit qui se vend, et que le projet cherche à égaler en conception |
-| Référence **open-source** | [pyPilot](https://pypilot.org/doc/) | Architecture jugée la plus proche de celle de Pelagic |
-| Base de départ **DIY** | [Fenix](https://github.com/spascual90/Fenix.git) | Projet Arduino complet et documenté (Mega + vérin + IMU) |
+| Orientation d'**architecture** (non décidée) | [pyPilot](https://pypilot.org/doc/) | Base de l'architecture hybride étudiée : pypilot, façade ESP32 et contrôle moteur séparé |
+| Base **DIY** de référence | [Fenix](https://github.com/spascual90/Fenix.git) | Projet Arduino complet à vérin linéaire ; repli et source d'idées (anticipation par le vent) |
+| Référence **commerciale** | [Pelagic Autopilot](https://pelagicautopilot.com/) | Produit de comparaison |
 
 ## Les volets du projet
 
 | Volet | Contenu | État |
 |---|---|---|
 | **Sources & documentation** | Registre des sources, notes de collecte, synthèses | 🟢 En cours |
-| **Conception** | Concepts, techniques de conception, choix d'architecture et leurs raisons | ⚪ À venir |
-| **Électronique** | Schémas, diagrammes de câblage, liste de composants (BoM) | ⚪ À venir |
+| **Conception** | Cahier des besoins, décisions, concepts, conception V0.3 | 🟢 En cours |
+| **Électronique** | Schémas, câblage, liste de composants (BoM) | 🟡 Liste des entrées-sorties faite ; la BoM V0.2 est dépassée |
 | **Code** | Firmware embarqué, régulation, interfaces | ⚪ À venir |
-| **Prototypes** | Montages d'essai, mesures, résultats de tests | ⚪ À venir |
-
-L'organisation en dossiers se fixera **quand le contenu arrivera**, pas avant :
-inventer une arborescence pour des dossiers vides ne rend service à personne.
+| **Prototypes et essais** | Simulation (SailSim, Q0 et Q1), simulateur GPS, futurs bancs | 🟡 En simulation seulement |
 
 ## Ce que le dépôt contient aujourd'hui
 
-| Fichier | Rôle |
+| Emplacement | Rôle |
 |---|---|
 | [`sources-techniques.md`](sources-techniques.md) | **Le registre.** Une ligne par source déposée, avec type, lien, date de dépôt et statut. |
-| [`sources-brutes/`](sources-brutes/) | Le contenu **détaillé** conservé intégralement quand un dépôt apportait plus qu'un simple lien : composants, câblage, formules, procédures de calibration. |
-
-Les compilations brutes déposées à ce jour :
-
-- [`fenix-liens-et-notes-2026-09-08.md`](sources-brutes/fenix-liens-et-notes-2026-09-08.md)
-  — BoM Fenix, firmwares, câblage BTS7960, calibration IMU et vérin, modes de
-  navigation, interface série.
-- [`pelagic-pypilot-notes-2026-09-08.md`](sources-brutes/pelagic-pypilot-notes-2026-09-08.md)
-  — specs Pelagic, architecture pyPilot/TinyPilot, variante ESP32, vitesses de
-  vérin, alimentation.
+| [`sources-brutes/`](sources-brutes/) | Le contenu **détaillé** conservé quand une source apportait plus qu'un lien, et les analyses de dépôts open source. |
+| [`conception/`](conception/) | Copies datées des documents de conception. Commencer par `cahier-des-besoins-et-decisions-2026-11-16.md`. Les documents plus anciens portent un encadré quand ils sont dépassés. |
+| [`essais/`](essais/) | Qualification SailSim (Q0, Q1) et simulateur GPS pour les zones OpenCPN. |
+| [`simulations/`](simulations/) | Simulations comparées Fenix et pypilot. |
+| [`diagrammes-pilotes/`](diagrammes-pilotes/) | Diagrammes des six projets de pilotes étudiés. |
+| [`sessions/`](sessions/) | Recaps de continuité de session. |
 
 ## La méthode de collecte : ratisser large d'abord, trier ensuite
 
@@ -65,7 +72,7 @@ Chaque ligne du registre porte un statut :
 
 | Statut | Signification |
 |---|---|
-| `Enregistrée, non analysée` | Déposée, jamais lue en profondeur. **C'est le statut de toutes les sources à ce jour.** |
+| `Enregistrée, non analysée` | Déposée, jamais lue en profondeur. C'est encore le statut de la plupart des sources ; plusieurs sont déjà analysées ou partiellement lues (voir le registre). |
 | `Analysée` | Une synthèse existe, ou les éléments retenus sont passés dans le vault Obsidian. |
 | `Écartée` | Lue et rejetée — avec la raison en note. |
 
@@ -74,9 +81,11 @@ sert de source de référence pour le travail de conception.
 
 ## Prochaine étape
 
-Amorcer le tri : faire passer les sources de `Enregistrée, non analysée` à
-`Analysée` ou `Écartée`. Les volets Conception, Électronique, Code et
-Prototypes s'ouvrent à partir de ce tri.
+Voir la section 7 du dernier recap dans `sessions/`. Au 2026-11-16 :
+- réconcilier le vérin de référence avec la force minimale ;
+- arbitrer le budget du socle ;
+- faire une BoM V0.3 ;
+- comparer les architectures de calculateur avant toute décision.
 
 ## Avertissement
 

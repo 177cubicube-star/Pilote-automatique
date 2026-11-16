@@ -251,6 +251,7 @@ l'architecture est jugée la plus proche de Pelagic.
 | 215 | OpenMarine — MacArthur-HAT, dépôt matériel | Dépôt GitHub | https://github.com/OpenMarine/MacArthur-HAT.git | 2026-11-07 | Enregistrée, non lue (accès refusé par robots.txt) |
 | 216 | YakBitz — interfaces NMEA et SeaTalk (page d'accueil) | Site commercial | https://yakbitz.com/ | 2026-11-07 | Enregistrée, lecture partielle (page d'accueil, extraction automatisée) |
 | 217 | sailboatsusa — Open Source & DIY Marine Technology | Page web (guide) | https://www.sailboatsusa.com/opensource.html | 2026-11-07 | Enregistrée, lecture partielle (résumé d'outil) |
+| 218 | Raymarine ST1000+/ST2000+ — manuel de service 83130-1 (Z323/Z324) | PDF (manuel de service constructeur) | https://cognac.hisse-et-oh.com/store/medias/sailing/5dd/1ef/5a3/original/5dd1ef5a39819f3668de04dd.pdf | 2026-11-16 | Lecture partielle (texte extrait ; figures 8 à 10 et liste des composants examinées en image) |
 
 ## Conventions
 
@@ -347,3 +348,5 @@ Fiche de synthèse issue de ce lot : `pilotes-barre-franche-externes-etat-de-l-a
 **Rapport et plan de tests Fenix vs pypilot — 2026-10-28** : n° 211 et 212, notes de travail issues d'une discussion avec Claude (lecture des dépôts Fenix `b8410e5` et pypilot `fdff88f`, deux simulations Python, calcul de la vitesse de barre avec le vérin Firgelli FA-HF-100-12 et le montage de type ST1000+). Rien n'a été exécuté sur le matériel ni avec le vrai firmware ; les résultats de simulation décrivent un modèle, pas le bateau. Aucune décision n'est validée. Les scripts de simulation ne sont pas dans le dépôt.
 
 **Lot écosystème OpenMarine et DIY marine — fiches du vault, 2026-11-07** : n° 213 à 217, 5 entrées. Lectures par extraction automatisée de la page indiquée seulement (aucun lien secondaire ouvert) ; le dépôt n° 215 n'a pas pu être lu (refus robots.txt), rien n'est affirmé sur son contenu. La sixième fiche du lot, « Forum OpenMarine » (`https://forum.openmarine.net/index.php`), est la même page que le n° 54 : aucun nouveau numéro, la fiche du vault porte SRC-054. Vérification de doublons faite par URL contre ce registre (212 entrées) avant ajout. Fiches correspondantes dans le vault Obsidian (`02 - Sources/SRC-0NN - …`). Aucun contenu validé par cet enregistrement.
+
+**Manuel de service ST1000+/ST2000+ — 2026-11-16** : n° 218. Document distinct du manuel utilisateur (n° 87) : ne pas les fusionner. Mobilisé par la fiche du vault « Interface moteur et boutons - carte Q218 ST1000+ ST2000+ », pour le projet séparé de conversion des ST (hors périmètre du pilote principal, L-12) ; indexé ici à la demande de Mathieu. Rien n'a été mesuré sur une carte.

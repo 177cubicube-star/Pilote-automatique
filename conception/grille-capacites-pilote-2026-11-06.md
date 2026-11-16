@@ -8,6 +8,8 @@ aliases: [grille des capacités, capacités du pilote, étendue des fonctions du
 
 # Grille des capacités du pilote — effet sur le vérin, le calculateur et l'interface
 
+> **⚠️ Document dépassé — mise à jour du 2026-11-16.** Cette version du 6 novembre ne contient ni les choix de capacités ni les étapes (socle, extension, selon usage, ultérieur) fixés par Mathieu le 2026-11-16. La version à jour est dans le vault, `03 - Analyses/grille-capacites-pilote.md`, section 16. Les choix acceptés sont résumés dans `conception/cahier-des-besoins-et-decisions-2026-11-16.md` (DEC-007). Le contenu ci-dessous est conservé tel quel.
+
 ## 1. Objet et conclusion
 
 Cette grille définit les capacités envisagées pour un pilote de barre franche sur le Capri 22. Elle sert à préparer le choix du vérin, du contrôleur moteur, du calculateur et de l'interface.
