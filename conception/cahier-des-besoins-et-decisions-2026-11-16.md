@@ -1,6 +1,6 @@
 # Cahier des besoins et décisions acceptées — session du 2026-11-16
 
-Rédigé le 2026-11-16 à partir du vault Obsidian. **Copie datée pour le dépôt : le vault fait autorité.** En cas d'écart, les notes du vault prévalent : `00 - Projet/Cahier des besoins du pilote.md` et `06 - Décisions/DEC-003` à `DEC-013`.
+Rédigé le 2026-11-16 à partir du vault Obsidian. **Copie datée pour le dépôt : le vault fait autorité.** En cas d'écart, les notes du vault prévalent : `00 - Projet/Cahier des besoins du pilote.md` et `06 - Décisions/DEC-003` à `DEC-015`.
 
 **Statut.** Contrairement au document `decisions-et-dispositions-2026-11-02.md`, ces décisions sont **ACCEPTÉES par Mathieu** le 2026-11-16. Les DEC-003 à DEC-005 reprennent DP-01 à DP-03 de ce document. Les dispositions DISP-01 à DISP-16 ont été acceptées avec DEC-004 et DEC-005, et la condition et la lecture du 2026-11-16 s'y appliquent. La provenance de chaque choix (citation de Mathieu, revue du 2026-11-16) est dans le vault, `00 - Projet/Registre d'approbation - session du 2026-11-16.md`.
 
@@ -23,6 +23,8 @@ Les noms entre « » désignent des notes du vault.
 | DEC-011 | IMU 9 axes : ICM-20948 | 2026-11-16 | ACCEPTÉE (2026-11-16) |
 | DEC-012 | Accéléromètre séparé : LIS3DH | 2026-11-16 | ACCEPTÉE (2026-11-16) |
 | DEC-013 | Précision de cap visée : ±2 à 4°, jusqu'à ±5° en conditions dégradées | 2026-11-16 | ACCEPTÉE (2026-11-16) |
+| DEC-014 | Architecture de départ : pypilot hybride (Raspberry Pi, `motor.ino`, façade ESP32), Fenix en repli. Copie : `decision-architecture-DEC-014-2026-11-16.md` | 2026-11-16 | ACCEPTÉE (2026-11-16) |
+| DEC-015 | Dispositions d'exécution du plan V0-6 : commit pypilot `5b7b8b0` pour le banc, lecture des portes G3 et G4, exception d'achat pour l'électronique du banc, potentiomètre intégré au vérin (à confirmer après M1), complément Q1-I en simulation | 2026-11-16 | ACCEPTÉE (2026-11-16) |
 
 DEC-001 et DEC-002 (organisation du vault) ne portent sur aucun choix technique.
 
@@ -75,7 +77,7 @@ DEC-001 et DEC-002 (organisation du vault) ne portent sur aucun choix technique.
 
 | Sujet | État | Où |
 |---|---|---|
-| Architecture du calculateur | Orientation vers l'hybride pypilot + façade ESP32 + `motor.ino` ; comparaison avec CON-002 à faire | « CON-008 - Architecture hybride pypilot, façade ESP32 et contrôle moteur séparé », « Q-008 - Calculateur et architecture de commande » |
+| ~~Architecture du calculateur~~ | **Décidé le 2026-11-16 :** hybride pypilot + façade ESP32 + `motor.ino` comme architecture de départ, Fenix en repli (DEC-014) | `decision-architecture-DEC-014-2026-11-16.md`, « CON-008 - Architecture hybride pypilot, façade ESP32 et contrôle moteur séparé » |
 | Modèle du vérin et effort à la barre | Vérin linéaire, au moins 300 mm et 100 lbf (décidé). Le modèle n'est pas choisi. Le vérin Fenix (300 N, environ 67 lbf annoncés) reste à réconcilier avec le minimum de force | « Q-002 - Effort réel à la barre », « DEC-003 - Vérin linéaire commun, Milo en projet distinct » *(acceptée le 2026-11-16)* |
 | Budget | Socle chiffré à environ 1 715 $ CA, environ 715 $ au-dessus de l'enveloppe d'environ 1 000 $ | « Q-007 - Usage prioritaire, budget et moyens » |
 | Sécurité et conduite en navigation | Chantier non ouvert ; réactions aux défauts à fixer | « Projet et périmètre » |
@@ -94,8 +96,8 @@ DEC-001 et DEC-002 (organisation du vault) ne portent sur aucun choix technique.
 
 | ID V0.3 | Sujet | Effet des DEC du 2026-11-16 | État |
 |---|---|---|---|
-| D-01 | Base de code embarquée | Le cahier V0.3 voyait Fenix comme candidat initial. CON-008 oriente maintenant vers pypilot (orientation seulement). | Ouvert |
-| D-02 | Contrat contrôleur → moteur | Aucun | Ouvert |
+| D-01 | Base de code embarquée | pypilot, Fenix en repli (DEC-014, acceptée le 2026-11-16). Choix fait sans la comparaison par essais que prévoyait V0.3 | **Répondu** |
+| D-02 | Contrat contrôleur → moteur | Commande en vitesse, native de pypilot ; la position passe par `servo.position_command` (DEC-014) | **Répondu** |
 | D-03 | Loi de cap | DEC-005 et DEC-007 ajoutent l'anticipation par le vent (option C), qui s'ajoutera à la loi de cap retenue | Ouvert |
 | D-04 | Acquisition IMU | DEC-008 fixe une **IMU 9 axes** plus un accéléromètre séparé. Trois centrales industrielles (SBG, Xsens, VectorNav), proposées puis **écartées** par Mathieu le 2026-11-16 pour leur coût. **ICM-20948 (carte Adafruit 4554) retenue** par « DEC-011 - IMU 9 axes - ICM-20948 », le 2026-11-16; accéléromètre séparé LIS3DH retenu par « DEC-012 - Accéléromètre séparé - LIS3DH » | **Répondu** |
 | D-05 | Vérin | DEC-003 : vérin linéaire seulement. DEC-009 : au moins 300 mm (330 idéal) et au moins 100 lbf. Le modèle sera choisi d'après le pourcentage d'utilisation en charge (M2) | Exigences fixées, modèle ouvert |

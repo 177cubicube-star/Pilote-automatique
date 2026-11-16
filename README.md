@@ -12,9 +12,10 @@ Obsidian, qui fait autorité. Ce dépôt en garde des **copies datées** dans
 `conception/`.
 
 > 🟡 **Phase actuelle (mise à jour du 2026-11-16) : conception.**
-> Le cahier des besoins est établi. Onze décisions sont acceptées (DEC-003 à
-> DEC-013) : périmètre fonctionnel, capteurs, vérin, ordre de réalisation,
-> précision de cap. L'architecture du calculateur n'est **pas** décidée. Aucun
+> Le cahier des besoins est établi. Treize décisions sont acceptées (DEC-003 à
+> DEC-015) : périmètre fonctionnel, capteurs, vérin, ordre de réalisation,
+> précision de cap, et architecture de départ (pypilot sur Raspberry Pi,
+> contrôle moteur `motor.ino`, façade ESP32 ; Fenix en repli). Aucun
 > matériel n'est acheté, aucun code embarqué n'est écrit.
 > Référence : [`conception/cahier-des-besoins-et-decisions-2026-11-16.md`](conception/cahier-des-besoins-et-decisions-2026-11-16.md).
 
@@ -32,7 +33,7 @@ Un pilote de barre franche à **vérin linéaire seulement** (course d'au moins
 
 | Rôle | Projet | Pourquoi il est ici |
 |---|---|---|
-| Orientation d'**architecture** (non décidée) | [pyPilot](https://pypilot.org/doc/) | Base de l'architecture hybride étudiée : pypilot, façade ESP32 et contrôle moteur séparé |
+| Base de l'**architecture de départ** (DEC-014) | [pyPilot](https://pypilot.org/doc/) | Architecture hybride retenue : pypilot, façade ESP32 et contrôle moteur séparé |
 | Base **DIY** de référence | [Fenix](https://github.com/spascual90/Fenix.git) | Projet Arduino complet à vérin linéaire ; repli et source d'idées (anticipation par le vent) |
 | Référence **commerciale** | [Pelagic Autopilot](https://pelagicautopilot.com/) | Produit de comparaison |
 
@@ -85,7 +86,8 @@ Voir la section 7 du dernier recap dans `sessions/`. Au 2026-11-16 :
 - réconcilier le vérin de référence avec la force minimale ;
 - arbitrer le budget du socle ;
 - faire une BoM V0.3 ;
-- comparer les architectures de calculateur avant toute décision.
+- réviser le plan d'exécution en V0-6 (architecture décidée par DEC-014) ;
+- décider ensemble la machine hôte et le point d'entrée du NMEA 2000.
 
 ## Avertissement
 

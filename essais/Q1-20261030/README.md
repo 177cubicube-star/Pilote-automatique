@@ -187,3 +187,6 @@ Les chiffres « couche servo, sans Docker » sont recalculés par la même méth
 - ~~Q1-G~~ et ~~Q1-H~~ : faits le 2026-10-31 (section Q1-G et Q1-H). Restent hors banc : micrologiciel moteur (rampes), modèle électrique et surintensité.
 - **Docker** : construire l'image avec le Dockerfile corrigé, sur une machine qui accède à Docker Hub.
 
+### Verdict de Q1 (2026-11-16)
+
+**GO avec réserves**, donné par Mathieu le 2026-11-16 (« go avec reserve »), en même temps que l'acceptation de la décision d'architecture DEC-014. Réserves : simulation seulement, un seul scénario calme, profil `default` qui n'est pas le Capri 22, banc partiel (ni rampes du micrologiciel, ni modèle électrique), cycle limite d'environ ±3° avec les réglages par défaut de la couche servo. Ce verdict vaut pour l'usage de Q1 comme preuve de cette décision ; il ne valide ni les gains, ni la tenue de cap sur le bateau.

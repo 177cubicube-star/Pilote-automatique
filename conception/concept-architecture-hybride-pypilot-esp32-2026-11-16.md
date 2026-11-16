@@ -1,9 +1,9 @@
 
 # CON-008 — Architecture hybride : pypilot, façade ESP32 et contrôle moteur séparé
 
-> **Copie datée du 2026-11-16 — le vault fait autorité.** Source : vault, `05 - Concepts/CON-008 - Architecture hybride pypilot, façade ESP32 et contrôle moteur séparé.md` (type `concept`, statut `exploratoire`). C'est une **orientation**, pas une décision : aucune DEC ne l'accepte. Copie mise à jour le même jour : ajout de la section « Dépôts de référence ». Les noms entre « » désignent des notes du vault.
+> **Copie datée du 2026-11-16 — le vault fait autorité.** Source : vault, `05 - Concepts/CON-008 - Architecture hybride pypilot, façade ESP32 et contrôle moteur séparé.md` (type `concept`, statut `retenu`). **Retenu comme architecture de départ par la décision DEC-014, acceptée par Mathieu le 2026-11-16** (copie : `decision-architecture-DEC-014-2026-11-16.md`). Copie mise à jour le même jour. Les noms entre « » désignent des notes du vault.
 
-Note de concept. Rien n'est testé, rien n'est choisi. Mathieu a dit **pencher** pour cette architecture le 2026-11-16. C'est une orientation, pas une décision : aucune note DEC ne l'accepte.
+Note de concept. **Retenu le 2026-11-16 comme architecture de départ** par « DEC-014 - Architecture de départ - pypilot hybride, Fenix en repli », avec trois amendements et Fenix en repli. Rien n'est encore testé sur du matériel. Le texte ci-dessous reste celui du concept ; en cas d'écart, la décision fait foi.
 
 ## Provenance et relations
 
@@ -38,15 +38,15 @@ Trois blocs séparés :
 
 ## Dépôts de référence *(ajout du 2026-11-16, à la demande de Mathieu)*
 
-Dépôts GitHub qui correspondent à cette architecture. Les adresses viennent des notes du vault, sauf les deux dépôts Signal K / Node-RED, vérifiés en ligne le 2026-11-16. Cette liste n'ajoute aucune décision : l'architecture reste une orientation.
+Dépôts GitHub qui correspondent à cette architecture. Les adresses viennent des notes du vault, sauf les deux dépôts Signal K / Node-RED, vérifiés en ligne le 2026-11-16. Cette liste n'ajoute aucune décision.
 
 **Cœur de l'architecture**
 
 | Dépôt | Rôle |
 |---|---|
-| [pypilot/pypilot](https://github.com/pypilot/pypilot) | Le cerveau : cap, régulation, modes vent et route. Contient aussi `motor.ino` (`arduino/motor/`), le micrologiciel du contrôle moteur |
-| [pypilot/pypilot_schematics](https://github.com/pypilot/pypilot_schematics) | Schémas de la carte moteur de pypilot |
-| [pypilot/workbook](https://github.com/pypilot/workbook) | Documentation de pypilot |
+| [pypilot/pypilot](https://github.com/pypilot/pypilot) | Le cerveau : cap, régulation, modes vent et route. Contient aussi `motor.ino` (`arduino/motor/`), le micrologiciel du contrôle moteur, et dans `hat/` une **télécommande ESP32 en MicroPython** (écran, 7 touches, liaison Wi-Fi seulement) |
+| [pypilot/pypilot_schematics](https://github.com/pypilot/pypilot_schematics) | Schémas KiCad des cartes de pypilot. Contient `hbridge_controller`, une carte moteur à fabriquer soi-même (utile pour D-06), et les contrôleurs de moyenne et de forte puissance |
+| [pypilot/workbook](https://github.com/pypilot/workbook) | Guide pas à pas de pypilot (installation, câblage du Nano, lecture de `motor.ino`). Dernier commit en juin 2021 : utile, mais daté |
 | [ttlappalainen/NMEA2000](https://github.com/ttlappalainen/NMEA2000) | Bibliothèque NMEA 2000 pour la façade ESP32 et les nœuds de capteurs |
 | [SignalK/signalk-node-red](https://github.com/SignalK/signalk-node-red) | Module du serveur Signal K qui embarque Node-RED (outil de prototype, DEC-006) |
 | [SignalK/node-red-embedded](https://github.com/SignalK/node-red-embedded) | Les blocs Signal K utilisables dans ce Node-RED embarqué |
@@ -63,8 +63,10 @@ Dépôts GitHub qui correspondent à cette architecture. Les adresses viennent d
 |---|---|
 | [spascual90/Fenix](https://github.com/spascual90/Fenix) | Référence à vérin linéaire, repli possible, source de l'anticipation par le vent (« CON-009 - Script d'anticipation de la barre par le vent (spécification) », issue #13) |
 | [spascual90/Fenix-User-Handbook](https://github.com/spascual90/Fenix-User-Handbook) | Manuel de Fenix |
-| [marcobergman/pypilot_ray](https://github.com/marcobergman/pypilot_ray) | pypilot dans un boîtier Raymarine : utile pour la conversion des ST |
-| [SignalK/signalk-autopilot](https://github.com/SignalK/signalk-autopilot) | Commande d'un pilote depuis Signal K |
+| [marcobergman/pypilot_ray](https://github.com/marcobergman/pypilot_ray) | pypilot dans un boîtier Raymarine ST2000 : six touches, un avertisseur et un voyant branchés directement sur les broches du Raspberry Pi, pilotés par un script Python (`ray.py`) qui est un client de pypilot. Utile pour la conversion des ST, et comme modèle de panneau local sans ESP32 |
+| [SignalK/signalk-autopilot](https://github.com/SignalK/signalk-autopilot) | Commande, depuis Signal K, des pilotes Raymarine (NMEA 2000, SeaTalk 1) et Simrad. **Ne gère pas pypilot.** Utile seulement comme modèle de chemins de commande |
+
+**Relecture du 2026-11-16.** Les dépôts ci-dessus ont été clonés et lus (pypilot 0.71, commit `5b7b8b0`). Les constats tirés du code sont dans « DEC-014 - Architecture de départ - pypilot hybride, Fenix en repli », section « Preuves ». Rien n'a été essayé.
 
 Les autres dépôts étudiés (YAAAP, Plot Device, KastB, Jack Edwards, Milo, SimplePilot) restent dans « six-projets-pilotes-barre-detail » et « Dépôts open source de pilotes - validation et analyse technique ».
 
@@ -89,7 +91,7 @@ Les autres dépôts étudiés (YAAAP, Plot Device, KastB, Jack Edwards, Milo, Si
 - Réglage du courant maximal de `motor.ino` : la valeur par défaut lue dans le code est de 20 A, la bonne valeur pour chaque moteur reste à déterminer.
 - Ce que la façade ESP32 apporte réellement face à pypilot_hat : NMEA 2000 natif, écran au choix, intégration dans un boîtier.
 - Effet du positionnement de l'IMU près des aimants du moteur (hypothèse à vérifier).
-- **Anticipation par le vent** : aucune n'a été trouvée dans la documentation de pypilot (seulement les modes vent apparent et vent réel). Un script sera créé (« DEC-005 - Prévoir un mode vent et une girouette-anémomètre NMEA », option C ; spécification : « CON-009 - Script d'anticipation de la barre par le vent (spécification) »). Inconnue : le point d'injection dans pypilot, car une correction de barre ne se transmet pas proprement par la consigne de cap ; une modification de pypilot pourrait être nécessaire.
+- **Anticipation par le vent** : aucune n'a été trouvée dans la documentation de pypilot (seulement les modes vent apparent et vent réel). Un script sera créé (« DEC-005 - Prévoir un mode vent et une girouette-anémomètre NMEA », option C ; spécification : « CON-009 - Script d'anticipation de la barre par le vent (spécification) »). **Piste pour le point d'injection** *(lue dans le code le 2026-11-16, non essayée)* : pypilot charge automatiquement chaque fichier Python du dossier `pilots/`, et le pilote `basic` tient en une cinquantaine de lignes. Un pilote dérivé de `basic`, avec un terme de vent ajouté à la commande, injecterait la correction sans modifier le cœur de pypilot. Reste inconnu : le comportement réel, à essayer d'abord dans le banc SailSim.
 - Machine qui héberge Signal K et Node-RED : Raspberry Pi 4 ou 5 sous OpenPlotter (pypilot, Signal K et Node-RED ensemble, consommation plus élevée), ou Raspberry Pi Zero sous TinyPilot pour pypilot seul, avec Node-RED sur une autre machine (par exemple le PC au banc) pendant le prototype. *Hypothèse non mesurée :* le Pi Zero sous TinyPilot serait trop limité pour les trois ensemble.
 
 ## Essais nécessaires
@@ -100,6 +102,9 @@ Les autres dépôts étudiés (YAAAP, Plot Device, KastB, Jack Edwards, Milo, Si
 
 ## Issue
 
-**Décision proposée le 2026-11-16 :** « DEC-014 - Architecture de départ - pypilot hybride, Fenix en repli ». Elle retiendrait ce concept comme architecture de départ, avec trois amendements : liaison façade ↔ cerveau filaire, quatrième bloc « manœuvres et supervision » sur le Raspberry Pi, point d'entrée du NMEA 2000 laissé à l'essai 1. Tant qu'elle n'est pas acceptée, le statut reste `exploratoire` et la propriété `decision` reste vide.
+**Retenu.** « DEC-014 - Architecture de départ - pypilot hybride, Fenix en repli », acceptée par Mathieu le 2026-11-16. Trois amendements à ce concept :
+1. la liaison façade ↔ cerveau est filaire au socle (l'inconnue « Wi-Fi ou série » est tranchée) ;
+2. un quatrième bloc, « manœuvres et supervision », tourne sur le Raspberry Pi comme client de pypilot ;
+3. le point d'entrée du NMEA 2000 (façade ou carte CAN sur le Raspberry Pi) n'est pas fixé : il se décide avec la machine hôte, par l'essai 1.
 
-Non tranchée. Si le concept est retenu, renseigner `decision` avec le lien vers une décision acceptée. S'il est écarté, écrire ici la raison.
+Fenix reste le repli ; les conditions de retour sont dans la décision.
