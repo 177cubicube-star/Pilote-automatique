@@ -1,0 +1,28 @@
+{
+ "cas": "basic_min30",
+ "pilote_demande": "basic",
+ "speed_min": 30,
+ "pilotes_vus": [
+  "basic"
+ ],
+ "reaffirmations": 0,
+ "pilote_final": "basic",
+ "journal": [
+  [
+   0.07,
+   "ap.pilot",
+   "basic"
+  ],
+  [
+   0.07,
+   "servo.speed.min",
+   "30.0000"
+  ],
+  [
+   7.86,
+   "rudder.angle valide",
+   "-0.4400"
+  ]
+ ],
+ "code_retour": 0
+}

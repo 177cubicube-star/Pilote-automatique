@@ -1,0 +1,37 @@
+--- a/src/sailsim/autopilot/pypilot.py
++++ b/src/sailsim/autopilot/pypilot.py
+@@ -108,7 +108,10 @@
+         offset_settle_s: float = 0.5,
+         servo_layer: bool = False,
+         servo_port: int = 20231,
++        auto_sail_trim: bool = False,
+     ) -> None:
++        # Sail trim like the internal Nomoto autopilot (CON-010 PoC, 2026-11-22)
++        self.auto_sail_trim = auto_sail_trim
+         self.host = host
+         self.json_port = json_port
+         self.nmea_port = nmea_port
+@@ -195,7 +198,12 @@
+         new_angle = self._rudder_angle + rate * dt
+         self._rudder_angle = max(-self.rudder_max, min(self.rudder_max, new_angle))
+ 
+-        return ControlCommand(rudder_angle=self._rudder_angle, sail_trim=0.5)
++        trim = 0.5
++        if self.auto_sail_trim:
++            from sailsim.physics.aerodynamics import optimal_sail_trim
++
++            trim = optimal_sail_trim(sensors.apparent_wind_angle)
++        return ControlCommand(rudder_angle=self._rudder_angle, sail_trim=trim)
+ 
+     def reset_fault(self) -> None:
+         """Clear a latched communication fault (explicit re-arm)."""
+--- a/src/sailsim/autopilot/factory.py
++++ b/src/sailsim/autopilot/factory.py
+@@ -55,6 +55,7 @@
+             imu_port=config.pypilot_imu_port,
+             servo_layer=config.pypilot_servo_layer,
+             servo_port=config.pypilot_servo_port,
++            auto_sail_trim=config.auto_sail_trim,
+         )
+     elif config.type == "signalk_rs":
+         from sailsim.autopilot.signalk_rs import SignalKRsAutopilot

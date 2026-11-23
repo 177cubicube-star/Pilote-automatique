@@ -1,0 +1,116 @@
+[
+ [
+  0.0,
+  "ENVOI",
+  "servo.speed.min",
+  30,
+  ""
+ ],
+ [
+  32.21,
+  "DÉBUT",
+  "empannage",
+  {
+   "consigne_avant": 20.0,
+   "consigne_après": 340.0,
+   "sens": -1,
+   "cap": 20.5726
+  }
+ ],
+ [
+  32.21,
+  "ENVOI",
+  "ap.enabled",
+  false,
+  "séquence : pilote en veille"
+ ],
+ [
+  32.21,
+  "CONFIRMATION",
+  "empannage confirmé (automatique en simulation)",
+  null
+ ],
+ [
+  32.21,
+  "ENVOI",
+  "servo.speed.max",
+  40,
+  "lancer"
+ ],
+ [
+  32.21,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  32.21,
+  "ENVOI",
+  "servo.position_command",
+  8,
+  "lancer"
+ ],
+ [
+  37.15,
+  "FIN ÉTAPE",
+  "lancer",
+  "cap tourné de 20° (repli)"
+ ],
+ [
+  37.15,
+  "ENVOI",
+  "servo.speed.max",
+  100,
+  "contre-barre"
+ ],
+ [
+  37.15,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  37.15,
+  "ENVOI",
+  "servo.position_command",
+  -5,
+  "contre-barre"
+ ],
+ [
+  39.16,
+  "FIN ÉTAPE",
+  "contre-barre",
+  "durée"
+ ],
+ [
+  39.16,
+  "ENVOI",
+  "servo.speed.max",
+  100,
+  ""
+ ],
+ [
+  39.16,
+  "ENVOI",
+  "ap.heading_command",
+  340.0,
+  "sortie : le pilote reprend"
+ ],
+ [
+  39.16,
+  "ENVOI",
+  "ap.enabled",
+  true,
+  "sortie"
+ ],
+ [
+  39.16,
+  "FIN",
+  "empannage",
+  {
+   "durée_s": 6.95
+  }
+ ]
+]

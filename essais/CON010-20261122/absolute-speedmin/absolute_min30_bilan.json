@@ -1,0 +1,39 @@
+{
+ "cas": "absolute_min30",
+ "pilote_demande": "absolute",
+ "speed_min": 30,
+ "pilotes_vus": [
+  "absolute",
+  "basic"
+ ],
+ "reaffirmations": 1,
+ "pilote_final": "absolute",
+ "journal": [
+  [
+   0.03,
+   "ap.pilot",
+   "absolute"
+  ],
+  [
+   0.03,
+   "servo.speed.min",
+   "30.0000"
+  ],
+  [
+   2.04,
+   "ap.pilot",
+   "basic"
+  ],
+  [
+   7.76,
+   "rudder.angle valide",
+   "-0.4400"
+  ],
+  [
+   7.81,
+   "ap.pilot",
+   "absolute"
+  ]
+ ],
+ "code_retour": 0
+}

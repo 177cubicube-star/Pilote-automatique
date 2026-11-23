@@ -1,0 +1,14 @@
+== virement_natif : code 1
+== virement_sequence : code 1
+    (32.22, 'DÉBUT', 'virement', {'consigne_avant': 310.0, 'consigne_après': 50.0, 'sens': 1, 'cap': 312.3318})
+    (36.26, 'FIN ÉTAPE', 'lancer', 'durée')
+    (39.28, 'FIN ÉTAPE', 'passage', 'durée')
+    (41.29, 'FIN ÉTAPE', 'laisser courir', 'durée')
+    (41.29, 'FIN', 'virement', {'durée_s': 9.07})
+== empannage_natif : code 1
+== empannage_sequence : code 1
+    (32.21, 'DÉBUT', 'empannage', {'consigne_avant': 20.0, 'consigne_après': 340.0, 'sens': -1, 'cap': 20.5726})
+    (32.21, 'CONFIRMATION', 'empannage confirmé (automatique en simulation)', None)
+    (37.15, 'FIN ÉTAPE', 'lancer', 'cap tourné de 20° (repli)')
+    (39.16, 'FIN ÉTAPE', 'contre-barre', 'durée')
+    (39.16, 'FIN', 'empannage', {'durée_s': 6.95})

@@ -1,0 +1,13 @@
+== voiles_virement_natif : code 1
+== voiles_virement_seq15 : code 1
+    (32.22, 'DÉBUT', 'virement', {'consigne_avant': 310.0, 'consigne_après': 50.0, 'sens': 1, 'cap': 312.4541})
+    (36.25, 'FIN ÉTAPE', 'lancer', 'durée')
+    (39.27, 'FIN ÉTAPE', 'passage', 'durée')
+    (41.29, 'FIN ÉTAPE', 'laisser courir', 'durée')
+    (41.29, 'FIN', 'virement', {'durée_s': 9.07})
+== voiles_virement_seq25 : code 1
+    (32.29, 'DÉBUT', 'virement25', {'consigne_avant': 310.0, 'consigne_après': 50.0, 'sens': 1, 'cap': 312.8171})
+    (36.32, 'FIN ÉTAPE', 'lancer', 'durée')
+    (39.34, 'FIN ÉTAPE', 'passage', 'durée')
+    (41.35, 'FIN ÉTAPE', 'laisser courir', 'durée')
+    (41.35, 'FIN', 'virement25', {'durée_s': 9.07})

@@ -1,0 +1,18 @@
+Scenario: tack_port_to_starboard
+  Yacht: default
+  Autopilot: pypilot @ localhost:23322 [pypilot_servo]
+  Duration: 120.0s, dt: 0.05s
+  Wind: 8.0 m/s @ 0°
+  Target heading: -50°
+
+Running simulation...
+Completed: 2401 steps recorded
+
+Telemetry saved to: C:\Users\mat_g\AppData\Local\Temp\claude\C--Users-mat-g-Documents-Claude-Projects-Pilote-automatique\6e8b3f2f-43e7-498c-a3a5-45db54edee57\scratchpad\essai_sequences\virement_sequence.csv
+
+Quality Gate Result: FAIL
+----------------------------------------
+  [FAIL] mean_heading_error_deg: 47.10 (limit: 15.00)
+  [FAIL] max_heading_deviation_deg: 64.98 (limit: 60.00)
+  [OK] max_rudder_rate_deg_per_s: 6.80 (limit: 50.00)
+  [OK] settling_time_s: 0.00 (limit: 60.00)

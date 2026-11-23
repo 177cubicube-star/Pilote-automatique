@@ -1,0 +1,137 @@
+[
+ [
+  0.0,
+  "ENVOI",
+  "servo.speed.min",
+  30,
+  ""
+ ],
+ [
+  32.29,
+  "DÉBUT",
+  "virement25",
+  {
+   "consigne_avant": 310.0,
+   "consigne_après": 50.0,
+   "sens": 1,
+   "cap": 312.8171
+  }
+ ],
+ [
+  32.29,
+  "ENVOI",
+  "ap.enabled",
+  false,
+  "séquence : pilote en veille"
+ ],
+ [
+  32.29,
+  "ENVOI",
+  "servo.speed.max",
+  60,
+  "lancer"
+ ],
+ [
+  32.29,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  32.29,
+  "ENVOI",
+  "servo.position_command",
+  -25,
+  "lancer"
+ ],
+ [
+  36.32,
+  "FIN ÉTAPE",
+  "lancer",
+  "durée"
+ ],
+ [
+  36.32,
+  "ENVOI",
+  "servo.speed.max",
+  40,
+  "passage"
+ ],
+ [
+  36.32,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  36.32,
+  "ENVOI",
+  "servo.position_command",
+  -8,
+  "passage"
+ ],
+ [
+  39.34,
+  "FIN ÉTAPE",
+  "passage",
+  "durée"
+ ],
+ [
+  39.34,
+  "ENVOI",
+  "servo.speed.max",
+  40,
+  "laisser courir"
+ ],
+ [
+  39.34,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  39.34,
+  "ENVOI",
+  "servo.position_command",
+  0,
+  "laisser courir"
+ ],
+ [
+  41.35,
+  "FIN ÉTAPE",
+  "laisser courir",
+  "durée"
+ ],
+ [
+  41.35,
+  "ENVOI",
+  "servo.speed.max",
+  100,
+  ""
+ ],
+ [
+  41.35,
+  "ENVOI",
+  "ap.heading_command",
+  50.0,
+  "sortie : le pilote reprend"
+ ],
+ [
+  41.35,
+  "ENVOI",
+  "ap.enabled",
+  true,
+  "sortie"
+ ],
+ [
+  41.35,
+  "FIN",
+  "virement25",
+  {
+   "durée_s": 9.07
+  }
+ ]
+]

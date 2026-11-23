@@ -1,0 +1,123 @@
+{
+ "resultats": {
+  "10": {
+   "cap_avant": 0.8625,
+   "cap_apres": 345.8189,
+   "barre_pypilot": 9.16,
+   "speed_max_lu": 60.0
+  },
+  "-10": {
+   "cap_avant": 326.6007,
+   "cap_apres": 323.4495,
+   "barre_pypilot": -9.08,
+   "speed_max_lu": 60.0
+  }
+ },
+ "journal": [
+  [
+   0.0,
+   "ENVOI",
+   "servo.speed.min",
+   30,
+   ""
+  ],
+  [
+   18.82,
+   "ENVOI",
+   "ap.enabled",
+   false,
+   "veille"
+  ],
+  [
+   18.82,
+   "ENVOI",
+   "servo.speed.max",
+   60,
+   ""
+  ],
+  [
+   18.82,
+   "ENVOI",
+   "servo.command",
+   0,
+   "contournement"
+  ],
+  [
+   18.82,
+   "ENVOI",
+   "servo.position_command",
+   10,
+   ""
+  ],
+  [
+   22.82,
+   "ENVOI",
+   "servo.command",
+   0,
+   ""
+  ],
+  [
+   22.82,
+   "ENVOI",
+   "servo.position_command",
+   0,
+   ""
+  ],
+  [
+   25.82,
+   "ENVOI",
+   "ap.enabled",
+   false,
+   "veille"
+  ],
+  [
+   25.82,
+   "ENVOI",
+   "servo.speed.max",
+   60,
+   ""
+  ],
+  [
+   25.82,
+   "ENVOI",
+   "servo.command",
+   0,
+   "contournement"
+  ],
+  [
+   25.82,
+   "ENVOI",
+   "servo.position_command",
+   -10,
+   ""
+  ],
+  [
+   29.82,
+   "ENVOI",
+   "servo.command",
+   0,
+   ""
+  ],
+  [
+   29.82,
+   "ENVOI",
+   "servo.position_command",
+   0,
+   ""
+  ],
+  [
+   32.82,
+   "ENVOI",
+   "servo.speed.max",
+   100,
+   ""
+  ],
+  [
+   32.82,
+   "ENVOI",
+   "ap.enabled",
+   true,
+   ""
+  ]
+ ]
+}

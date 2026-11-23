@@ -1,0 +1,20 @@
+Scenario: unnamed
+  Yacht: default
+  Autopilot: pypilot @ localhost:23322 [pypilot_servo]
+  Duration: 60.0s, dt: 0.05s
+  Wind: 5.0 m/s @ 60°
+  Target heading: 0°
+
+Running simulation...
+Completed: 1201 steps recorded
+
+Telemetry saved to: C:\Users\mat_g\AppData\Local\Temp\claude\C--Users-mat-g-Documents-Claude-Projects-Pilote-automatique\6e8b3f2f-43e7-498c-a3a5-45db54edee57\scratchpad\essai_absolute\basic_min30.csv
+
+Quality Gate Result: PASS
+----------------------------------------
+  [OK] mean_heading_error_deg: 0.80 (limit: 15.00)
+  [OK] max_heading_deviation_deg: 2.12 (limit: 30.00)
+  [OK] max_rudder_rate_deg_per_s: 4.40 (limit: 80.00)
+  [OK] settling_time_s: 0.00 (limit: 55.00)
+
+--- stderr ---
