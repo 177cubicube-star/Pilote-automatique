@@ -14,6 +14,9 @@ Choix retenu par Mathieu (2026-11-23) : départ TRIBORD amures au près, vent du
 
 preparer() ne libère PAS la barre : Pont.demarrer() le fait en envoyant {}.
 
+Angle du vent apparent : toujours via pont_skiff.awa_vient_de(state), car le
+awa_deg brut de Skiff est décalé de 180° (mesuré le 2026-11-23).
+
 DetecteurPassageVent : détecte le passage de l'étrave dans le vent, seulement
 après avoir été ARMÉ sur l'amure de départ (le zéro d'initialisation de awa_deg
 au reset ne peut donc pas le déclencher).
@@ -27,7 +30,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Callable
 
-from pont_skiff import SkiffClient
+from pont_skiff import SkiffClient, awa_vient_de
 
 TRIBORD, BABORD = +1, -1   # côté d'où vient le vent au départ (signe de awa_deg)
 
@@ -97,6 +100,16 @@ class EssaiConfig:
         return self.sens_depart * self.angle_virement_deg
 
 
+def angle_symetrique(cap_deg: float, c: "EssaiConfig") -> float:
+    """Angle de virement qui mène au près SYMÉTRIQUE de l'autre amure (miroir autour
+    de la direction du vent vrai) : Hfinal = 2 x vent - cap. Toujours entre 0 et 180."""
+    hf = (2.0 * c.vent_vient_de_deg - cap_deg) % 360.0
+    angle = c.sens_depart * norm180(hf - cap_deg)
+    if not 0 < angle < 180:
+        raise ValueError(f"cap {cap_deg:g}° incompatible avec le côté de départ choisi")
+    return angle
+
+
 class EssaiImpossible(RuntimeError):
     pass
 
@@ -107,7 +120,7 @@ class Declenchement:
     cap_depart_deg: float       # cap MESURÉ au déclenchement
     cap_final_deg: float
     rudder_deg: float
-    awa_deg: float
+    awa_deg: float              # convention « vient de » (0 = face au vent, + = tribord)
     stw_mps: float
     rotation_dps: float
 
@@ -161,7 +174,7 @@ def preparer(client: SkiffClient, c: EssaiConfig,
         if st.get("route_guidance") is not None:
             raise EssaiImpossible("route OpenCPN active : elle a priorité sur le maintien de cap")
         r = rot.maj(st["heading_true_deg"], st["elapsed_s"])
-        awa, stw, t_sk = st["awa_deg"], st["stw_mps"], st["elapsed_s"]
+        awa, stw, t_sk = awa_vient_de(st), st["stw_mps"], st["elapsed_s"]
         ok = (r is not None
               and abs(c.sens_depart * awa - c.awa_cible_deg) <= c.awa_tol_deg
               and abs(r) <= c.rotation_max_dps
@@ -180,7 +193,7 @@ def preparer(client: SkiffClient, c: EssaiConfig,
         sleep(c.periode_s)
 
     detail = "aucun état reçu" if dernier is None else (
-        f"dernier état : awa {dernier['awa_deg']:.1f}°, stw {dernier['stw_mps']:.2f} m/s, "
+        f"dernier état : awa {awa_vient_de(dernier):.1f}°, stw {dernier['stw_mps']:.2f} m/s, "
         f"rotation {rot.valeur if rot.valeur is not None else float('nan'):.2f} °/s")
     raise EssaiImpossible(
         f"établissement non atteint en {c.delai_max_s:g} s ({detail}). "
@@ -189,7 +202,9 @@ def preparer(client: SkiffClient, c: EssaiConfig,
 
 @dataclass
 class DetecteurPassageVent:
-    """Passage de l'étrave dans le vent = changement de signe de awa_deg par 0°.
+    """Passage de l'étrave dans le vent = changement de signe de l'angle du vent
+    apparent par 0°. À alimenter avec pont_skiff.awa_vient_de(state), JAMAIS avec
+    state["awa_deg"] brut (son zéro est le vent arrière).
     1. ARMEMENT : n_armement lectures consécutives de awa du côté de départ, à
        awa_tol_deg de awa_armement_deg. Le zéro du reset n'arme donc pas.
     2. PASSAGE : une fois armé, awa change de signe avec |awa| < awa_max_passage_deg.

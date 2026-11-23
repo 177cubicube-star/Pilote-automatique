@@ -41,10 +41,13 @@ SIGNE_VERS_SKIFF = +1
 #                 cmd_deg = consigne active PENDANT l'intervalle qui vient de finir.
 #   t_reponse_s : réception de la réponse au POST. rudder_deg_skiff, awa_deg,
 #                 heading_true_deg et skiff_elapsed_s viennent de cette réponse.
+#   awa_deg     : valeur BRUTE de Skiff (« va vers ») ; awa_vient_de_deg : convertie
+#                 (0 = face au vent, + = tribord). Utiliser awa_vient_de_deg.
 #   cmd_suivante_deg : décision prise par consigne_fn à t_reponse_s, à partir de
 #                 cette réponse ; elle devient cmd_deg à la ligne suivante.
 COLONNES = ["t_pi_s", "dt_s", "cmd_deg", "pos_deg", "helm", "t_reponse_s",
-            "rudder_deg_skiff", "awa_deg", "heading_true_deg", "skiff_elapsed_s",
+            "rudder_deg_skiff", "awa_deg", "awa_vient_de_deg", "heading_true_deg",
+            "stw_mps", "skiff_elapsed_s",
             "cmd_suivante_deg", "barre_ecrasee"]
 
 
@@ -59,6 +62,17 @@ def deg_to_helm(pos_deg: float, signe: int = SIGNE_VERS_SKIFF) -> float:
     if not math.isfinite(pos_deg):
         raise ValueError(f"pos_deg doit être fini (reçu {pos_deg!r})")
     return max(-1.0, min(1.0, signe * pos_deg / SKIFF_RUDDER_MAX_DEG))
+
+
+def awa_vient_de(state: dict) -> float:
+    """Angle du vent apparent dans la convention habituelle, à UN seul endroit.
+    Skiff publie awa_deg en « va vers » (décalé de 180°) : mesuré le 2026-11-23,
+    cap 293° vent du 000° -> awa_deg -139,5° ; cap 33° -> +146,9°.
+    Retour : 0° = face au vent, + = vent de tribord, - = vent de bâbord."""
+    a = state["awa_deg"]
+    if not math.isfinite(a):
+        raise ValueError(f"awa_deg doit être fini (reçu {a!r})")
+    return (a + 180.0 + 180.0) % 360.0 - 180.0
 
 
 def helm_to_deg(rudder_deg: float, signe: int = SIGNE_VERS_SKIFF) -> float:
@@ -165,7 +179,9 @@ class Pont:
         row = {"t_pi_s": t, "dt_s": dt, "cmd_deg": self._cmd, "pos_deg": self._pos,
                "helm": helm, "t_reponse_s": t_rep,
                "rudder_deg_skiff": state.get("rudder_deg"),
-               "awa_deg": state.get("awa_deg"), "heading_true_deg": state.get("heading_true_deg"),
+               "awa_deg": state.get("awa_deg"), "awa_vient_de_deg": awa_vient_de(state),
+               "heading_true_deg": state.get("heading_true_deg"),
+               "stw_mps": state.get("stw_mps"),
                "skiff_elapsed_s": state.get("elapsed_s"),
                "cmd_suivante_deg": cmd_suivante, "barre_ecrasee": int(ecrasee)}
         self.rows.append(row)

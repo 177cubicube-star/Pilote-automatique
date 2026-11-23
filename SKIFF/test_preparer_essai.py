@@ -5,12 +5,18 @@ import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from pont_skiff import SkiffClient
-from preparer_essai import (BABORD, TRIBORD, DetecteurPassageVent, EssaiConfig,
+from preparer_essai import (BABORD, TRIBORD, DetecteurPassageVent, EssaiConfig, angle_symetrique,
                             EssaiImpossible, SuiviRotation, preparer, _requete_environnement)
 
 
+def brut(awa_vient_de):
+    """Ce que Skiff publie réellement : convention « va vers », décalée de 180°."""
+    return (awa_vient_de + 360.0) % 360.0 - 180.0
+
+
 def etat(t, heading=293.7, awa=40.0, stw=3.0, rudder=-2.0, aground=False):
-    return {"elapsed_s": t, "heading_true_deg": heading, "awa_deg": awa, "stw_mps": stw,
+    """awa : angle « vient de » voulu ; l'état contient la valeur brute Skiff."""
+    return {"elapsed_s": t, "heading_true_deg": heading, "awa_deg": brut(awa), "stw_mps": stw,
             "rudder_deg": rudder, "aground": aground, "route_guidance": None,
             "ap_heading_deg": None,
             "control": {"helm": 0.0, "sail_trim": 0.5, "reef": 0.0, "thrust_port": 0.0,
@@ -125,6 +131,21 @@ class TestPreparer(unittest.TestCase):
             go()
 
 
+class TestConventionAwa(unittest.TestCase):
+    def test_valeurs_mesurees_sur_skiff(self):
+        from pont_skiff import awa_vient_de
+        self.assertAlmostEqual(awa_vient_de({"awa_deg": -139.5}), 40.5)    # tribord
+        self.assertAlmostEqual(awa_vient_de({"awa_deg": 146.9}), -33.1)    # bâbord
+        self.assertAlmostEqual(abs(awa_vient_de({"awa_deg": 0.0})), 180.0) # brut 0 = vent arrière
+
+    def test_brut_zero_du_reset_n_arme_pas(self):
+        from pont_skiff import awa_vient_de
+        d = DetecteurPassageVent()
+        for i in range(10):
+            self.assertFalse(d.maj(i * 0.1, awa_vient_de({"awa_deg": 0.0})))
+        self.assertFalse(d.arme)
+
+
 class TestRotation(unittest.TestCase):
     def test_passage_359_vers_0(self):
         r = SuiviRotation()
@@ -172,6 +193,12 @@ class TestConfig(unittest.TestCase):
                    {"vent_mps": float("nan")}, {"duree_stable_s": 0.0}):
             with self.assertRaises(ValueError):
                 EssaiConfig(**kw)
+
+    def test_angle_symetrique(self):
+        self.assertAlmostEqual(angle_symetrique(293.1, EssaiConfig()), 133.8)       # -> 066,9°
+        self.assertAlmostEqual(angle_symetrique(66.9, EssaiConfig(sens_depart=BABORD)), 133.8)
+        with self.assertRaises(ValueError):
+            angle_symetrique(66.9, EssaiConfig())                                    # mauvaise amure
 
     def test_cap_final_selon_amure(self):
         self.assertEqual(EssaiConfig().cap_final_signe, 80.0)

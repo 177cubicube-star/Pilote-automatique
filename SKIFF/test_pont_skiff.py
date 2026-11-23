@@ -87,6 +87,12 @@ class TestConversion(unittest.TestCase):
             deg_to_helm(float("nan"))
 
 
+class TestAwaJournal(unittest.TestCase):
+    def test_colonne_convertie(self):
+        self.assertIn("awa_vient_de_deg", COLONNES)
+        self.assertIn("awa_deg", COLONNES)          # le brut reste journalisé
+
+
 class TestPont(unittest.TestCase):
     def setUp(self):
         self.faux = FauxSkiff()

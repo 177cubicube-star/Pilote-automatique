@@ -1,0 +1,60 @@
+{
+ "H0": 293.1,
+ "Hfinal": 67.1,
+ "lit_du_vent_s_apres_TACK": 18.0,
+ "vent_apparent_passe_0_s_apres_TACK": 16.2,
+ "fin_sequence_s_apres_TACK": 24.0,
+ "fin_sequence_motif": "FIN SÉQUENCE",
+ "alignement_Hfinal_s_apres_TACK": null,
+ "a_la_fin_de_sequence": {
+  "cap": 12.2,
+  "erreur_cap_deg": 54.9,
+  "rotation_deg_s": 0.86,
+  "stw_m_s": 1.08,
+  "vent_apparent": -14.9,
+  "part_du_virement_accomplie_pct": 59
+ },
+ "final": {
+  "cap": 25.4,
+  "vent_apparent": -28.4,
+  "stw_m_s": 0.18,
+  "stw_min_apres_TACK": 0.17
+ },
+ "REUSSI": false,
+ "reglages": {
+  "vitesse_verin_dps": 10.0,
+  "angle_virement_deg": 134.0,
+  "phases": [
+   [
+    -15,
+    10,
+    0.0
+   ],
+   [
+    20,
+    10,
+    3.0
+   ],
+   [
+    25,
+    5,
+    8.0
+   ],
+   [
+    10,
+    5,
+    2.0
+   ],
+   [
+    0,
+    5,
+    0.0
+   ]
+  ],
+  "approche": {
+   "cap": 293.1164773120622,
+   "awa": 40.57837674988872,
+   "stw": 3.8523644541759867
+  }
+ }
+}
