@@ -1,6 +1,6 @@
 # Cahier des besoins et décisions acceptées — session du 2026-11-16
 
-Rédigé le 2026-11-16 à partir du vault Obsidian. **Copie datée pour le dépôt : le vault fait autorité.** En cas d'écart, les notes du vault prévalent : `00 - Projet/Cahier des besoins du pilote.md` et `06 - Décisions/DEC-003` à `DEC-015`.
+Rédigé le 2026-11-16 à partir du vault Obsidian. **Copie datée pour le dépôt : le vault fait autorité.** En cas d'écart, les notes du vault prévalent : `00 - Projet/Cahier des besoins du pilote.md` et `06 - Décisions/DEC-003` à `DEC-016`. Précisions de Mathieu du 2026-11-22 (ordre Q1 / Q1-I, plafond de budget) reportées le 2026-11-23.
 
 **Statut.** Contrairement au document `decisions-et-dispositions-2026-11-02.md`, ces décisions sont **ACCEPTÉES par Mathieu** le 2026-11-16. Les DEC-003 à DEC-005 reprennent DP-01 à DP-03 de ce document. Les dispositions DISP-01 à DISP-16 ont été acceptées avec DEC-004 et DEC-005, et la condition et la lecture du 2026-11-16 s'y appliquent. La provenance de chaque choix (citation de Mathieu, revue du 2026-11-16) est dans le vault, `00 - Projet/Registre d'approbation - session du 2026-11-16.md`.
 
@@ -24,7 +24,8 @@ Les noms entre « » désignent des notes du vault.
 | DEC-012 | Accéléromètre séparé : LIS3DH | 2026-11-16 | ACCEPTÉE (2026-11-16) |
 | DEC-013 | Précision de cap visée : ±2 à 4°, jusqu'à ±5° en conditions dégradées | 2026-11-16 | ACCEPTÉE (2026-11-16) |
 | DEC-014 | Architecture de départ : pypilot hybride (Raspberry Pi, `motor.ino`, façade ESP32), Fenix en repli. Copie : `decision-architecture-DEC-014-2026-11-16.md` | 2026-11-16 | ACCEPTÉE (2026-11-16) |
-| DEC-015 | Dispositions d'exécution du plan V0-6 : commit pypilot `5b7b8b0` pour le banc, lecture des portes G3 et G4, exception d'achat pour l'électronique du banc, potentiomètre intégré au vérin (à confirmer après M1), complément Q1-I en simulation | 2026-11-16 | ACCEPTÉE (2026-11-16) |
+| DEC-015 | Dispositions d'exécution du plan V0-6 : commit pypilot `5b7b8b0` pour le banc, lecture des portes G3 et G4, exception d'achat pour l'électronique du banc, potentiomètre intégré au vérin (à confirmer après M1), complément Q1-I en simulation ; ordre précisé le 2026-11-22 : Q1 rejoué sur `5b7b8b0` d'abord, puis Q1-I sur ce même commit | 2026-11-16 | ACCEPTÉE (2026-11-16) |
+| DEC-016 | Dépassement de l'enveloppe d'environ 1 000 $ accepté ; Raspberry Pi 5 pour le banc B1a. Précision du 2026-11-22 : plafond du projet à **2 000 $ CA hors taxes** | 2026-11-16 | ACCEPTÉE (2026-11-16) |
 
 DEC-001 et DEC-002 (organisation du vault) ne portent sur aucun choix technique.
 
@@ -79,7 +80,7 @@ DEC-001 et DEC-002 (organisation du vault) ne portent sur aucun choix technique.
 |---|---|---|
 | ~~Architecture du calculateur~~ | **Décidé le 2026-11-16 :** hybride pypilot + façade ESP32 + `motor.ino` comme architecture de départ, Fenix en repli (DEC-014) | `decision-architecture-DEC-014-2026-11-16.md`, « CON-008 - Architecture hybride pypilot, façade ESP32 et contrôle moteur séparé » |
 | Modèle du vérin et effort à la barre | Vérin linéaire, au moins 300 mm et 100 lbf (décidé). Le modèle n'est pas choisi. Le vérin Fenix (300 N, environ 67 lbf annoncés) reste à réconcilier avec le minimum de force | « Q-002 - Effort réel à la barre », « DEC-003 - Vérin linéaire commun, Milo en projet distinct » *(acceptée le 2026-11-16)* |
-| Budget | Socle chiffré à environ 1 715 $ CA, environ 715 $ au-dessus de l'enveloppe d'environ 1 000 $ | « Q-007 - Usage prioritaire, budget et moyens » |
+| ~~Budget~~ | **Dépassement accepté le 2026-11-16, plafond de 2 000 $ CA hors taxes fixé le 2026-11-22** (DEC-016). BoM V0.3 à environ 1 537 $ CA au minimum, hors taxes et livraison : environ 460 $ de marge avant livraison | « DEC-016 - Dépassement de l'enveloppe accepté et Raspberry Pi 5 pour le banc », « Q-007 - Usage prioritaire, budget et moyens » |
 | Sécurité et conduite en navigation | Chantier non ouvert ; réactions aux défauts à fixer | « Projet et périmètre » |
 | Capteurs éloignés | Type du capteur de bôme, amplificateur de la cellule, format des messages NMEA 2000, usage de l'accéléromètre séparé | « Entrées-sorties du socle », section 9 |
 | Séquences en angle mesuré | Proposition à évaluer | « grille-capacites-pilote », section 16 |
