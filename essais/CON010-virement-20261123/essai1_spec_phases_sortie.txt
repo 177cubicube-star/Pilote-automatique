@@ -1,0 +1,18 @@
+Scenario: spec_default_310
+  Yacht: default
+  Autopilot: pypilot @ localhost:23322 [C:\Users\mat_g\Documents\Claude\Projects\Pilote automatique\essais\CON010-virement-20261123\pypilot_servo_voiles.toml]
+  Duration: 120.0s, dt: 0.05s
+  Wind: 8.0 m/s @ 0°
+  Target heading: -50°
+
+Running simulation...
+Completed: 2401 steps recorded
+
+Telemetry saved to: C:\Users\mat_g\Documents\Claude\Projects\Pilote automatique\essais\CON010-virement-20261123\spec_phases.csv
+
+Quality Gate Result: PASS
+----------------------------------------
+  [OK] mean_heading_error_deg: 2.03 (limit: 3.00)
+  [OK] max_heading_deviation_deg: 4.28 (limit: 5.00)
+  [OK] max_rudder_rate_deg_per_s: 5.74 (limit: 15.00)
+  [OK] settling_time_s: 0.00 (limit: 30.00)

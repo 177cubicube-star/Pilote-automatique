@@ -1,0 +1,31 @@
+{
+ "recalage": {
+  "a": 0.96,
+  "b": -0.95,
+  "ecart_cap_rms_deg": 0.05
+ },
+ "TACK_t_sim": 27.4,
+ "H0": 307.3,
+ "Hfinal": 47.3,
+ "safran0": -5.36,
+ "lit_du_vent_s_apres_TACK": 12.85,
+ "vent_apparent_passe_0_s_apres_TACK": 12.6,
+ "fin_sequence_s_apres_TACK": 15.93,
+ "fin_sequence_motif": "FIN SÉQUENCE",
+ "alignement_Hfinal_s_apres_TACK": null,
+ "a_la_fin_de_sequence": {
+  "cap": 7.8,
+  "erreur_cap_deg": 39.5,
+  "rotation_deg_s": 2.06,
+  "u_m_s": 1.69,
+  "vent_apparent": -6.8,
+  "part_du_virement_accomplie_pct": 60
+ },
+ "final": {
+  "cap": 359.3,
+  "vent_apparent": 0.8,
+  "u_m_s_signe": -0.53,
+  "u_min_apres_TACK": -0.53
+ },
+ "REUSSI": false
+}

@@ -1,0 +1,207 @@
+[
+ [
+  0.0,
+  "ENVOI",
+  "servo.speed.min",
+  30,
+  ""
+ ],
+ [
+  32.27,
+  "ENVOI",
+  "ap.enabled",
+  false,
+  "TACK : tenue de cap suspendue"
+ ],
+ [
+  32.27,
+  "TACK",
+  {
+   "H0": 313.0777,
+   "Hfinal": 53.07769999999999,
+   "safran0": 1.26,
+   "awa": 28.3
+  }
+ ],
+ [
+  32.27,
+  "ENVOI",
+  "ap.enabled",
+  false,
+  "TACK : tenue de cap suspendue"
+ ],
+ [
+  32.27,
+  "ENVOI",
+  "servo.speed.max",
+  100,
+  "phase 1 : 10 °/s"
+ ],
+ [
+  32.27,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  32.27,
+  "ENVOI",
+  "servo.position_command",
+  -20,
+  "phase 1 : 20°"
+ ],
+ [
+  34.84,
+  "ATTEINT",
+  1,
+  {
+   "safran": -19.05,
+   "en_s": 2.57
+  }
+ ],
+ [
+  37.87,
+  "FIN PHASE",
+  1,
+  null
+ ],
+ [
+  37.87,
+  "ENVOI",
+  "servo.speed.max",
+  50,
+  "phase 2 : 5 °/s"
+ ],
+ [
+  37.87,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  37.87,
+  "ENVOI",
+  "servo.position_command",
+  -25,
+  "phase 2 : 25°"
+ ],
+ [
+  38.97,
+  "ATTEINT",
+  2,
+  {
+   "safran": -24.03,
+   "en_s": 1.11
+  }
+ ],
+ [
+  43.01,
+  "FIN PHASE",
+  2,
+  null
+ ],
+ [
+  43.01,
+  "ENVOI",
+  "servo.speed.max",
+  50,
+  "phase 3 : 5 °/s"
+ ],
+ [
+  43.01,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  43.01,
+  "ENVOI",
+  "servo.position_command",
+  -10,
+  "phase 3 : 10°"
+ ],
+ [
+  45.48,
+  "ATTEINT",
+  3,
+  {
+   "safran": -10.97,
+   "en_s": 2.47
+  }
+ ],
+ [
+  47.49,
+  "FIN PHASE",
+  3,
+  null
+ ],
+ [
+  47.49,
+  "ENVOI",
+  "servo.speed.max",
+  50,
+  "phase 4 : 5 °/s"
+ ],
+ [
+  47.49,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  47.49,
+  "ENVOI",
+  "servo.position_command",
+  0,
+  "phase 4 : 0°"
+ ],
+ [
+  49.46,
+  "ATTEINT",
+  4,
+  {
+   "safran": -0.94,
+   "en_s": 1.97
+  }
+ ],
+ [
+  49.46,
+  "FIN PHASE",
+  4,
+  null
+ ],
+ [
+  49.46,
+  "FIN SÉQUENCE",
+  {
+   "chrono_s": 17.19,
+   "cap": 7.7308,
+   "safran": -0.94
+  }
+ ],
+ [
+  49.46,
+  "ENVOI",
+  "servo.speed.max",
+  100,
+  ""
+ ],
+ [
+  49.46,
+  "ENVOI",
+  "ap.heading_command",
+  53.07769999999999,
+  "reprise de la tenue de cap sur Hfinal"
+ ],
+ [
+  49.46,
+  "ENVOI",
+  "ap.enabled",
+  true,
+  "reprise"
+ ]
+]

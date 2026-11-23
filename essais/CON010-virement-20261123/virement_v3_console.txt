@@ -1,0 +1,11 @@
+== virement_v3_A29 : code 1
+    (32.17, 'DÉBUT', 'A29', {'consigne_avant': 310.0, 'cible': 50.0, 'sens': 1, 'cap': 313.2541, 'awa': 28.2})
+    (42.2, 'FIN ÉTAPE', 'lancer', 'durée (garde-fou)')
+    (82.22, 'FIN ÉTAPE', 'tenir', 'durée (garde-fou)')
+    (82.22, 'FIN', 'A29', {'durée_s': 50.05})
+== virement_v3_C : code 1
+    (32.19, 'DÉBUT', 'C', {'consigne_avant': 310.0, 'cible': 50.0, 'sens': 1, 'cap': 313.0166, 'awa': 28.4})
+    (42.22, 'FIN ÉTAPE', 'lancer', 'durée (garde-fou)')
+    (82.23, 'FIN ÉTAPE', 'tenir', 'durée (garde-fou)')
+    (97.25, 'FIN ÉTAPE', 'abattre', 'durée (garde-fou)')
+    (97.25, 'FIN', 'C', {'durée_s': 65.07})

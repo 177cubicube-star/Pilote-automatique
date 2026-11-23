@@ -1,0 +1,14 @@
+name = "approche_j24_310"
+duration_s = 60.0
+dt = 0.05
+target_heading = -0.8727
+
+[wind]
+speed = 8.0
+direction = 0.0  # vent vrai du 000°
+
+[initial_state]
+x = 0.0
+y = 0.0
+psi = -0.8727
+u = 2.5

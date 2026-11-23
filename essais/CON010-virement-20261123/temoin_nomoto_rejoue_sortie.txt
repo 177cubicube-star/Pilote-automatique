@@ -1,0 +1,18 @@
+Scenario: tack_port_to_starboard
+  Yacht: default
+  Autopilot: nomoto (omega_n=0.6, zeta=0.7) [tack]
+  Duration: 120.0s, dt: 0.05s
+  Wind: 8.0 m/s @ 0°
+  Target heading: -50°
+
+Running simulation...
+Completed: 2401 steps recorded
+
+Telemetry saved to: C:/Users/mat_g/Documents/Claude/Projects/Pilote automatique/essais/CON010-virement-20261123/temoin_nomoto_rejoue.csv
+
+Quality Gate Result: FAIL
+----------------------------------------
+  [FAIL] mean_heading_error_deg: 68.18 (limit: 15.00)
+  [FAIL] max_heading_deviation_deg: 113.78 (limit: 60.00)
+  [OK] max_rudder_rate_deg_per_s: 10.00 (limit: 50.00)
+  [OK] settling_time_s: 0.00 (limit: 60.00)

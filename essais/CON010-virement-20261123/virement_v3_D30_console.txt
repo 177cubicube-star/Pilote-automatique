@@ -1,0 +1,6 @@
+== virement_v3_D30 : code 1
+    (33.71, 'DÉBUT', 'D30', {'consigne_avant': 310.0, 'cible': 50.0, 'sens': 1, 'cap': 312.6763, 'awa': 28.6})
+    (45.76, 'FIN ÉTAPE', 'lancer', 'durée (garde-fou)')
+    (57.8, 'FIN ÉTAPE', 'tenir', 'durée (garde-fou)')
+    (63.84, 'FIN ÉTAPE', 'abattre', 'durée (garde-fou)')
+    (63.84, 'FIN', 'D30', {'durée_s': 30.13})

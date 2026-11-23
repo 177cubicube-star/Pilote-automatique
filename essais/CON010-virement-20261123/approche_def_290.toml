@@ -1,0 +1,14 @@
+name = "approche_def_290"
+duration_s = 60.0
+dt = 0.05
+target_heading = -1.2217
+
+[wind]
+speed = 8.0
+direction = 0.0  # vent vrai du 000°
+
+[initial_state]
+x = 0.0
+y = 0.0
+psi = -1.2217
+u = 2.5

@@ -47,7 +47,9 @@ Lecteur de séquences = client JSON-TCP de pypilot (`banc.py` + `sequences.py`) 
 | Séquence, lancement 25° | +13° (barre réellement atteinte : 19°, vérin trop lent pour 4 s) |
 | Témoin : pilote Nomoto interne de SailSim, barre 30° (`temoin_nomoto_virement.csv`) | +23°, puis arrêt |
 
-**Lecture** : l'empannage en séquence fonctionne. Le virement **ne peut pas être jugé sur ce banc** : même le pilote interne de SailSim ne termine pas ce virement avec le bateau `default`. Les portes de qualité de SailSim échouent pour tous les cas, natifs compris ; elles ne servent pas à juger ici.
+**Lecture** : l'empannage en séquence fonctionne. Le virement **ne peut pas être jugé sur ce banc** : même le pilote interne de SailSim ne termine pas ce virement avec le bateau `default`.
+
+> **Correction du 2026-11-23 (relecture de `temoin_nomoto_virement.csv`) : la lecture ci-dessus est fausse pour le témoin.** « +23° » est le cap à 60 s. Le témoin **réussit** : vent apparent passé sur l'autre bord, entrée à ±5° du nouveau cap à 75,25 s (45 s après la commande), `u` remontée à 5,4 m/s. Il garde la barre à 29,8° jusqu'à un vent apparent d'environ −26° ; les séquences ramenaient la barre au centre bout au vent. Suite : `../CON010-virement-20261123/`. Les portes de qualité de SailSim échouent pour tous les cas, natifs compris ; elles ne servent pas à juger ici.
 
 ## `sailsim-auto-sail-trim.patch`
 

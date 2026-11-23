@@ -1,0 +1,200 @@
+[
+ [
+  0.0,
+  "ENVOI",
+  "servo.speed.min",
+  30,
+  ""
+ ],
+ [
+  29.53,
+  "TACK",
+  {
+   "H0": 307.2775,
+   "Hfinal": 47.277499999999975,
+   "safran0": -5.36,
+   "awa": 31.7
+  }
+ ],
+ [
+  29.53,
+  "ENVOI",
+  "ap.enabled",
+  false,
+  "TACK : tenue de cap suspendue"
+ ],
+ [
+  29.53,
+  "ENVOI",
+  "servo.speed.max",
+  100,
+  "phase 1 : 10 °/s"
+ ],
+ [
+  29.53,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  29.53,
+  "ENVOI",
+  "servo.position_command",
+  -20,
+  "phase 1 : 20°"
+ ],
+ [
+  31.4,
+  "ATTEINT",
+  1,
+  {
+   "safran": -19.09,
+   "en_s": 1.87
+  }
+ ],
+ [
+  34.43,
+  "FIN PHASE",
+  1,
+  null
+ ],
+ [
+  34.43,
+  "ENVOI",
+  "servo.speed.max",
+  50,
+  "phase 2 : 5 °/s"
+ ],
+ [
+  34.43,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  34.43,
+  "ENVOI",
+  "servo.position_command",
+  -25,
+  "phase 2 : 25°"
+ ],
+ [
+  35.59,
+  "ATTEINT",
+  2,
+  {
+   "safran": -24.04,
+   "en_s": 1.16
+  }
+ ],
+ [
+  39.62,
+  "FIN PHASE",
+  2,
+  null
+ ],
+ [
+  39.62,
+  "ENVOI",
+  "servo.speed.max",
+  50,
+  "phase 3 : 5 °/s"
+ ],
+ [
+  39.62,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  39.62,
+  "ENVOI",
+  "servo.position_command",
+  -10,
+  "phase 3 : 10°"
+ ],
+ [
+  42.09,
+  "ATTEINT",
+  3,
+  {
+   "safran": -10.98,
+   "en_s": 2.47
+  }
+ ],
+ [
+  44.11,
+  "FIN PHASE",
+  3,
+  null
+ ],
+ [
+  44.11,
+  "ENVOI",
+  "servo.speed.max",
+  50,
+  "phase 4 : 5 °/s"
+ ],
+ [
+  44.11,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  44.11,
+  "ENVOI",
+  "servo.position_command",
+  0,
+  "phase 4 : 0°"
+ ],
+ [
+  46.12,
+  "ATTEINT",
+  4,
+  {
+   "safran": -0.94,
+   "en_s": 2.02
+  }
+ ],
+ [
+  46.12,
+  "FIN PHASE",
+  4,
+  null
+ ],
+ [
+  46.12,
+  "FIN SÉQUENCE",
+  {
+   "chrono_s": 16.59,
+   "cap": 7.6429,
+   "safran": -0.94
+  }
+ ],
+ [
+  46.12,
+  "ENVOI",
+  "servo.speed.max",
+  100,
+  ""
+ ],
+ [
+  46.12,
+  "ENVOI",
+  "ap.heading_command",
+  47.277499999999975,
+  "reprise de la tenue de cap sur Hfinal"
+ ],
+ [
+  46.12,
+  "ENVOI",
+  "ap.enabled",
+  true,
+  "reprise"
+ ]
+]

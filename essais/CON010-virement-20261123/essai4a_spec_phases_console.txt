@@ -1,0 +1,2 @@
+== spec_phases : code 1
+    (32.25, 'ARRÊT', 'approche non stabilisée', None)

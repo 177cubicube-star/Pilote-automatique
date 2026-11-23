@@ -1,0 +1,22 @@
+[
+ [
+  0.0,
+  "ENVOI",
+  "servo.speed.min",
+  30,
+  ""
+ ],
+ [
+  32.25,
+  "ENVOI",
+  "ap.enabled",
+  false,
+  "approche non stabilisée : pas de virement"
+ ],
+ [
+  32.25,
+  "ARRÊT",
+  "approche non stabilisée",
+  null
+ ]
+]

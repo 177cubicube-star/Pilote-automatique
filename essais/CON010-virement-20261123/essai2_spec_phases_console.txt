@@ -1,0 +1,11 @@
+== spec_phases : code 1
+    (29.53, 'TACK', {'H0': 307.2775, 'Hfinal': 47.277499999999975, 'safran0': -5.36, 'awa': 31.7})
+    (31.4, 'ATTEINT', 1, {'safran': -19.09, 'en_s': 1.87})
+    (34.43, 'FIN PHASE', 1, None)
+    (35.59, 'ATTEINT', 2, {'safran': -24.04, 'en_s': 1.16})
+    (39.62, 'FIN PHASE', 2, None)
+    (42.09, 'ATTEINT', 3, {'safran': -10.98, 'en_s': 2.47})
+    (44.11, 'FIN PHASE', 3, None)
+    (46.12, 'ATTEINT', 4, {'safran': -0.94, 'en_s': 2.02})
+    (46.12, 'FIN PHASE', 4, None)
+    (46.12, 'FIN SÉQUENCE', {'chrono_s': 16.59, 'cap': 7.6429, 'safran': -0.94})

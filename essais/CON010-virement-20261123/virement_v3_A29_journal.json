@@ -1,0 +1,118 @@
+[
+ [
+  0.0,
+  "ENVOI",
+  "servo.speed.min",
+  30,
+  ""
+ ],
+ [
+  32.17,
+  "DÉBUT",
+  "A29",
+  {
+   "consigne_avant": 310.0,
+   "cible": 50.0,
+   "sens": 1,
+   "cap": 313.2541,
+   "awa": 28.2
+  }
+ ],
+ [
+  32.17,
+  "ENVOI",
+  "ap.enabled",
+  false,
+  "lancer"
+ ],
+ [
+  32.17,
+  "ENVOI",
+  "servo.speed.max",
+  100,
+  "lancer"
+ ],
+ [
+  32.17,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  32.17,
+  "ENVOI",
+  "servo.position_command",
+  -29,
+  "lancer"
+ ],
+ [
+  42.2,
+  "FIN ÉTAPE",
+  "lancer",
+  "durée (garde-fou)"
+ ],
+ [
+  42.2,
+  "ENVOI",
+  "ap.enabled",
+  false,
+  "tenir"
+ ],
+ [
+  42.2,
+  "ENVOI",
+  "servo.speed.max",
+  100,
+  "tenir"
+ ],
+ [
+  42.2,
+  "ENVOI",
+  "servo.command",
+  0,
+  "contournement veille"
+ ],
+ [
+  42.2,
+  "ENVOI",
+  "servo.position_command",
+  -29,
+  "tenir"
+ ],
+ [
+  82.22,
+  "FIN ÉTAPE",
+  "tenir",
+  "durée (garde-fou)"
+ ],
+ [
+  82.22,
+  "ENVOI",
+  "servo.speed.max",
+  100,
+  ""
+ ],
+ [
+  82.22,
+  "ENVOI",
+  "ap.heading_command",
+  50.0,
+  "sortie : le pilote tient la cible"
+ ],
+ [
+  82.22,
+  "ENVOI",
+  "ap.enabled",
+  true,
+  "sortie"
+ ],
+ [
+  82.22,
+  "FIN",
+  "A29",
+  {
+   "durée_s": 50.05
+  }
+ ]
+]

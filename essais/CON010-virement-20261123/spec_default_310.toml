@@ -1,0 +1,23 @@
+name = "spec_default_310"
+# Essai de virement à phases (2026-11-23) : approche au près à 310°, AUCUN changement de consigne
+# dans le scénario — l'ordre TACK vient du script virement_spec.py.
+duration_s = 120.0
+dt = 0.05
+target_heading = -0.8727  # 310°
+
+[wind]
+speed = 8.0
+direction = 0.0  # vent vrai du 000°
+
+[initial_state]
+x = 0.0
+y = 0.0
+psi = -0.8727
+u = 3.0
+
+# Ajout 2026-11-23 : l'adaptateur pypilot de SailSim réimpose la consigne du scénario à chaque pas
+# (_reassert_heading_command). Cette étape donne donc la consigne de reprise (050° = 310° + 100°)
+# ET sert d'ordre TACK au script (il détecte le changement et met pypilot en veille aussitôt).
+[[maneuvers.steps]]
+time_s = 30.0
+target_heading = 0.8727  # 050°
