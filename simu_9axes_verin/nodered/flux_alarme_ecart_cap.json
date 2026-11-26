@@ -1,0 +1,183 @@
+[
+ {
+  "id": "a1a1a1a1a1a1a101",
+  "type": "tab",
+  "label": "Alarme écart de cap (banc)",
+  "disabled": false,
+  "info": "Alarme d'écart de cap du socle, PROTOTYPE sur le banc simulé.\nLit le cap et la consigne dans Signal K, publie des notifications (notifications.steering.autopilot.heading ; notifications.navigation.headingMagnetic si le cap manque). Ne commande rien.\nRéglages : double-clic sur le bloc « Alarme écart de cap », onglet Setup.\nCode généré depuis simu_9axes_verin/nodered/alarme_ecart_cap.js."
+ },
+ {
+  "id": "a1a1a1a1a1a1a102",
+  "type": "signalk-subscribe",
+  "z": "a1a1a1a1a1a1a101",
+  "name": "Cap (estimé)",
+  "mode": "sendAll",
+  "flatten": true,
+  "context": "vessels.self",
+  "path": "navigation.headingMagnetic",
+  "source": "",
+  "period": "200",
+  "x": 170,
+  "y": 80,
+  "wires": [
+   [
+    "a1a1a1a1a1a1a110"
+   ]
+  ]
+ },
+ {
+  "id": "a1a1a1a1a1a1a103",
+  "type": "signalk-subscribe",
+  "z": "a1a1a1a1a1a1a101",
+  "name": "Consigne de cap",
+  "mode": "sendAll",
+  "flatten": true,
+  "context": "vessels.self",
+  "path": "steering.autopilot.target.headingMagnetic",
+  "source": "",
+  "period": "200",
+  "x": 170,
+  "y": 140,
+  "wires": [
+   [
+    "a1a1a1a1a1a1a110"
+   ]
+  ]
+ },
+ {
+  "id": "a1a1a1a1a1a1a104",
+  "type": "signalk-subscribe",
+  "z": "a1a1a1a1a1a1a101",
+  "name": "Pilote engagé (si publié)",
+  "mode": "sendAll",
+  "flatten": true,
+  "context": "vessels.self",
+  "path": "steering.autopilot.engaged",
+  "source": "",
+  "period": "200",
+  "x": 170,
+  "y": 200,
+  "wires": [
+   [
+    "a1a1a1a1a1a1a110"
+   ]
+  ]
+ },
+ {
+  "id": "a1a1a1a1a1a1a105",
+  "type": "inject",
+  "z": "a1a1a1a1a1a1a101",
+  "name": "Tic 1 s",
+  "props": [
+   {
+    "p": "topic",
+    "vt": "str"
+   }
+  ],
+  "repeat": "1",
+  "crontab": "",
+  "once": true,
+  "onceDelay": "1",
+  "topic": "tic",
+  "x": 150,
+  "y": 260,
+  "wires": [
+   [
+    "a1a1a1a1a1a1a110"
+   ]
+  ]
+ },
+ {
+  "id": "a1a1a1a1a1a1a110",
+  "type": "function",
+  "z": "a1a1a1a1a1a1a101",
+  "name": "Alarme écart de cap",
+  "func": "// GÉNÉRÉ par generer_flux_nodered.py depuis alarme_ecart_cap.js : ne pas modifier ici.\n// alarme_ecart_cap.js : logique de l'alarme d'écart de cap (socle), pour Node-RED.\n//\n// SOURCE UNIQUE : ce fichier est testé seul (test_alarme_ecart_cap.js) et recopié\n// tel quel dans le bloc « fonction » du flux par generer_flux_nodered.py.\n// Ne pas modifier le code dans Node-RED : modifier ici, puis régénérer le flux.\n//\n// Ce que fait l'alarme (PROPOSITION de Claude, 2026-11-26, à valider ; la grille\n// des capacités demande « seuil et temporisation réglables ; tenir compte d'une\n// manœuvre volontaire ») :\n//   - active seulement si le pilote a une consigne récente (et n'est pas déclaré\n//     désengagé, si steering.autopilot.engaged est publié) ;\n//   - déclenche quand |consigne − cap| dépasse SEUIL pendant TEMPORISATION\n//     secondes (référence ST4000+ : plus de 20 s) ;\n//   - s'éteint quand l'écart repasse sous SEUIL − HYSTERESIS pendant RETOUR s\n//     (pas d'acquittement : DEC-017 ne couvre que les décrochages) ;\n//   - manœuvre volontaire : après un changement de consigne d'au moins MANOEUVRE\n//     degrés, aucune NOUVELLE alarme ne démarre tant que l'écart n'est pas revenu\n//     sous le seuil, au plus MANOEUVRE_MAX s ; une alarme déjà active continue ;\n//   - cap absent : la consigne continue d'arriver mais plus le cap, depuis plus de\n//     DONNEES_MAX s ; alarme distincte (référence ST4000+ « NO DATA »). Si tout se\n//     tait en même temps, c'est la règle « pilote non actif » qui s'applique.\n// Il ne commande rien : il publie des notifications Signal K.\n//\n// Unités en entrée : radians (Signal K). Temps : secondes.\n\nfunction creerAlarmeEcartCap(reglages) {\n  const c = Object.assign({\n    seuil_deg: 20,          // HYPOTHÈSE de départ, réglable\n    temporisation_s: 20,    // référence ST4000+\n    hysteresis_deg: 5,\n    retour_s: 5,\n    manoeuvre_deg: 5,\n    manoeuvre_max_s: 120,\n    donnees_max_s: 3,\n    consigne_max_s: 5,\n    chemin_ecart: 'notifications.steering.autopilot.heading',\n    chemin_donnees: 'notifications.navigation.headingMagnetic',\n  }, reglages || {});\n  for (const k of ['seuil_deg', 'temporisation_s', 'hysteresis_deg', 'retour_s',\n                   'manoeuvre_deg', 'manoeuvre_max_s', 'donnees_max_s', 'consigne_max_s']) {\n    if (typeof c[k] !== 'number' || !isFinite(c[k]) || c[k] < 0) {\n      throw new Error('réglage invalide : ' + k + ' = ' + c[k]);\n    }\n  }\n  if (c.hysteresis_deg >= c.seuil_deg) {\n    throw new Error('hysteresis_deg doit être plus petit que seuil_deg');\n  }\n\n  const e = {\n    cap: null, t_cap: null, consigne: null, t_consigne: null, t_premiere_consigne: null,\n    engage: null,\n    alarme: false, absence: false, debut_depassement: null, debut_retour: null,\n    inhibe_jusqua: null,\n  };\n  const deg = (r) => r * 180 / Math.PI;\n  const ecart = () => ((deg(e.consigne) - deg(e.cap)) % 360 + 540) % 360 - 180;\n  const actif = (t) => e.consigne !== null && t - e.t_consigne <= c.consigne_max_s\n                       && e.engage !== false;\n\n  function notification(chemin, alarme, message) {\n    return { path: chemin, state: alarme ? 'alarm' : 'normal',\n             method: alarme ? ['visual', 'sound'] : [], message: message };\n  }\n\n  function evaluer(t) {\n    const sorties = [];\n    if (!actif(t)) {\n      e.debut_depassement = e.debut_retour = e.inhibe_jusqua = null;\n      if (e.alarme) {\n        e.alarme = false;\n        sorties.push(notification(c.chemin_ecart, false, 'Pilote non actif : alarme levée'));\n      }\n      if (e.absence) {\n        e.absence = false;\n        sorties.push(notification(c.chemin_donnees, false, 'Pilote non actif'));\n      }\n      return sorties;\n    }\n    // « cap absent » seulement si la consigne, elle, continue d'arriver : quand tout se\n    // tait ensemble (source arrêtée), c'est la règle « pilote non actif » qui s'applique\n    const absent = e.cap === null\n      ? e.t_consigne - e.t_premiere_consigne > c.donnees_max_s\n      : e.t_consigne - e.t_cap > c.donnees_max_s;\n    if (absent !== e.absence) {\n      e.absence = absent;\n      sorties.push(notification(c.chemin_donnees, absent, absent\n        ? 'Cap absent depuis plus de ' + c.donnees_max_s + ' s'\n        : 'Cap de nouveau reçu'));\n    }\n    if (absent) {\n      return sorties;                    // pas de jugement d'écart sans cap frais\n    }\n    const err = Math.abs(ecart());\n    if (e.inhibe_jusqua !== null && (err <= c.seuil_deg || t >= e.inhibe_jusqua)) {\n      e.inhibe_jusqua = null;\n    }\n    if (!e.alarme) {\n      if (err > c.seuil_deg && e.inhibe_jusqua === null) {\n        if (e.debut_depassement === null) e.debut_depassement = t;\n        if (t - e.debut_depassement >= c.temporisation_s) {\n          e.alarme = true;\n          e.debut_retour = null;\n          sorties.push(notification(c.chemin_ecart, true, 'Écart de cap ' + err.toFixed(0)\n            + '° depuis ' + (t - e.debut_depassement).toFixed(0) + ' s'));\n        }\n      } else {\n        e.debut_depassement = null;\n      }\n    } else if (err < c.seuil_deg - c.hysteresis_deg) {\n      if (e.debut_retour === null) e.debut_retour = t;\n      if (t - e.debut_retour >= c.retour_s) {\n        e.alarme = false;\n        e.debut_depassement = null;\n        sorties.push(notification(c.chemin_ecart, false, 'Cap retrouvé (écart ' + err.toFixed(0) + '°)'));\n      }\n    } else {\n      e.debut_retour = null;\n    }\n    return sorties;\n  }\n\n  return {\n    reglages: c,\n    cap(valeur_rad, t) {\n      if (typeof valeur_rad !== 'number' || !isFinite(valeur_rad)) return evaluer(t);\n      e.cap = valeur_rad; e.t_cap = t;\n      return evaluer(t);\n    },\n    consigne(valeur_rad, t) {\n      if (typeof valeur_rad !== 'number' || !isFinite(valeur_rad)) return evaluer(t);\n      if (e.consigne !== null) {\n        const saut = Math.abs(((deg(valeur_rad) - deg(e.consigne)) % 360 + 540) % 360 - 180);\n        if (saut >= c.manoeuvre_deg) {\n          e.inhibe_jusqua = t + c.manoeuvre_max_s;\n          e.debut_depassement = null;\n        }\n      }\n      if (e.t_premiere_consigne === null) e.t_premiere_consigne = t;\n      e.consigne = valeur_rad; e.t_consigne = t;\n      return evaluer(t);\n    },\n    engage(valeur, t) {\n      e.engage = valeur === true ? true : valeur === false ? false : null;\n      return evaluer(t);\n    },\n    tic(t) { return evaluer(t); },\n    etat() { return Object.assign({}, e); },\n  };\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = { creerAlarmeEcartCap };\n}\n\n// ---- appel depuis Node-RED (généré) ----\nconst lire = (nom, defaut) => {\n  const v = env.get(nom);\n  return (v === undefined || v === null || v === '') ? defaut : Number(v);\n};\nlet alarme = context.get('alarme');\nif (!alarme) {\n  try {\n    alarme = creerAlarmeEcartCap({\n      seuil_deg: lire('SEUIL_DEG', 20),\n      temporisation_s: lire('TEMPORISATION_S', 20),\n      hysteresis_deg: lire('HYSTERESIS_DEG', 5),\n      retour_s: lire('RETOUR_S', 5),\n      manoeuvre_deg: lire('MANOEUVRE_DEG', 5),\n      manoeuvre_max_s: lire('MANOEUVRE_MAX_S', 120),\n      donnees_max_s: lire('DONNEES_MAX_S', 3),\n      consigne_max_s: lire('CONSIGNE_MAX_S', 5)\n    });\n  } catch (erreur) {\n    node.status({ fill: 'red', shape: 'ring', text: String(erreur.message || erreur) });\n    node.error(erreur, msg);\n    return null;\n  }\n  context.set('alarme', alarme);\n}\nconst t = Date.now() / 1000;\nlet sorties;\nif (msg.topic === 'navigation.headingMagnetic') sorties = alarme.cap(msg.payload, t);\nelse if (msg.topic === 'steering.autopilot.target.headingMagnetic') sorties = alarme.consigne(msg.payload, t);\nelse if (msg.topic === 'steering.autopilot.engaged') sorties = alarme.engage(msg.payload, t);\nelse sorties = alarme.tic(t);\nconst e = alarme.etat();\nnode.status(e.alarme ? { fill: 'red', shape: 'dot', text: 'ALARME écart de cap' }\n          : e.absence ? { fill: 'red', shape: 'ring', text: 'cap absent' }\n          : e.inhibe_jusqua !== null ? { fill: 'blue', shape: 'dot', text: 'manœuvre' }\n          : e.debut_depassement !== null ? { fill: 'yellow', shape: 'dot', text: 'au-delà du seuil' }\n          : { fill: 'green', shape: 'dot', text: 'veille' });\nif (!sorties.length) return null;\nreturn [sorties.map((n) => ({ topic: n.path, payload: Object.assign({ $source: 'alarme-ecart-cap' }, n) }))];\n",
+  "outputs": 1,
+  "timeout": 0,
+  "noerr": 0,
+  "initialize": "",
+  "finalize": "",
+  "libs": [],
+  "env": [
+   {
+    "name": "SEUIL_DEG",
+    "value": "20",
+    "type": "num"
+   },
+   {
+    "name": "TEMPORISATION_S",
+    "value": "20",
+    "type": "num"
+   },
+   {
+    "name": "HYSTERESIS_DEG",
+    "value": "5",
+    "type": "num"
+   },
+   {
+    "name": "RETOUR_S",
+    "value": "5",
+    "type": "num"
+   },
+   {
+    "name": "MANOEUVRE_DEG",
+    "value": "5",
+    "type": "num"
+   },
+   {
+    "name": "MANOEUVRE_MAX_S",
+    "value": "120",
+    "type": "num"
+   },
+   {
+    "name": "DONNEES_MAX_S",
+    "value": "3",
+    "type": "num"
+   },
+   {
+    "name": "CONSIGNE_MAX_S",
+    "value": "5",
+    "type": "num"
+   }
+  ],
+  "x": 450,
+  "y": 170,
+  "wires": [
+   [
+    "a1a1a1a1a1a1a120",
+    "a1a1a1a1a1a1a130"
+   ]
+  ]
+ },
+ {
+  "id": "a1a1a1a1a1a1a120",
+  "type": "signalk-send-notification",
+  "z": "a1a1a1a1a1a1a101",
+  "name": "Notification Signal K",
+  "path": "",
+  "state": "alarm",
+  "message": "",
+  "visual": true,
+  "sound": true,
+  "source": "",
+  "x": 730,
+  "y": 140,
+  "wires": []
+ },
+ {
+  "id": "a1a1a1a1a1a1a130",
+  "type": "debug",
+  "z": "a1a1a1a1a1a1a101",
+  "name": "Journal des alarmes",
+  "active": true,
+  "tosidebar": true,
+  "console": false,
+  "tostatus": false,
+  "complete": "payload",
+  "targetType": "msg",
+  "x": 730,
+  "y": 200,
+  "wires": []
+ }
+]

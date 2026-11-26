@@ -1,0 +1,62 @@
+Commande : python -I essais_pid.py --graines 1,2,3   (exécutée le 2026-11-26, Python 3.13, conteneur Claude)
+
+SIMULÉ — bateau, vérin et bruits hypothétiques ; comparer, pas prédire.
+
+=== calme_pas20 : Eau plate, changements de cap de 20° puis -20° (130 s, graines 1,2,3)
+  réglage                      p95°  rms°  max° dép.° rép.s est.° mm/min inv/min  Wh/h  sat%  verdict
+  pid_nerveux                  0.84  0.58   0.9   3.2  22.0  0.74    271   54.5  2.13   7.0  dans la cible
+  pid_moyen_sans_bande_morte   1.68  0.86   2.1   3.2  30.7  0.72    209  124.6  1.61   4.6  dans la cible
+  pid_moyen                    1.70  0.82   2.2   3.3  31.1  0.72    190    9.1  1.40   4.6  dans la cible
+  pd_sans_i                    2.54  1.90   2.7   3.3 jamais  0.71    186   10.5  1.37   4.6  dans la cible
+  pid_doux                     3.53  1.86   3.7   3.8  48.9  0.70    135    3.1  0.96   3.1  dans la cible
+  pypilot_vitesse_min_50       3.65  2.64   3.7   3.7  57.7  0.64     54    2.3  0.34   0.2  dans la cible
+  pid_moyen_sans_zone_i        3.94  2.10   4.9   7.6  41.7  0.84    211    8.5  1.60   5.0  dans la cible
+  pypilot_defaut               3.98  2.76   4.0   4.0 jamais  0.65     51    1.2  0.31   2.9  dans la cible
+
+=== vagues : Clapot de lac (lacet, roulis, tangage), cap fixe (180 s, graines 1,2,3)
+  réglage                      p95°  rms°  max° dép.° rép.s est.° mm/min inv/min  Wh/h  sat%  verdict
+  pid_doux                     3.02  1.57   3.8     —     —  1.34     68   13.2  0.53   0.0  dans la cible
+  pid_moyen_sans_bande_morte   3.26  1.58   3.7     —     —  1.36    135   69.1  1.09   0.0  dans la cible
+  pid_moyen                    3.31  1.60   3.8     —     —  1.36    112   23.2  0.85   0.0  dans la cible
+  pid_moyen_sans_zone_i        3.31  1.60   3.8     —     —  1.36    112   23.2  0.85   0.0  dans la cible
+  pd_sans_i                    3.33  1.76   3.8     —     —  1.32    107   24.3  0.81   0.0  dans la cible
+  pid_nerveux                  3.44  1.59   4.0     —     —  1.37    196   49.0  1.41   0.1  dans la cible
+  pypilot_vitesse_min_50       4.10  2.09   4.6     —     —  1.32     28    2.2  0.17   0.0  dégradé
+  pypilot_defaut               4.14  2.06   4.4     —     —  1.31     49    2.4  0.29   2.7  dégradé
+
+=== rafales : Rafales qui font gîter de 15° ; la gîte fait remonter au vent (180 s, graines 1,2,3)
+  réglage                      p95°  rms°  max° dép.° rép.s est.° mm/min inv/min  Wh/h  sat%  verdict
+  pid_nerveux                  3.10  1.53   3.7     —     —  1.32    227   43.9  1.89   0.1  dans la cible
+  pid_moyen_sans_bande_morte   3.14  1.63   3.7     —     —  1.31    151   66.2  1.52   0.0  dans la cible
+  pid_moyen                    3.16  1.64   3.7     —     —  1.31    128   26.7  1.18   0.0  dans la cible
+  pid_moyen_sans_zone_i        3.16  1.64   3.7     —     —  1.31    128   26.7  1.18   0.0  dans la cible
+  pid_doux                     3.94  2.05   4.6     —     —  1.30     77   17.7  0.75   0.0  dans la cible
+  pypilot_vitesse_min_50       4.95  2.56   5.8     —     —  1.27     41    2.7  0.28   0.0  dégradé
+  pypilot_defaut               5.11  2.43   6.3     —     —  1.27     39    2.0  0.25   2.2  hors cible
+  pd_sans_i                    5.12  3.27   5.5     —     —  1.28    124   26.2  1.13   0.0  hors cible
+
+=== i2c_perturbe : Vagues + 5 % des transactions I2C en erreur (180 s, graines 1,2,3)
+  réglage                      p95°  rms°  max° dép.° rép.s est.° mm/min inv/min  Wh/h  sat%  verdict
+  pid_doux                     3.01  1.57   3.8     —     —  1.34     67   13.4  0.53   0.0  dans la cible  [lectures ratées 134]
+  pid_moyen_sans_bande_morte   3.26  1.58   3.7     —     —  1.36    135   69.3  1.09   0.0  dans la cible  [lectures ratées 134]
+  pid_moyen                    3.31  1.60   3.8     —     —  1.36    112   22.8  0.85   0.0  dans la cible  [lectures ratées 134]
+  pid_moyen_sans_zone_i        3.31  1.60   3.8     —     —  1.36    112   22.8  0.85   0.0  dans la cible  [lectures ratées 134]
+  pd_sans_i                    3.34  1.76   3.8     —     —  1.32    108   23.6  0.81   0.0  dans la cible  [lectures ratées 134]
+  pid_nerveux                  3.44  1.59   4.0     —     —  1.37    197   48.8  1.42   0.1  dans la cible  [lectures ratées 134]
+  pypilot_vitesse_min_50       4.10  2.09   4.6     —     —  1.32     28    2.2  0.17   0.0  dégradé  [lectures ratées 134]
+  pypilot_defaut               4.15  2.07   4.4     —     —  1.31     49    2.4  0.29   2.7  dégradé  [lectures ratées 134]
+
+=== verin_lent : Vagues avec un vérin deux fois plus lent (15 mm/s) (180 s, graines 1,2,3)
+  réglage                      p95°  rms°  max° dép.° rép.s est.° mm/min inv/min  Wh/h  sat%  verdict
+  pid_doux                     3.03  1.59   3.8     —     —  1.34     56   10.6  0.84   0.0  dans la cible
+  pd_sans_i                    3.37  1.78   3.8     —     —  1.32     85   17.9  1.22   0.0  dans la cible
+  pid_moyen_sans_bande_morte   3.38  1.64   3.9     —     —  1.36     99   46.8  1.49   0.0  dans la cible
+  pid_moyen                    3.39  1.65   3.9     —     —  1.36     90   17.7  1.30   0.0  dans la cible
+  pid_moyen_sans_zone_i        3.39  1.65   3.9     —     —  1.36     90   17.7  1.30   0.0  dans la cible
+  pid_nerveux                  3.54  1.65   4.2     —     —  1.37    152   34.7  2.07   0.2  dans la cible
+  pypilot_vitesse_min_50       6.14  3.18   6.3     —     —  1.30     16    0.9  0.19   0.0  hors cible
+  pypilot_defaut               6.30  3.05   6.5     —     —  1.31     17    1.2  0.20   2.0  hors cible
+
+Légende : p95/rms/max = écart de cap en route ; dép. = dépassement après un changement de cap ; rép. = temps pour tenir ±2° ;
+          est. = erreur du cap ESTIMÉ ; mm/min et inv/min = usure du vérin ; Wh/h = énergie du moteur ; sat% = commande à fond.
+Résultats : resultats/essais_pid_20261126-144833.csv  (78 s)

@@ -1,0 +1,42 @@
+{
+  "_lisez_moi": "Préréglages comparés par essais_pid.py. Ajouter ou modifier librement : une entrée = un nom + un « type » + ses gains. Les clés qui commencent par « _ » sont des commentaires. Une clé inconnue arrête l'essai (pour attraper les fautes de frappe). Valeurs de DÉPART pour comparer, pas des réglages validés.",
+
+  "_types": {
+    "pid_position": "kp (° de barre par ° d'erreur), ki (° de barre par °·s), kd (° de barre par °/s de lacet), i_max_deg, angle_max_deg, ecart_max_deg, kp_position (vitesse vérin par ° d'écart de barre), bande_morte_deg, tau_filtre_d_s, zone_integrale_deg (null = toujours intégrer)",
+    "pypilot_basic": "P, D, DD, PR, FF, periode_s, vitesse_min, vitesse_max (fractions de la vitesse max du vérin), filtres"
+  },
+
+  "pid_doux": {
+    "_note": "Peu de barre, vérin économisé, plus lent à corriger",
+    "type": "pid_position", "kp": 0.8, "ki": 0.02, "kd": 1.5, "zone_integrale_deg": 5.0
+  },
+  "pid_moyen": {
+    "type": "pid_position", "kp": 1.2, "ki": 0.05, "kd": 2.0, "zone_integrale_deg": 5.0
+  },
+  "pid_nerveux": {
+    "_note": "Corrige fort ; à surveiller : usure et énergie du vérin",
+    "type": "pid_position", "kp": 2.0, "ki": 0.08, "kd": 3.0, "zone_integrale_deg": 5.0
+  },
+  "pid_moyen_sans_zone_i": {
+    "_note": "Même que pid_moyen, intégrale toujours active : montre l'emballement en virage",
+    "type": "pid_position", "kp": 1.2, "ki": 0.05, "kd": 2.0
+  },
+  "pd_sans_i": {
+    "_note": "Sans intégrale : l'erreur due à la barre ardente reste",
+    "type": "pid_position", "kp": 1.2, "ki": 0.0, "kd": 2.0
+  },
+  "pid_moyen_sans_bande_morte": {
+    "_note": "Même que pid_moyen sans bande morte : montre la chasse du vérin",
+    "type": "pid_position", "kp": 1.2, "ki": 0.05, "kd": 2.0, "zone_integrale_deg": 5.0,
+    "bande_morte_deg": 0.0
+  },
+  "pypilot_defaut": {
+    "_note": "Gains par défaut du portage du 2026-10-30 (pypilot 0.71, sans terme I)",
+    "type": "pypilot_basic", "P": 0.003, "D": 0.09, "DD": 0.075, "PR": 0.005, "FF": 0.6
+  },
+  "pypilot_vitesse_min_50": {
+    "_note": "servo.speed.min à 50 % : réglage à étudier avant le banc (DEC-015)",
+    "type": "pypilot_basic", "P": 0.003, "D": 0.09, "DD": 0.075, "PR": 0.005, "FF": 0.6,
+    "vitesse_min": 0.5
+  }
+}
