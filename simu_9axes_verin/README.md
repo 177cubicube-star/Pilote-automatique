@@ -48,12 +48,22 @@ remplacer : là-bas, c'est le vrai pypilot et le vrai `motor.ino` qui tournent.
 | `regulateurs.py` | `pid_position` (cascade cap → angle → vitesse, bande morte, anti-emballement) et `pypilot_basic` (portage, repris de `simulations/pypilot_sim.py`) |
 | `banc.py` | La boucle, les scénarios, les indicateurs, le journal CSV |
 | `essais_pid.py` | Ligne de commande : réglages × scénarios × graines → tableau + CSV |
+| `vent_sim.py` | Vent réel (oscillation, bascules, rafales) et vent apparent au pont et en tête de mât (gîte, roulis) |
+| `girouette_sim.py` | Girouette-anémomètre simulée qui émet de **vraies phrases NMEA 0183 `$WIMWV`** |
+| `nmea_mwv.py` | **Le code réel** qui lit les phrases MWV et dit si le vent est encore frais |
+| `mode_vent.py` | Mode vent apparent : consigne de cap tirée de l'angle de vent, corrections, secours compas |
+| `essais_vent.py` | Ligne de commande : variantes du mode vent × scénarios de vent → tableau + CSV |
+| `anticipation_vent.py` | **Anticipation de la barre par le vent (CON-009)**, apprise sur les 10 dernières minutes ; mode fantôme |
+| `anticipation_vent.json` | Toutes ses constantes (CON-009 : dans un fichier, pas dans le code) |
+| `essais_anticipation.py` | Ligne de commande : le vent forcit et tourne, avec ou sans anticipation → tableau + CSV |
+| `voilure_sim.py` | **Banc honnête** : 7 profils de voiliers plausibles dont la physique diffère des hypothèses des algorithmes |
+| `essais_robustesse.py` | Matrice de robustesse : profils × réglages × variantes, avec le pire cas |
 | `signalk_emetteur.py` | Transforme l'état du banc en messages Signal K (unités SI) et les envoie par UDP |
 | `banc_signalk.py` | Fait tourner le banc **en temps réel** et le publie dans Signal K (lecture seule) |
 | `nodered/alarme_ecart_cap.js` | **Logique de l'alarme d'écart de cap** (source unique), testée par `nodered/test_alarme_ecart_cap.js` |
 | `nodered/flux_alarme_ecart_cap.json` | Flux Node-RED à importer, **généré** par `nodered/generer_flux_nodered.py` |
 | `gains_pid.json` | **Les réglages à comparer — à modifier librement** |
-| `test_simu_9axes.py` | 61 tests (octets, briques, filtres, boucle complète, cohérence du banc, Signal K, flux Node-RED) |
+| `test_simu_9axes.py` | 95 tests (octets, briques, filtres, boucle complète, cohérence du banc, Signal K, flux Node-RED, vent, anticipation, banc honnête) |
 
 Bibliothèque standard de Python seulement : rien à installer.
 
@@ -62,7 +72,7 @@ Bibliothèque standard de Python seulement : rien à installer.
 Depuis ce dossier, dans un terminal (PowerShell ou celui de VS Code) :
 
 ```
-python -m unittest -v test_simu_9axes      # les 61 tests, quelques secondes
+python -m unittest -v test_simu_9axes      # les 95 tests, une demi-minute
 python essais_pid.py --liste               # les scénarios
 python essais_pid.py                       # tous les réglages, scénarios par défaut
 python essais_pid.py --reglages pid_moyen,pypilot_defaut --scenarios vagues,rafales --graines 1,2,3 --journal
@@ -109,11 +119,15 @@ Fichier complet : `resultats/sortie_gite_et_fusion_2026-11-26.txt`.
 
 | Filtre | Source de gîte | Accéléro non calibré : p95 / cap estimé / gîte | Accéléro calibré : p95 / cap estimé / gîte | Vérin (calibré) |
 |---|---|---|---|---|
-| complémentaire | IMU | 2,55° / 1,78° / 0,91° | 1,66° / 1,00° / 0,68° | 107 mm/min |
-| complémentaire | inclinomètre | 1,55° / 0,83° / 0,65° | idem | 105 mm/min |
-| Mahony | IMU | 2,08° / 1,27° / 0,51° | **1,26° / 0,54° / 0,25°** | **59 mm/min** |
-| Mahony | inclinomètre | 1,23° / 0,44° / 0,23° | idem | 58 mm/min |
-| l'un ou l'autre | parfaite | 0,62 à 0,73° / 0,10 à 0,15° / 0 | idem | 55 à 58 mm/min |
+| complémentaire | IMU | 2,37° / 1,77° / 0,86° | 1,44° / 0,97° / 0,62° | 94 mm/min |
+| complémentaire | inclinomètre | 1,32° / 0,80° / 0,59° | idem | 92 mm/min |
+| Mahony | IMU | 1,99° / 1,26° / 0,50° | **0,99° / 0,45° / 0,21°** | **52 mm/min** |
+| Mahony | inclinomètre | 0,90° / 0,34° / 0,19° | idem | 51 mm/min |
+| l'un ou l'autre | parfaite | 0,58 à 0,69° / 0,09 à 0,12° / 0 | idem | 45 à 46 mm/min |
+
+*Banc v4 (roulis réaliste). Avec le roulis exagéré des versions précédentes, les
+écarts étaient plus grands (Mahony calibré : 1,26° au lieu de 0,99°) ; les
+conclusions ci-dessous sont les mêmes.*
 
 Lecture, dans ce modèle :
 - **Calibrer l'accéléromètre** est le gain le plus simple : un biais de 10 mg
@@ -121,19 +135,21 @@ Lecture, dans ce modèle :
 - **Mahony fait mieux que le filtre simple** partout, et le vérin travaille
   environ 45 % de moins (un cap estimé plus calme commande moins de barre inutile).
 - **Un inclinomètre n'apporte presque rien** une fois l'accéléromètre de la
-  centrale calibré (1,23° contre 1,26°) : il ne sait pas mieux qu'elle séparer
+  centrale calibré (0,90° contre 0,99°) : il ne sait pas mieux qu'elle séparer
   la gravité des accélérations.
-- Il reste un écart avec la gîte parfaite (1,26° contre 0,62°) : ce sont
+- Il reste un écart avec la gîte parfaite (0,99° contre 0,58°) : ce sont
   l'embardée et le bras de levier (hypothèses) qui trompent la verticale.
-- `kp_acc` : meilleur entre 0,1 et 0,25 ici ; trop haut, les vagues passent ;
-  trop bas, la dérive du gyroscope l'emporte.
+- `kp_acc` : meilleur entre 0,1 et 0,25 (balayage fait sur le banc v3, **pas
+  refait** en v4) ; trop haut, les vagues passent ; trop bas, la dérive du
+  gyroscope l'emporte.
 
-## Corrections du banc (version 2, 2026-11-26)
+## Corrections du banc (versions 2 à 4, 2026-11-26)
 
-Les résultats de la version 1 (`resultats/sortie_reference_2026-11-26.txt` et
-`resultats/essais_pid_20261126-144833.csv`, s'ils sont encore là) sont
-**périmés** : ils profitaient d'une compensation due au hasard. Référence
-actuelle : `resultats/sortie_reference_2026-11-26_v2.txt`.
+Référence actuelle : `resultats/sortie_reference_2026-11-26_v4.txt`. Les fichiers
+plus anciens, s'ils sont encore là, sont **périmés** : v1
+(`sortie_reference_2026-11-26.txt`, `essais_pid_20261126-144833.csv`) profitait
+d'une compensation due au hasard ; v2 avait le signe de l'ardeur faux ; v3 avait
+un roulis en résonance.
 
 | Défaut trouvé | Effet | Correction |
 |---|---|---|
@@ -142,6 +158,234 @@ actuelle : `resultats/sortie_reference_2026-11-26_v2.txt`.
 | Centrale supposée au centre de rotation, sans embardée | Verticale trop facile à trouver | Bras de levier (0,3 m au-dessus) et embardée de 0,5 m/s² (hypothèses) |
 | Chaque passage commençait sans connaître les biais | On mesurait surtout le démarrage du filtre | Rodage de 60 s au quai avant chaque passage |
 | Compensation centripète de Mahony avec la rotation du corps | Le tangage s'y mélangeait | Vitesse de variation du cap |
+| **(v3)** Signe de l'effet de la gîte sur le cap inversé : le bateau gîté **abattait** au lieu de remonter au vent | Le scénario `rafales` était incohérent ; la conclusion « sans intégrale, hors cible » en dépendait | Signe corrigé, et barre ardente de `rafales` du même côté que la gîte. La conclusion tient de nouveau (p95 de 4,5°, « dégradé ») |
+| **(v4)** Roulis en **résonance** : vagues autour de 3 s, période propre de 3 s, amortissement 0,15 | Roulis d'écart type 11° et pointes à ±29° dans `vagues` (±50° au grand largue). Il exagérait les erreurs de gîte et surtout le balancement de la tête de mât | Amortissement 0,5 (hypothèse : voiles et quille amortissent) : écart type 4°, pointes à ±11°. **Conclusions changées** : mode vent et anticipation (sections ci-dessous) ; réglages PID et gîte : mêmes conclusions |
+
+## Mode vent apparent (windvane électronique)
+
+Cadre : DEC-005 (acceptée) — mode vent, girouette-anémomètre **électronique** en
+NMEA 0183, validité du vent avec retour au compas et alerte, correction de la gîte
+et du mouvement, jamais de virement ni d'empannage déclenché par le pilote.
+
+### La chaîne simulée
+
+```
+vent réel ──> vent apparent en tête de mât (gîte, roulis × 8,5 m) ──> girouette simulée
+                                                                          │ phrases $WIMWV (4 Hz)
+                                                                          v
+                         consigne de cap <── mode_vent <── nmea_mwv (le code réel)
+                               │
+                               v
+                  régulateur de cap habituel (PID ou pypilot) ──> vérin ──> bateau
+```
+
+Le mode tient un **angle de vent apparent** (positif tribord, négatif bâbord,
+comme Signal K). Il ne commande pas la barre directement : il transforme l'angle
+en **consigne de cap**, que suit le régulateur de cap. Le cap et le gyroscope
+gardent ainsi leur rôle d'amortissement.
+
+- **Direction du vent** : `cap + angle`, calme même quand le bateau lacet, puis
+  filtrée (`tau_s`, 3 s par défaut).
+- **Consigne de cap** : `direction filtrée − angle voulu`.
+- **Correction de la gîte et du mouvement du mât** (disposition 14), activée par
+  défaut. La vitesse de la tête de mât est calculée depuis le gyroscope ; elle est
+  **amortie comme la girouette amortit sa mesure** (`amortissement_capteur_s`).
+- **Vent perdu** (disposition 12) : plus de phrase valide depuis `age_max_s`
+  (2 s), alors retour au compas sur la dernière consigne de cap et alarme. Il n'y a
+  **pas de retour automatique** au mode vent : il faut le redemander. *Proposition,
+  à valider.*
+- **Jamais de changement de bord** (disposition 15) : passer d'un angle tribord à
+  un angle bâbord est refusé. Si le vent tourne, le bateau tourne avec lui du même
+  bord.
+
+Ce n'est **pas** le mode vent de pypilot, qui a ses modes *Wind* et *True Wind*,
+non portés ici.
+
+### Lancer
+
+```
+python essais_vent.py                                    # 5 variantes × 5 scénarios, 3 graines
+python essais_vent.py --scenarios vent_arriere --params-mode-vent "{\"tau_s\": 6}"
+python banc_signalk.py --scenario vent_pres              # en direct dans Signal K
+```
+
+### Ce que montre l'essai du 2026-11-26 (SIMULÉ, 3 graines)
+
+Fichier complet : `resultats/sortie_mode_vent_2026-11-26.txt`. Écart entre l'angle
+de vent apparent vrai et l'angle voulu (moyenne quadratique) et course du vérin :
+
+| Variante | Près 40° | Travers 90° | Grand largue 150° |
+|---|---|---|---|
+| Sans correction | 2,7° · 537 mm/min | 4,2° · 582 mm/min | 5,4° · 1092 mm/min |
+| Correction, sans amortissement assorti | 2,4° · 357 mm/min | 4,1° · 415 mm/min | 3,5° · 698 mm/min |
+| **Correction, amortissement assorti (défaut)** | **2,5° · 124 mm/min** | **4,0° · 185 mm/min** | **3,2° · 167 mm/min** |
+| Défaut, filtre de 10 s | 3,0° · 81 mm/min | 4,3° · 100 mm/min | 4,1° · 112 mm/min |
+
+Pour comparer, en mode compas dans les mêmes vagues, le vérin parcourt environ
+96 mm/min. *Banc v4. Avec le roulis exagéré du banc v3, l'erreur sans correction
+paraissait bien pire (22,3° au grand largue).*
+
+Lecture, dans ce modèle :
+- **La correction de la tête de mât sert surtout le vérin.** Avec un roulis
+  réaliste, l'angle sans correction reste correct au près et au travers (2,7° et
+  4,2°) et se dégrade au grand largue (5,4°) ; mais le vérin court 4 à 6 fois plus,
+  parce que chaque coup de roulis balance la tête de mât (8,5 m de haut) et fait
+  osciller la consigne.
+- **Il faut corriger au même rythme que le capteur.** La girouette amortit sa
+  mesure ; retirer le mouvement du mât *de l'instant présent* garde l'angle à peu
+  près juste mais laisse le vérin courir 2 à 4 fois plus. D'où le paramètre
+  `amortissement_capteur_s`, à relever sur la fiche du capteur choisi ou à mesurer.
+- **Le filtre règle le compromis** entre la précision de l'angle et le travail du
+  vérin : de 3 s à 10 s, on perd 0,3 à 0,9° et on divise la course du vérin par 1,5 à 1,9.
+- **Bascule de 20°** : le bateau suit en une vingtaine de secondes, sans jamais
+  changer de bord (0 passage). **Girouette muette** : alarme à 62 s (coupure à 60 s
+  plus 2 s), puis cap tenu au compas.
+
+### Hypothèses propres au vent
+
+| Hypothèse | Valeur | Remplacer par |
+|---|---|---|
+| Hauteur de la tête de mât au-dessus du centre de rotation | 8,5 m | Mesure sur le Capri 22 |
+| Girouette | 4 phrases/s, amortissement 0,3 s, bruit 1° et 0,1 m/s | Fiche du capteur choisi |
+| Vitesse du bateau | constante, 2,5 m/s, quelle que soit l'allure | Polaire ou loch |
+| Gîte due au vent | 18° de travers pour 7 m/s apparents, en carré de la vitesse | Journal à bord |
+| Vent | 6 m/s (7 au grand largue), oscillation ±5° sur 90 s, rafales ±15 % | — |
+
+## Anticipation de la barre par le vent (CON-009), apprise sur 10 minutes
+
+### Ce qu'on teste
+
+Quand le vent forcit, le bateau gîte et cherche à remonter au vent. Le régulateur
+ne corrige qu'après l'écart. L'anticipation **prépare l'angle de barre** dès que
+le vent change, d'après ce qu'elle a appris dans les **10 dernières minutes** :
+
+1. une fois par seconde, en **régime établi** (lacet, écart de cap et variation du
+   vent faibles), elle note l'angle de barre tenu et le vent (vitesse²) ;
+2. elle en tire la « barre habituelle » pour chaque vent, par moindres carrés,
+   dans la tranche d'angle du **vent de base** (comme la table `Cn` de Fenix) ;
+3. dès que le vent s'écarte de sa moyenne lente (60 s), elle calcule l'écart de
+   barre à préparer, **borné à ±10°**.
+
+Conforme à CON-009 : vent filtré sur 1 s, seuils 0,6/0,4 m/s, constantes dans
+`anticipation_vent.json`, garde-fous avec motif (vent absent, trop vieux, hors
+plage, saut brutal, vent faible, modèle insuffisant, veille), journal d'une ligne
+par cycle, et **mode fantôme qui n'agit jamais** (vérifié par un test : mêmes
+chiffres qu'« aucune »).
+
+**Écart à CON-009, signalé :** l'anticipation reçoit le vent **corrigé de la gîte
+et du mouvement du mât** (même correcteur que le mode vent). CON-009 prévoyait
+cette correction « plus tard ». Au banc, sans elle, la vitesse du vent saute à
+chaque coup de roulis : 1195 « sauts brutaux » en 15 minutes, et le modèle n'est
+jamais prêt.
+
+**Au banc seulement :** la variante `active` ajoute la correction à l'angle de
+barre voulu du PID, pour mesurer le gain possible. Ce n'est **pas** la version 2
+de CON-009, qui demande ta décision explicite et bute sur un point ouvert : pypilot
+n'a pas d'entrée pour une correction de barre. Avec `pypilot_basic`, la variante
+active est refusée.
+
+### Lancer
+
+```
+python essais_anticipation.py
+python essais_anticipation.py --scenarios renfort_compas --journal      # journal CON-009 (fantôme)
+```
+
+### Ce que montre l'essai du 2026-11-26 (SIMULÉ, 3 graines)
+
+Fichier complet : `resultats/sortie_anticipation_2026-11-26.txt`. Écart maximal
+pendant les séquences (cap en mode compas, angle de vent en mode vent) et course
+du vérin :
+
+| Scénario | Aucune (= fantôme) | Active | Active + angle |
+|---|---|---|---|
+| Mode compas, bateau peu ardent (0,15), bascules | 2,11° · 65 mm/min | 2,01° · 67 | 1,97° · 67 |
+| Mode compas, **bateau ardent** (0,40), bascules | 3,41° · 90 | **2,73° · 96** | 2,52° · 93 |
+| Mode compas, bateau ardent, **sans bascule** | 3,27° · 89 | **2,05° · 94** | 2,01° · 91 |
+| Mode vent à 40°, bascules | 11,6° · 133 | 11,9° · 173 | 9,7° · **328** |
+
+Le modèle est prêt vers 165 s (moyenne des graines), bien avant la première
+séquence (620 s). *Banc v4 (roulis réaliste).*
+
+Lecture, dans ce modèle :
+- **L'anticipation ne sert que si le coup de vent pèse vraiment sur la barre.** Sur
+  un bateau peu ardent, la barre ne bouge que d'environ 1° : le PID s'en charge
+  seul. Sur un bateau ardent, l'écart maximal baisse de 37 % sans bascule et de
+  20 % avec, pour 6 % de course de vérin en plus.
+- **L'option `modele_angle` gagne ici, mais n'est pas robuste.** Sur ce banc, dont
+  la physique a la forme du modèle, elle prévoit bien la bascule (0,46° d'erreur
+  au lieu de 2,1°) et l'écart baisse de 26 %. Sur les bateaux du banc honnête,
+  elle perd au pire cas (section suivante). Elle reste désactivée. *Sur le banc v3,
+  au roulis exagéré, elle ne gagnait même pas ici : le bruit noyait l'effet de l'angle.*
+- **En mode vent, elle n'aide pas.** L'écart vient surtout de la direction du vent,
+  que le bateau doit suivre. Avec l'angle, elle devient une seconde boucle de vent
+  nerveuse : prévision fausse de 9,8°, vérin 2,5 fois plus sollicité.
+- **Meilleur cas.** Ce tableau utilise un modèle de la même forme que la physique
+  du simulateur. La section suivante, le banc honnête, est le vrai test.
+- **L'ardeur du Capri 22 est inconnue.** Le mode fantôme en mer (CON-009,
+  essai 4) dira si l'on est plus près du cas « peu ardent » ou du cas « ardent ».
+
+## Banc honnête (étape 1 du travail en profondeur)
+
+### Pourquoi
+
+Un algorithme qui apprend la même loi que celle du simulateur paraît toujours bon.
+Pour comparer des algorithmes, la physique doit **différer** de leurs hypothèses,
+et un bon algorithme doit tenir sur **plusieurs** bateaux plausibles. On juge sur
+le **pire cas**, pas sur la moyenne.
+
+### Les profils (`voilure_sim.PROFILS`, hypothèses plausibles, aucune mesurée)
+
+| Profil | Ce qui change par rapport à l'hypothèse des algorithmes |
+|---|---|
+| `reference` | Rien : physique du banc v3. **Contrôle** : redonne les mêmes chiffres au milliardième (test) |
+| `ardent` | Ardeur 0,40 (au lieu de 0,15) |
+| `ardeur_progressive` | L'ardeur grandit avec la gîte : 0,20 à plat, 0,60 à 20° |
+| `gite_lente` | Ardent ; la force dans les voiles s'établit en 3 s |
+| `voiles_irregulieres` | Gîte selon une table irrégulière (pas \|sin\|) et couple direct des voiles selon l'angle |
+| `polaire` | La vitesse suit le vent et l'allure ; le safran pousse en vitesse² |
+| `tout` | Tout à la fois : environ 9° de barre ardente en permanence |
+
+Lancer : `python essais_robustesse.py` (une dizaine de minutes ; options
+`--profils`, `--reglages`, `--variantes`, `--graines`).
+
+### Ce que montre la matrice du 2026-11-26 (SIMULÉ, banc v4, 3 graines, `renfort_compas`)
+
+Fichier complet : `resultats/sortie_robustesse_2026-11-26.txt`. Écart maximal
+pendant les renforcements :
+
+| Profil | `pid_moyen` sans anticipation | `pid_moyen` + anticipation | Sans zone d'intégrale, sans | Sans zone + anticipation | Sans zone + anticipation avec angle |
+|---|---|---|---|---|---|
+| reference | 2,11° | 2,01° | 2,11° | 2,01° | 1,97° |
+| ardent | 3,41° | 2,73° | 3,41° | 2,73° | 2,52° |
+| ardeur_progressive | 5,60° | 4,35° | 5,55° | 4,34° | 3,65° |
+| gite_lente | 3,18° | 2,80° | 3,18° | 2,80° | 2,76° |
+| voiles_irregulieres | 3,23° | 2,58° | 3,23° | 2,58° | 2,60° |
+| polaire | 2,51° | 2,23° | 2,51° | 2,23° | 2,23° |
+| **tout** | **12,47°** | **12,47°** | 5,35° | 4,52° | 4,75° |
+| **Pire cas** | **12,47°** | **12,47°** | 5,55° | **4,52°** | 4,75° |
+
+Lecture, dans ce modèle :
+- **Le banc honnête a trouvé un piège dans le PID.** La zone d'intégrale de 5° (qui
+  évite le dépassement lors d'un changement de cap) **gèle l'intégrale pour
+  toujours** dès que la barre ardente demande plus de `kp × zone` = 6° de barre :
+  le proportionnel seul laisse alors plus de 5° d'écart. Sur `tout`, cela donne un
+  écart permanent d'environ 10° (p95 11,8°). Sans zone, le même bateau est tenu
+  (p95 4,5°). Le plafond de l'intégrale (`i_max_deg`) n'y est pour rien (essayé à
+  15° : même résultat). **À corriger en premier à l'étape 2.**
+- **L'anticipation par la vitesse du vent tient sur tous les bateaux** : 11 à 22 %
+  d'écart maximal en moins sur les profils qui en ont besoin, presque rien sur la
+  référence, jamais pire. Coût : 3 à 16 % de course de vérin en plus.
+- **Elle ne peut pas apprendre si le pilote ne tient pas le cap** : sur `tout` avec
+  la zone d'intégrale, aucun point n'est en régime établi (écart de plus de 4°) et
+  le modèle n'est jamais prêt.
+- **L'option `modele_angle` n'est pas robuste** : meilleure sur les bateaux dont la
+  physique ressemble à son hypothèse, moins bonne sur `tout` (4,75° contre 4,52°).
+- **La prévision reste médiocre** : souvent du même ordre que le changement de
+  barre réel (par exemple 2,5° prévus de travers pour 3,2° tenus sur `gite_lente`).
+  L'anticipation aide par sa direction et son instant, pas par sa justesse. C'est
+  la piste de l'étape 2 (autres algorithmes : moindres carrés récursifs,
+  observateur de perturbation).
 
 ## Voir le banc dans Signal K
 
@@ -209,6 +453,9 @@ les chemins ci-dessous, avec la source `banc-simu`, qui changent cinq fois par s
 | `simulation.truth.*` | Cap, gîte et angle de barre **vrais** du bateau simulé | non (propre au banc) |
 | `simulation.headingError` | Consigne − cap vrai | non |
 | `simulation.actuator.*` | Commande `u`, courant (A), position de la tige (m) | non |
+| `environment.wind.angleApparent`, `…speedApparent` | Vent apparent **mesuré** par la girouette (scénarios de vent) | oui |
+| `steering.autopilot.target.windAngleApparent` | Angle de vent voulu (mode vent) | oui |
+| `simulation.truth.wind*`, `simulation.autopilot.mode` | Vent vrai ; mode `vent` ou `compas_secours` | non |
 
 Unités SI de Signal K : radians, rad/s, ampères, mètres. Les chemins standard
 sont ceux qu'un pilote réel publierait : un écran ou un flux Node-RED préparé
@@ -342,12 +589,18 @@ pas une règle décidée.
 | `verin_lent` | Vérin deux fois plus lent (15 mm/s) | oui |
 | `aimant_non_calibre` | 2,5 µT de « fer dur » non compensé, caps 0/90/180 : la **chaîne de mesure**, pas le réglage | non |
 | `verin_detache` | La barre se détache à 60 s : le potentiomètre ne voit rien | non |
+| `vent_pres`, `vent_travers`, `vent_arriere` | **Mode vent** à 40°, 90° et 150° tribord | non (`essais_vent.py`) |
+| `vent_bascule` | Mode vent ; le vent tourne de 20° à 60 s : le bateau doit suivre | non (`essais_vent.py`) |
+| `vent_perdu` | Mode vent ; la girouette se tait à 60 s : secours compas attendu | non (`essais_vent.py`) |
+| `renfort_compas`, `renfort_compas_ardent`, `renfort_compas_ardent_sans_bascule`, `renfort_vent` | 10 min d'apprentissage, puis 4 séquences où le vent forcit de 35 % en tournant | non (`essais_anticipation.py`) |
 
 ## Hypothèses à remplacer par du réel
 
 | Hypothèse | Valeur | Remplacer par |
 |---|---|---|
 | Bateau (Nomoto) | T = 2,26 s, K = 0,19 /s (bateau de 12 m des simulations du 2026-10-28) | Virage à barre fixe sur le Capri 22 |
+| Amortissement du roulis | 0,5 (0,15 jusqu'à la v3 : résonance) | Enregistrement du roulis à bord |
+| Effet du vent sur le bateau | 7 profils plausibles (`voilure_sim.py`) | Mode fantôme en mer : ardeur, retard, polaire |
 | Vitesse du vérin | 30 mm/s | Fiche du vérin choisi |
 | Effort de calage, courants | 1500 N ; 0,8 A à vide, 8 A calé | Fiche du vérin |
 | Effort du safran | 10 N par degré de barre | Mesure à la barre (EXP-003 ou en mer) |
@@ -370,6 +623,8 @@ pas une règle décidée.
 
 ## Résultats de référence
 
-`resultats/sortie_reference_2026-11-26_v2.txt` (réglages × scénarios par défaut,
-trois graines) et `resultats/sortie_gite_et_fusion_2026-11-26.txt` (filtres ×
-sources de gîte). Tous SIMULÉS.
+Banc v4 : `resultats/sortie_reference_2026-11-26_v4.txt` (réglages × scénarios
+par défaut, trois graines), `sortie_gite_et_fusion_2026-11-26.txt` (filtres ×
+sources de gîte), `sortie_mode_vent_2026-11-26.txt` (mode vent),
+`sortie_anticipation_2026-11-26.txt` (anticipation) et
+`sortie_robustesse_2026-11-26.txt` (banc honnête). Tous SIMULÉS.

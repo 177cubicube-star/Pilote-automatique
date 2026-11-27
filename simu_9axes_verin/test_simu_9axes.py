@@ -5,6 +5,7 @@
 Trois niveaux : la puce et le bus (octets), les briques (fusion, bateau,
 vérin, régulateurs), puis la boucle complète (essais courts, graine fixe).
 """
+import csv
 import json
 import math
 import os
@@ -568,6 +569,344 @@ class TestFluxNodeRed(unittest.TestCase):
         chemins = [v["path"] for v in d["updates"][0]["values"]]
         self.assertNotIn("navigation.headingMagnetic", chemins)
         self.assertIn("steering.autopilot.target.headingMagnetic", chemins)
+
+
+class TestVent(unittest.TestCase):
+    def test_bateau_arrete_angle_egal_direction_moins_cap(self):
+        from vent_sim import apparent_au_pont
+        a, v = apparent_au_pont(270.0, 6.0, 230.0, 0.0)
+        self.assertAlmostEqual(a, 40.0, places=6)            # vent de tribord : positif
+        self.assertAlmostEqual(v, 6.0, places=6)
+        a, _ = apparent_au_pont(190.0, 6.0, 230.0, 0.0)
+        self.assertAlmostEqual(a, -40.0, places=6)           # vent de bâbord : négatif
+
+    def test_vitesse_du_bateau_ramene_le_vent_vers_l_avant(self):
+        from vent_sim import apparent_au_pont
+        a, v = apparent_au_pont(270.0, 6.0, 180.0, 2.5)       # vent réel de travers tribord
+        self.assertAlmostEqual(a, math.degrees(math.atan2(6.0, 2.5)), places=6)
+        self.assertAlmostEqual(v, math.hypot(6.0, 2.5), places=6)
+
+    def test_tete_de_mat_immobile_et_droite_egale_le_pont(self):
+        from vent_sim import apparent_au_pont, apparent_en_tete_de_mat
+        a1, v1 = apparent_au_pont(270.0, 6.0, 230.0, 2.5)
+        a2, v2 = apparent_en_tete_de_mat(270.0, 6.0, 230.0, 2.5, 0.0, 0.0, (0, 0, 0), 8.5)
+        self.assertAlmostEqual(a1, a2, places=9)
+        self.assertAlmostEqual(v1, v2, places=9)
+
+    def test_roulis_fausse_l_angle_et_la_correction_le_retrouve(self):
+        from vent_sim import apparent_au_pont, apparent_en_tete_de_mat
+        from mode_vent import ModeVent
+        vrai, _ = apparent_au_pont(270.0, 6.0, 230.0, 2.5)
+        p = math.radians(10.0)                               # roulis de 10 °/s vers tribord
+        mesure, aws = apparent_en_tete_de_mat(270.0, 6.0, 230.0, 2.5, -15.0, 0.0, (p, 0, 0), 8.5)
+        self.assertGreater(abs(mesure - vrai), 3.0)
+        mv = ModeVent(40.0, hauteur_mat_m=8.5)
+        corrige = mv.corriger(mesure, aws, -15.0, (0.0, p * 8.5))
+        self.assertAlmostEqual(corrige, vrai, delta=0.05)
+
+    def test_phrase_mwv_et_lecture(self):
+        from girouette_sim import phrase_mwv
+        from nmea_mwv import analyser_mwv
+        ligne = phrase_mwv(-40.0, 6.0)
+        self.assertTrue(ligne.startswith("$WIMWV,320.0,R,11.7,N,A*"))
+        m = analyser_mwv(ligne, 3.0)
+        self.assertAlmostEqual(m.angle_deg, -40.0)             # comme Signal K : > 180 -> négatif
+        self.assertAlmostEqual(m.vitesse_ms, 11.7 * 0.514444, places=6)
+        self.assertEqual((m.reference, m.t), ("R", 3.0))
+
+    def test_lecteur_refuse_le_douteux(self):
+        from girouette_sim import phrase_mwv, somme_controle
+        from nmea_mwv import ErreurPhrase, analyser_mwv
+        bonne = phrase_mwv(30.0, 5.0).strip()
+        mauvaises = [bonne[:-2] + "00", bonne.replace(",A*", ",V*"), "WIMWV,30,R,5,N,A",
+                     "$WIMWV,30.0,R*" + somme_controle("WIMWV,30.0,R")]
+        for corps in ("WIMWV,400.0,R,5.0,N,A", "WIMWV,30.0,X,5.0,N,A", "WIMWV,30.0,R,5.0,Q,A",
+                      "WIMWV,abc,R,5.0,N,A", "GPRMC,30.0,R,5.0,N,A"):
+            mauvaises.append(f"${corps}*{somme_controle(corps)}")
+        for ligne in mauvaises:
+            with self.subTest(ligne=ligne):
+                with self.assertRaises(ErreurPhrase):
+                    analyser_mwv(ligne)
+
+    def test_recepteur_age_et_vent_vrai_ignore(self):
+        from girouette_sim import somme_controle
+        from nmea_mwv import RecepteurVent
+        r = RecepteurVent(age_max_s=2.0)
+        r.ligne("$WIMWV,30.0,R,10.0,N,A*" + somme_controle("WIMWV,30.0,R,10.0,N,A"), 1.0)
+        r.ligne("$WIMWV,99.0,T,10.0,N,A*" + somme_controle("WIMWV,99.0,T,10.0,N,A"), 1.5)
+        self.assertAlmostEqual(r.vent_valide(2.9).angle_deg, 30.0)
+        self.assertIsNone(r.vent_valide(3.1))
+        r.ligne("n'importe quoi", 4.0)
+        self.assertEqual(r.refusees, 1)
+
+    def test_girouette_cadence_decalage_et_coupure(self):
+        from girouette_sim import ConfigGirouette, GirouetteSim
+        from nmea_mwv import analyser_mwv
+        g = GirouetteSim(ConfigGirouette(bruit_angle_deg=0, bruit_vitesse_ms=0, amortissement_s=0,
+                                         decalage_deg=3.0, coupure_a_s=5.0))
+        phrases = []
+        for i in range(1000):
+            phrases += g.mettre_a_jour(40.0, 6.0, i * 0.01, 0.01)
+        self.assertEqual(len(phrases), 20)                    # 4 Hz pendant 5 s, puis silence
+        self.assertAlmostEqual(analyser_mwv(phrases[0]).angle_deg, 43.0, places=1)
+
+    def test_mode_vent_consigne_et_refus_de_changer_de_bord(self):
+        from mode_vent import ModeVent
+        from nmea_mwv import MesureVent
+        mv = ModeVent(40.0, tau_s=0.0, corriger_gite=False, corriger_mouvement=False)
+        e = mv.mettre_a_jour(0.0, 0.05, 200.0, MesureVent(0.0, 55.0, 6.0, "R"))
+        self.assertAlmostEqual(e.consigne_cap_deg, 215.0)     # direction 255° − 40°
+        mv.changer_angle(45.0)
+        with self.assertRaises(ValueError):
+            mv.changer_angle(-40.0)                           # changer de bord = virer : jamais
+        with self.assertRaises(ValueError):
+            ModeVent(0.0)
+
+    def test_mode_vent_secours_compas_sans_retour_seul(self):
+        from mode_vent import ModeVent
+        from nmea_mwv import MesureVent
+        mv = ModeVent(40.0, age_max_s=2.0)
+        e = mv.mettre_a_jour(0.0, 0.05, 200.0, None)          # premier vent pas encore là
+        self.assertEqual((e.mode, e.alarme_vent_perdu), ("vent", False))
+        e = mv.mettre_a_jour(1.0, 0.05, 200.0, MesureVent(1.0, 40.0, 6.0, "R"))
+        consigne = e.consigne_cap_deg
+        e = mv.mettre_a_jour(3.5, 0.05, 210.0, MesureVent(1.0, 40.0, 6.0, "R"))   # 2,5 s sans neuf
+        self.assertEqual((e.mode, e.alarme_vent_perdu), ("compas_secours", True))
+        self.assertAlmostEqual(e.consigne_cap_deg, consigne)  # cap tenu, pas d'angle figé
+        e = mv.mettre_a_jour(4.0, 0.05, 210.0, MesureVent(4.0, 40.0, 6.0, "R"))
+        self.assertEqual(e.mode, "compas_secours")            # le vent revient : pas de retour seul
+        mv.reengager()
+        e = mv.mettre_a_jour(4.1, 0.05, 210.0, MesureVent(4.1, 40.0, 6.0, "R"))
+        self.assertEqual(e.mode, "vent")
+
+    def test_mode_vent_jamais_de_vent_secours_apres_delai(self):
+        from mode_vent import ModeVent
+        mv = ModeVent(40.0, age_max_s=2.0)
+        mv.mettre_a_jour(0.0, 0.05, 123.0, None)
+        e = mv.mettre_a_jour(2.5, 0.05, 125.0, None)
+        self.assertEqual((e.mode, e.consigne_cap_deg), ("compas_secours", 123.0))
+
+    def test_banc_suit_la_bascule_sans_changer_de_bord(self):
+        r = banc.executer(banc.SCENARIOS["vent_bascule"], {"type": "pid_position", "kp": 1.2,
+                          "ki": 0.05, "kd": 2.0, "zone_integrale_deg": 5.0}, fusion="mahony")
+        self.assertEqual(r["passages_de_bord"], 0)
+        self.assertLess(r["awa_rms_deg"], 5.0)
+        self.assertEqual(r["temps_secours_s"], 0.0)
+
+    def test_banc_vent_perdu(self):
+        r = banc.executer(banc.SCENARIOS["vent_perdu"], {"type": "pid_position"}, fusion="mahony")
+        self.assertAlmostEqual(r["alarme_vent_perdu_s"], 62.0, delta=0.3)   # coupure 60 s + 2 s
+        self.assertGreater(r["temps_secours_s"], 80.0)
+
+    def test_signalk_chemins_du_vent(self):
+        from signalk_emetteur import construire_delta
+        etat = dict(TestSignalK.ETAT, awa_vrai=40.0, aws_vrai=7.0, awa_mesure=-30.0, aws_mesure=6.5,
+                    twd=270.0, tws=6.0, angle_voulu=40.0, mode="vent")
+        v = {x["path"]: x["value"] for x in construire_delta(etat)["updates"][0]["values"]}
+        self.assertAlmostEqual(v["environment.wind.angleApparent"], math.radians(-30.0))
+        self.assertAlmostEqual(v["steering.autopilot.target.windAngleApparent"], math.radians(40.0))
+        self.assertEqual(v["simulation.autopilot.mode"], "vent")
+
+
+class TestAnticipation(unittest.TestCase):
+    CHEMIN = os.path.join(ICI, "anticipation_vent.json")
+
+    def _ant(self, **r):
+        from anticipation_vent import AnticipationVent, charger_config
+        return AnticipationVent(charger_config(self.CHEMIN, **r))
+
+    def _vent(self, t, angle, vitesse):
+        from nmea_mwv import MesureVent
+        return MesureVent(t, angle, vitesse, "R")
+
+    def test_configuration_complete_et_stricte(self):
+        from anticipation_vent import charger_config
+        cfg = charger_config(self.CHEMIN)
+        self.assertEqual(cfg.fenetre_s, 600)                 # les 10 dernières minutes
+        self.assertEqual(cfg.borne_deg, 10.0)
+        with self.assertRaises(ValueError):
+            charger_config(self.CHEMIN, inconnu=1)
+        with self.assertRaises(ValueError):
+            charger_config(self.CHEMIN, seuil_arret_ms=1.0, seuil_marche_ms=0.5)
+
+    def _apprendre(self, ant, pente=0.05, duree=600, bruit=0.0, t0=0.0):
+        import random
+        rng = random.Random(5)
+        t = t0
+        while t < t0 + duree:
+            v = 7.0 + 1.0 * math.sin(2 * math.pi * t / 25.0)      # rafales régulières
+            x = v * v
+            barre = 1.0 + pente * x + rng.gauss(0, bruit)
+            ant.mettre_a_jour(t, 0.05, self._vent(t, 40.0, v), barre, 0.0, 0.0, 215.0)
+            t += 0.05
+        return t
+
+    def test_apprend_la_pente_et_prepare_la_barre(self):
+        ant = self._ant(filtre_vent_s=0.0, regime_variation_vent_max_ms2=10.0)
+        t = self._apprendre(ant, pente=0.05)
+        mod = ant.modele(ant.tranche(ant.angle_base))
+        self.assertAlmostEqual(mod[1], 0.05, places=4)
+        e = ant.mettre_a_jour(t, 0.05, self._vent(t, 40.0, 9.5), 3.0, 0.0, 0.0, 215.0)   # renforcement
+        self.assertEqual((e.etat, e.motif), ("calculee", ""))
+        self.assertAlmostEqual(e.correction_deg, 0.05 * (9.5 ** 2 - ant.x_base), delta=0.01)
+
+    def test_correction_toujours_bornee(self):
+        ant = self._ant(filtre_vent_s=0.0, regime_variation_vent_max_ms2=10.0, saut_max_ms=30.0)
+        t = self._apprendre(ant, pente=0.5)
+        e = ant.mettre_a_jour(t, 0.05, self._vent(t, 40.0, 30.0), 3.0, 0.0, 0.0, 215.0)
+        self.assertEqual(e.correction_deg, 10.0)
+
+    def test_pas_de_modele_sans_assez_de_points(self):
+        ant = self._ant()
+        e = ant.mettre_a_jour(0.0, 0.05, self._vent(0.0, 40.0, 7.0), 1.0, 0.0, 0.0, 215.0)
+        self.assertEqual((e.correction_deg, e.motif), (0.0, "modele_insuffisant"))
+
+    def test_regime_etabli_seulement(self):
+        ant = self._ant()
+        t = 0.0
+        while t < 300:                                        # le bateau lacet fort : rien n'est appris
+            ant.mettre_a_jour(t, 0.05, self._vent(t, 40.0, 7.0), 1.0, 5.0, 0.0, 215.0)
+            t += 0.05
+        self.assertEqual(sum(len(d) for d in ant.points.values()), 0)
+
+    def test_oubli_au_dela_de_dix_minutes(self):
+        ant = self._ant(filtre_vent_s=0.0, regime_variation_vent_max_ms2=10.0)
+        self._apprendre(ant, duree=900)
+        plus_vieux = min(p[0] for d in ant.points.values() for p in d)
+        self.assertGreaterEqual(plus_vieux, 900 - 600 - 1.0)
+
+    def test_coupures_avec_motif(self):
+        ant = self._ant(filtre_vent_s=0.0, regime_variation_vent_max_ms2=10.0)
+        t = self._apprendre(ant)
+        cas = [(None, "vent_absent"), (self._vent(t - 5.0, 40.0, 7.0), "vent_trop_vieux"),
+               (self._vent(t, 40.0, 80.0), "hors_plage"), (self._vent(t, 40.0, 13.0), "saut_brutal")]
+        for mesure, motif in cas:
+            with self.subTest(motif=motif):
+                e = ant.mettre_a_jour(t, 0.05, mesure, 1.0, 0.0, 0.0, 215.0)
+                self.assertEqual((e.correction_deg, e.etat, e.motif), (0.0, "coupee", motif))
+        e = ant.mettre_a_jour(t, 0.05, self._vent(t, 40.0, 7.0), 1.0, 0.0, 0.0, 215.0, engage=False)
+        self.assertEqual((e.correction_deg, e.motif), (0.0, "veille"))
+
+    def test_hysteresis_vent_faible(self):
+        ant = self._ant(filtre_vent_s=0.0)
+        self.assertEqual(ant.mettre_a_jour(0.0, 0.05, self._vent(0.0, 40.0, 0.5), 0, 0, 0, 0).motif,
+                         "vent_faible")                       # jamais monté à 0,6 m/s
+        ant.mettre_a_jour(0.1, 0.05, self._vent(0.1, 40.0, 0.7), 0, 0, 0, 0)
+        self.assertNotEqual(ant.mettre_a_jour(0.2, 0.05, self._vent(0.2, 40.0, 0.5), 0, 0, 0, 0).motif,
+                            "vent_faible")                    # 0,5 : au-dessus de l'arrêt (0,4)
+        self.assertEqual(ant.mettre_a_jour(0.3, 0.05, self._vent(0.3, 40.0, 0.3), 0, 0, 0, 0).motif,
+                         "vent_faible")
+
+    def test_fantome_n_agit_jamais(self):
+        """CON-009, critère 1 : en mode fantôme, aucune commande n'est envoyée."""
+        scn = replace(banc.SCENARIOS["renfort_compas_ardent"], duree_s=700.0)
+        reg = {"type": "pid_position", "kp": 1.2, "ki": 0.05, "kd": 2.0, "zone_integrale_deg": 5.0}
+        vus = []
+        a = banc.executer(scn, reg, fusion="mahony", anticipation="aucune")
+        f = banc.executer(scn, reg, fusion="mahony", anticipation="fantome",
+                          observateur=lambda e: vus.append(e.get("anticipation_deg", 0.0)))
+        for k in ("erreur_rms_deg", "parcours_mm_min", "renfort_erreur_max_deg"):
+            self.assertEqual(a[k], f[k], k)
+        self.assertTrue(any(v != 0.0 for v in vus))         # elle calcule bien quelque chose…
+        self.assertNotIn("anticipation", reg)                # …sans que le régulateur la reçoive
+
+    def test_active_refusee_avec_pypilot(self):
+        with self.assertRaises(ValueError):
+            banc.executer(banc.SCENARIOS["renfort_compas"], {"type": "pypilot_basic"},
+                          anticipation="active")
+
+    def test_journal_con009(self):
+        from anticipation_vent import COLONNES_JOURNAL, AnticipationVent, charger_config
+        chemin = os.path.join(tempfile.gettempdir(), "simu_9axes_test_anticipation.csv")
+        ant = AnticipationVent(charger_config(self.CHEMIN), chemin)
+        try:
+            for i in range(10):
+                ant.mettre_a_jour(i * 0.05, 0.05, self._vent(i * 0.05, 40.0, 7.0), 1.0, 0.0, 0.0, 215.0)
+        finally:
+            ant.fermer()
+        with open(chemin, encoding="utf-8") as f:
+            lignes = list(csv.reader(f))
+        self.assertEqual(tuple(lignes[0]), COLONNES_JOURNAL)
+        self.assertEqual(len(lignes), 11)
+
+    def test_renforcement_du_vent(self):
+        from vent_sim import Renforcement
+        r = Renforcement(100.0, 0.35, 15.0, montee_s=8.0, palier_s=30.0, descente_s=10.0)
+        self.assertEqual([r.part(t) for t in (99.0, 104.0, 120.0, 143.0, 149.0)],
+                         [0.0, 0.5, 1.0, 0.5, 0.0])
+
+
+class TestBancHonnete(unittest.TestCase):
+    """Étape 1 : profils de voiliers dont la physique diffère des hypothèses des algorithmes."""
+
+    def test_interpolation_et_tables_verifiees(self):
+        from voilure_sim import ProfilVoilier, interpoler
+        t = ((0, 0.0), (90, 1.0), (180, 0.0))
+        self.assertEqual([interpoler(t, x) for x in (-5, 45, 90, 135, 200)], [0.0, 0.5, 1.0, 0.5, 0.0])
+        with self.assertRaises(ValueError):
+            ProfilVoilier("x", "table incomplète", table_gite=((0, 0.0), (90, 1.0)))
+        with self.assertRaises(ValueError):
+            ProfilVoilier("x", "négatif", tau_gite_s=-1.0)
+
+    def test_profil_reference_redonne_le_banc_v3(self):
+        """Contrôle : sans différence de physique, mêmes chiffres que l'ancien chemin de code."""
+        reg = {"type": "pid_position", "kp": 1.2, "ki": 0.05, "kd": 2.0, "zone_integrale_deg": 5.0}
+        scn = replace(banc.SCENARIOS["renfort_compas"], duree_s=200.0)
+        a = banc.executer(scn, reg, fusion="mahony")
+        b = banc.executer(scn, reg, fusion="mahony", voilier="reference")
+        for k in ("erreur_rms_deg", "erreur_p95_deg", "parcours_mm_min", "ecart_estimation_rms_deg"):
+            self.assertAlmostEqual(a[k], b[k], places=9, msg=k)
+
+    def test_retard_de_gite(self):
+        from voilure_sim import ProfilVoilier, Voilure
+        v = Voilure(ProfilVoilier("x", "retard", tau_gite_s=3.0))
+        v.pas(0.01, 40.0, 1.0, 6.0, 60.0, 0.0)                  # vent faible au départ
+        g0 = v.gite_vent
+        for _ in range(300):                                    # 3 s de vent fort
+            v.pas(0.01, 40.0, 9.0, 6.0, 60.0, 0.0)
+        cible = -12.0 * (9.0 / 7.0) ** 2 * math.sin(math.radians(40))
+        self.assertAlmostEqual((v.gite_vent - g0) / (cible - g0), 1 - math.exp(-1), delta=0.02)
+
+    def test_ardeur_progressive_et_couple_des_voiles(self):
+        from voilure_sim import ProfilVoilier, Voilure, TABLE_LACET_VOILES
+        v = Voilure(ProfilVoilier("x", "ardeur", k_gite_lacet=0.2, k_gite_lacet_par_deg=0.02))
+        _, p10, _ = v.pas(0.01, 40.0, 7.0, 6.0, 60.0, -10.0)
+        _, p20, _ = v.pas(0.01, 40.0, 7.0, 6.0, 60.0, -20.0)
+        self.assertAlmostEqual(p10, 0.4 * 10.0)                 # gîte bâbord : remonte vers tribord
+        self.assertAlmostEqual(p20, 0.6 * 20.0)
+        w = Voilure(ProfilVoilier("x", "couple", k_gite_lacet=0.0, table_lacet_voiles=TABLE_LACET_VOILES))
+        _, pv, _ = w.pas(0.01, 45.0, 7.0, 6.0, 60.0, 0.0)
+        self.assertAlmostEqual(pv, 1.2)
+
+    def test_polaire(self):
+        from voilure_sim import PROFILS, Voilure
+        v = Voilure(PROFILS["polaire"])
+        self.assertLess(v.vitesse_polaire(6.0, 40.0), v.vitesse_polaire(6.0, 90.0))
+        self.assertLess(v.vitesse_polaire(3.0, 90.0), v.vitesse_polaire(9.0, 90.0))
+        self.assertLessEqual(v.vitesse_polaire(30.0, 90.0), 3.0)
+
+    def test_roulis_realiste_dans_les_vagues(self):
+        """Avant le 2026-11-26, le roulis entrait en résonance (écart type 11°, pointes à ±29°)."""
+        import statistics
+        g = []
+        banc.executer(replace(banc.SCENARIOS["vagues"], duree_s=120.0), {"type": "pid_position"},
+                      rodage_s=5.0, observateur=lambda e: g.append(e["gite_vraie"]) if e["t"] > 20 else None)
+        self.assertLess(statistics.pstdev(g), 6.0)
+        self.assertLess(max(abs(x) for x in g), 15.0)
+
+    def test_profil_inconnu_ou_sans_vent(self):
+        with self.assertRaises(ValueError):
+            banc.executer(banc.SCENARIOS["renfort_compas"], {"type": "pid_position"}, voilier="catamaran")
+        with self.assertRaises(ValueError):
+            banc.executer(banc.SCENARIOS["vagues"], {"type": "pid_position"}, voilier="reference")
+
+    def test_piege_de_la_zone_d_integrale(self):
+        """Trouvé par le banc honnête : sur un bateau très ardent, la zone de 5° gèle l'intégrale."""
+        scn = replace(banc.SCENARIOS["renfort_compas"], duree_s=300.0)
+        base = {"type": "pid_position", "kp": 1.2, "ki": 0.05, "kd": 2.0}
+        avec = banc.executer(scn, {**base, "zone_integrale_deg": 5.0}, fusion="mahony", voilier="tout")
+        sans = banc.executer(scn, base, fusion="mahony", voilier="tout")
+        self.assertGreater(avec["erreur_p95_deg"], 2 * sans["erreur_p95_deg"])
 
 
 if __name__ == "__main__":

@@ -15,6 +15,9 @@ Deux familles :
         bruit, et pas de coup de barre quand on change la consigne) ;
      boucle intérieure : écart d'angle -> vitesse du vérin, avec une BANDE MORTE
        et une hystérésis pour que le vérin ne « chasse » pas sans arrêt.
+   Point d'entrée `anticipation_deg` : une correction de barre anticipée (par le
+   vent, CON-009) s'ajoute à l'angle voulu. Utilisé au banc seulement ; pypilot
+   n'a pas d'entrée équivalente (point ouvert de la version 2 de CON-009).
    Anti-emballement de l'intégrale : bornée à ±i_max_deg, gelée quand l'angle
    voulu est déjà en limite, et (option `zone_integrale_deg`) gelée tant que
    l'erreur dépasse cette zone : pendant un grand changement de cap, l'intégrale
@@ -79,6 +82,7 @@ class RegulateurPIDPosition:
         self.tau_filtre_d_s = tau_filtre_d_s
         self.zone_integrale_deg = zone_integrale_deg
         self.integrale = 0.0          # en degrés de barre (déjà multipliée par ki)
+        self.anticipation_deg = 0.0   # correction anticipée ajoutée à l'angle voulu (banc seulement)
         self.lacet_filtre = 0.0
         self._en_mouvement = False
         self.dernier = {}
@@ -91,13 +95,13 @@ class RegulateurPIDPosition:
             self.lacet_filtre = e.taux_lacet_dps
         p = self.kp * err
         d = -self.kd * self.lacet_filtre
-        brut = p + self.integrale + d
+        brut = p + self.integrale + d + self.anticipation_deg
         sature = abs(brut) >= self.angle_max_deg and _signe(err) == _signe(brut)
         hors_zone = (self.zone_integrale_deg is not None
                      and abs(err) > self.zone_integrale_deg)
         if not sature and not hors_zone:               # anti-emballement
             self.integrale = _borner(self.integrale + self.ki * err * dt, self.i_max_deg)
-        voulu = _borner(p + self.integrale + d, self.angle_max_deg)
+        voulu = _borner(p + self.integrale + d + self.anticipation_deg, self.angle_max_deg)
 
         ecart = voulu - e.angle_barre_deg
         # hystérésis : on démarre au-delà de la bande morte, on s'arrête à sa moitié
@@ -107,7 +111,7 @@ class RegulateurPIDPosition:
         else:
             u, self._en_mouvement = _borner(self.kp_position * ecart, 1.0), True
         self.dernier = {"erreur": err, "p": p, "i": self.integrale, "d": d,
-                        "angle_voulu": voulu}
+                        "anticipation": self.anticipation_deg, "angle_voulu": voulu}
         return u
 
 

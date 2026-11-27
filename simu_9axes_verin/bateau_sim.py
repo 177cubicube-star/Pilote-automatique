@@ -39,7 +39,8 @@ class ConfigBateau:
     K_par_s: float = 0.19              # HYPOTHÈSE
     vitesse_ms: float = 2.5            # ≈ 4,9 nœuds, pour l'accélération centripète
     periode_roulis_s: float = 3.0      # HYPOTHÈSE
-    amortissement_roulis: float = 0.15
+    amortissement_roulis: float = 0.5   # HYPOTHÈSE ; 0,15 jusqu'au 2026-11-26 : le roulis entrait en
+                                        # résonance avec les vagues (±29° dans « vagues ») ; à mesurer à bord
     periode_tangage_s: float = 2.0     # HYPOTHÈSE
     amortissement_tangage: float = 0.25
     champ_total_ut: float = 53.0       # ordre de grandeur pour le sud du Québec, à vérifier (modèle WMM)
@@ -60,7 +61,9 @@ class Rafale:
 class ConfigPerturbations:
     barre_ardente_deg: float = 0.0     # déséquilibre constant, en degrés de barre équivalents
     gite_base_deg: float = 0.0
-    k_gite_lacet: float = 0.0          # degrés de barre équivalents par degré de gîte
+    k_gite_lacet: float = 0.0          # degrés de barre équivalents par degré de gîte ;
+                                       # k > 0 : le bateau gîté remonte au vent (gîte sur
+                                       # tribord = vent de bâbord = il vire vers bâbord)
     rafales: tuple = ()
     vagues_lacet_deg: float = 0.0      # amplitude caractéristique, en degrés de barre équivalents
     vagues_roulis_deg: float = 0.0
@@ -125,19 +128,26 @@ class Bateau:
         self.gite = self.d_gite = 0.0
         self.tangage = self.d_tangage = 0.0
         self.perturbation_deg = 0.0
+        self.gite_vent_deg = 0.0                       # gîte due au vent, fixée de l'extérieur
+        self.perturbation_externe_deg = 0.0            # couple de lacet venu de la voilure (voilure_sim)
+        self.vitesse_ms = cfg.vitesse_ms               # vitesse du bateau (variable avec une polaire)
         self._omega = (0.0, 0.0, 0.0)                  # rad/s, repère corps
         self._d_omega = (0.0, 0.0, 0.0)                # rad/s², repère corps
 
     def gite_visee(self, t: float) -> float:
         p = self.pert
-        return (p.gite_base_deg + sum(_profil_rafale(r, t) for r in p.rafales)
-                + self._v_roulis(t))
+        return (p.gite_base_deg + self.gite_vent_deg
+                + sum(_profil_rafale(r, t) for r in p.rafales) + self._v_roulis(t))
 
     def pas(self, angle_barre_deg: float, dt: float) -> None:
         c, p = self.cfg, self.pert
-        self.perturbation_deg = (p.barre_ardente_deg + p.k_gite_lacet * self.gite
-                                 + self._v_lacet(self.t))
-        self.r += (c.K_par_s * (angle_barre_deg + self.perturbation_deg) - self.r) / c.T_s * dt
+        # signe corrigé le 2026-11-26 : avant, la gîte faisait ABATTRE le bateau
+        self.perturbation_deg = (p.barre_ardente_deg - p.k_gite_lacet * self.gite
+                                 + self._v_lacet(self.t) + self.perturbation_externe_deg)
+        # Nomoto selon la vitesse (f = 1 à la vitesse de référence : identique au banc v3) :
+        # le safran pousse en vitesse², le bateau répond plus vite quand il va plus vite
+        f = self.vitesse_ms / c.vitesse_ms
+        self.r += (c.K_par_s * (f * f * angle_barre_deg + self.perturbation_deg) - self.r) * f / c.T_s * dt
         self.cap = (self.cap + self.r * dt) % 360.0
 
         w = 2 * math.pi / c.periode_roulis_s
@@ -153,6 +163,9 @@ class Bateau:
         omega = self._vitesses_corps()
         self._d_omega = tuple((a - b) / dt for a, b in zip(omega, self._omega))
         self._omega = omega
+
+    def vitesses_corps_dps(self):
+        return tuple(math.degrees(w) for w in self._omega)
 
     def _vitesses_corps(self):
         """Vitesses de rotation (rad/s) dans le repère corps, depuis les dérivées des angles."""
@@ -184,7 +197,7 @@ class Bateau:
             (dw[0] * rp[1] - dw[1] * rp[0]) + (w[0] * wxr[1] - w[1] * wxr[0])
             for k in range(3))
         cinematique = (vagues[0] + levier[0],
-                       self.cfg.vitesse_ms * dps + vagues[1] + levier[1],
+                       self.vitesse_ms * dps + vagues[1] + levier[1],
                        vagues[2] + levier[2])
         force = tuple(cinematique[k] - gravite[k] for k in range(3))
         inc = math.radians(self.cfg.inclinaison_mag_deg)

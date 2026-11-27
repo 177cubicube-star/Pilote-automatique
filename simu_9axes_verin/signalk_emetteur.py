@@ -28,6 +28,15 @@ Chemins publiés (unités SI de Signal K : radians, rad/s, ampères, mètres) :
     simulation.actuator.current                 courant du moteur (A)
     simulation.actuator.position                sortie de la tige (m)
 
+  chemins du VENT (seulement si le scénario simule du vent)
+    environment.wind.angleApparent              angle MESURÉ par la girouette (négatif à bâbord)
+    environment.wind.speedApparent              vitesse mesurée (m/s)
+    steering.autopilot.target.windAngleApparent angle voulu en mode vent
+    simulation.truth.windAngleApparent          angle apparent VRAI au pont
+    simulation.truth.windDirectionTrue          direction du vent réel (d'où il vient)
+    simulation.truth.windSpeedTrue              vitesse du vent réel (m/s)
+    simulation.autopilot.mode                   "vent" ou "compas_secours" (texte)
+
 HYPOTHÈSE de signe : steering.rudderAngle positif = la barre fait virer sur
 tribord (convention de ce banc). La spécification Signal K lue ne précise pas
 le signe ; à confronter avec ce que publie pypilot.
@@ -76,10 +85,21 @@ def construire_delta(etat: dict, source: str = SOURCE_DEFAUT,
         ("simulation.actuator.current", etat["courant_a"]),
         ("simulation.actuator.position", etat["x_tige_mm"] / 1000.0),
     ]
+    if etat.get("awa_vrai") is not None:
+        valeurs += [("simulation.truth.windAngleApparent", _rad(etat["awa_vrai"])),
+                    ("simulation.truth.windDirectionTrue", _rad(etat["twd"] % 360.0)),
+                    ("simulation.truth.windSpeedTrue", etat["tws"])]
+    if etat.get("awa_mesure") is not None:
+        valeurs += [("environment.wind.angleApparent", _rad(etat["awa_mesure"])),
+                    ("environment.wind.speedApparent", etat["aws_mesure"])]
+    if etat.get("angle_voulu") is not None:
+        valeurs.append(("steering.autopilot.target.windAngleApparent", _rad(etat["angle_voulu"])))
     for chemin, v in valeurs:
         nombres = v.values() if isinstance(v, dict) else (v,)
         if not all(isinstance(x, (int, float)) and math.isfinite(x) for x in nombres):
             raise ValueError(f"valeur non finie pour {chemin} : {v!r}")
+    if etat.get("mode") is not None:
+        valeurs.append(("simulation.autopilot.mode", str(etat["mode"])))
     return {"updates": [{"$source": source, "timestamp": quand,
                          "values": [{"path": c, "value": v} for c, v in valeurs
                                     if c not in exclure]}]}
