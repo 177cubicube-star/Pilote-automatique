@@ -38,8 +38,8 @@ erreur. D'où quatre règles qui ne se négocient pas :
 | Pages de fil | `aucun` · gabarit `aucun` |
 | Seuil de relecture | `aucun` |
 | Archives | TODO → `aucun` · fils → `aucun` |
-| Fichiers « code » (gate code/docs) | `aucun` — mesuré : le dépôt ne contient que `.md`/`.json`/`.gitignore`, aucune extension de code à ce jour |
-| Compter les tests | `aucun` |
+| Fichiers « code » (gate code/docs) | `'*.py' '*.js' '*.sh'` — mesuré le 2026-11-26 : 56 `.py`, 2 `.js`, 6 `.sh` suivis ; `.toml` (19) et `.patch` (6) exclus : réglages et correctifs, pas du code exécuté |
+| Compter les tests | `git --no-optional-locks ls-files -z -- '*test_*.py' '*test_*.js' \| xargs -0 grep -c -e '^\s*def test_' -e '^\s*test('` — compte statique par fichier, sans lancer les tests. Contrôle positif mesuré le 2026-11-26 : 214 au total ; `essais/zones-opencpn-20261102/test_simulate_gps_rmc.py` rend 0 (script maison, sans `def test_`, normal) ; `test_verin_sequence.py` à la racine est une copie identique de celui de `SKIFF/` et compte deux fois |
 | Marqueurs de dette | `aucun` |
 | Vue de la structure | `git --no-optional-locks ls-files \| sort` |
 | Scripts testés du projet (remplacent la procédure en ligne) | NN libre : `aucun` · statuts ADR : `aucun` · audit des claims : `aucun` |
