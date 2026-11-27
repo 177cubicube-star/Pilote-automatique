@@ -1,0 +1,33 @@
+Commande : python -I essais_anticipation.py   (exécutée le 2026-11-26, Python 3.13, conteneur Claude ; banc v4 : amortissement du roulis 0,5)
+
+SIMULÉ — le modèle appris a la forme de la physique du banc : meilleur cas.
+
+=== renfort_compas : Mode compas au près ; 10 min d'apprentissage, puis 4 renforcements de 35 % avec bascule (graines 1,2,3)
+  variante      écart max°  rms° Δbarre° prévision° vérin mm/min
+  aucune             2.11  1.25       —         —           65
+  fantome            2.11  1.25   -1.19      0.82           65
+  active             2.01  1.20   -1.08      0.67           67
+  active_angle       1.97  1.19   -1.00      0.26           67
+
+=== renfort_compas_ardent : Comme renfort_compas, bateau ardent (la gîte fait remonter au vent 2,7 fois plus) (graines 1,2,3)
+  variante      écart max°  rms° Δbarre° prévision° vérin mm/min
+  aucune             3.41  1.73       —         —           90
+  fantome            3.41  1.73   -3.13      2.12           90
+  active             2.73  1.45   -2.93      1.74           96
+  active_angle       2.52  1.38   -2.72      0.46           93
+
+=== renfort_compas_ardent_sans_bascule : Comme renfort_compas_ardent, le vent forcit sans tourner (graines 1,2,3)
+  variante      écart max°  rms° Δbarre° prévision° vérin mm/min
+  aucune             3.27  1.64       —         —           89
+  fantome            3.27  1.64   -2.90      1.17           89
+  active             2.05  1.22   -2.60      0.68           94
+  active_angle       2.01  1.22   -2.54      0.54           91
+
+=== renfort_vent : Mode vent à 40° ; 10 min d'apprentissage, puis 4 renforcements de 35 % avec bascule (graines 1,2,3)
+  variante      écart max°  rms° Δbarre° prévision° vérin mm/min
+  aucune            11.62  6.17       —         —          133
+  fantome           11.62  6.17   -0.80      1.54          133
+  active            11.87  6.23   -1.07      2.50          173
+  active_angle       9.73  4.37   -0.80      9.75          328
+
+Résultats : resultats/essais_anticipation_20261126-221419.csv

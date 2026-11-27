@@ -1,0 +1,117 @@
+Commande : python -I essais_robustesse.py   (exécutée le 2026-11-26, Python 3.13, conteneur Claude ; banc v4 : amortissement du roulis 0,5)
+
+SIMULÉ — scénario renfort_compas, graines 1,2,3. Profils plausibles, pas mesurés.
+
+=== reference : Physique du banc v3 (contrôle : doit redonner les mêmes chiffres)
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen                fantome       2.01        2.11   -1.19       0.82    65
+  pid_moyen                active        1.95        2.01   -1.08       0.67    67
+  pid_moyen_sans_zone_i    fantome       2.01        2.11   -1.19       0.82    65
+  pid_moyen_sans_zone_i    active        1.95        2.01   -1.08       0.67    67
+
+=== ardent : Comme la référence, ardeur 0,40 (banc v3, renfort_compas_ardent)
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen                fantome       2.62        3.41   -3.13       2.12    90
+  pid_moyen                active        2.37        2.73   -2.93       1.74    96
+  pid_moyen_sans_zone_i    fantome       2.62        3.41   -3.13       2.12    90
+  pid_moyen_sans_zone_i    active        2.35        2.73   -2.92       1.74    96
+
+=== ardeur_progressive : L'ardeur grandit avec la gîte : 0,20 à plat, 0,60 à 20°
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen                fantome       4.27        5.60   -5.36       3.43   120
+  pid_moyen                active        3.19        4.35   -5.12       3.29   130
+  pid_moyen_sans_zone_i    fantome       4.18        5.55   -5.30       3.37   120
+  pid_moyen_sans_zone_i    active        3.03        4.34   -5.11       3.25   130
+
+=== gite_lente : Ardent, la force s'établit en 3 s (retard entre la rafale et la gîte)
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen                fantome       2.56        3.18   -3.17       2.56    85
+  pid_moyen                active        2.40        2.80   -3.05       2.53    89
+  pid_moyen_sans_zone_i    fantome       2.56        3.18   -3.17       2.56    85
+  pid_moyen_sans_zone_i    active        2.40        2.80   -3.05       2.53    89
+
+=== voiles_irregulieres : Table de gîte irrégulière et couple direct des voiles, ardeur 0,25
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen                fantome       2.82        3.23   -2.88       1.58    87
+  pid_moyen                active        2.39        2.58   -2.70       1.12   101
+  pid_moyen_sans_zone_i    fantome       2.70        3.23   -2.88       1.58    87
+  pid_moyen_sans_zone_i    active        2.29        2.58   -2.70       1.12   101
+
+=== polaire : La vitesse suit le vent et l'allure (safran en vitesse²), ardeur 0,30
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen                fantome       2.32        2.51   -0.86       0.66    69
+  pid_moyen                active        2.32        2.23   -0.61       1.43    79
+  pid_moyen_sans_zone_i    fantome       2.28        2.51   -0.87       0.65    70
+  pid_moyen_sans_zone_i    active        2.28        2.23   -0.61       1.43    79
+
+=== tout : Tout à la fois (ardeur 0,15 + 0,01/°, retard 3 s, voiles irrégulières à couple modéré, polaire) : environ 9° de barre ardente en permanence
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen                fantome      11.78       12.47   -3.13          —    79
+  pid_moyen                active       11.78       12.47   -3.13          —    79
+  pid_moyen_sans_zone_i    fantome       4.48        5.35   -3.44       2.70    86
+  pid_moyen_sans_zone_i    active        3.97        4.52   -3.33       2.17    90
+
+=== Pire cas sur les profils (le plus grand écart p95 et en rafale)
+  réglage                  variante      p95° pire                profil  rafale max° pire                profil
+  pid_moyen                fantome           11.78                  tout             12.47                  tout
+  pid_moyen                active            11.78                  tout             12.47                  tout
+  pid_moyen_sans_zone_i    fantome            4.48                  tout              5.55    ardeur_progressive
+  pid_moyen_sans_zone_i    active             3.97                  tout              4.52                  tout
+
+Résultats : resultats/essais_robustesse_20261126-223046.csv
+
+----- Variante avec l'angle (PID sans zone d'intégrale) -----
+
+Commande : python -I essais_robustesse.py --reglages pid_moyen_sans_zone_i --variantes fantome,active,active_angle   (exécutée le 2026-11-26, Python 3.13, conteneur Claude ; banc v4)
+
+SIMULÉ — scénario renfort_compas, graines 1,2,3. Profils plausibles, pas mesurés.
+
+=== reference : Physique du banc v3 (contrôle : doit redonner les mêmes chiffres)
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen_sans_zone_i    fantome       2.01        2.11   -1.19       0.82    65
+  pid_moyen_sans_zone_i    active        1.95        2.01   -1.08       0.67    67
+  pid_moyen_sans_zone_i    active_angle  1.96        1.97   -1.00       0.26    67
+
+=== ardent : Comme la référence, ardeur 0,40 (banc v3, renfort_compas_ardent)
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen_sans_zone_i    fantome       2.62        3.41   -3.13       2.12    90
+  pid_moyen_sans_zone_i    active        2.35        2.73   -2.92       1.74    96
+  pid_moyen_sans_zone_i    active_angle  2.32        2.52   -2.72       0.47    93
+
+=== ardeur_progressive : L'ardeur grandit avec la gîte : 0,20 à plat, 0,60 à 20°
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen_sans_zone_i    fantome       4.18        5.55   -5.30       3.37   120
+  pid_moyen_sans_zone_i    active        3.03        4.34   -5.11       3.25   130
+  pid_moyen_sans_zone_i    active_angle  2.82        3.65   -4.85       1.25   127
+
+=== gite_lente : Ardent, la force s'établit en 3 s (retard entre la rafale et la gîte)
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen_sans_zone_i    fantome       2.56        3.18   -3.17       2.56    85
+  pid_moyen_sans_zone_i    active        2.40        2.80   -3.05       2.53    89
+  pid_moyen_sans_zone_i    active_angle  2.38        2.76   -3.00       2.17    89
+
+=== voiles_irregulieres : Table de gîte irrégulière et couple direct des voiles, ardeur 0,25
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen_sans_zone_i    fantome       2.70        3.23   -2.88       1.58    87
+  pid_moyen_sans_zone_i    active        2.29        2.58   -2.70       1.12   101
+  pid_moyen_sans_zone_i    active_angle  2.37        2.60   -2.43       0.74   101
+
+=== polaire : La vitesse suit le vent et l'allure (safran en vitesse²), ardeur 0,30
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen_sans_zone_i    fantome       2.28        2.51   -0.87       0.65    70
+  pid_moyen_sans_zone_i    active        2.28        2.23   -0.61       1.43    79
+  pid_moyen_sans_zone_i    active_angle  2.30        2.23   -0.61       1.37    79
+
+=== tout : Tout à la fois (ardeur 0,15 + 0,01/°, retard 3 s, voiles irrégulières à couple modéré, polaire) : environ 9° de barre ardente en permanence
+  réglage                  variante      p95° rafale max° Δbarre° prévision° vérin
+  pid_moyen_sans_zone_i    fantome       4.48        5.35   -3.44       2.70    86
+  pid_moyen_sans_zone_i    active        3.97        4.52   -3.33       2.17    90
+  pid_moyen_sans_zone_i    active_angle  4.16        4.75   -3.41       2.79    96
+
+=== Pire cas sur les profils (le plus grand écart p95 et en rafale)
+  réglage                  variante      p95° pire                profil  rafale max° pire                profil
+  pid_moyen_sans_zone_i    fantome            4.48                  tout              5.55    ardeur_progressive
+  pid_moyen_sans_zone_i    active             3.97                  tout              4.52                  tout
+  pid_moyen_sans_zone_i    active_angle       4.16                  tout              4.75                  tout
+
+Résultats : resultats/essais_robustesse_20261126-223910.csv
